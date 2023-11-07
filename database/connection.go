@@ -8,9 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func Connect() error {
+func NewConnection() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v TimeZone=%v",
 		os.Getenv("POSTGRES_HOST"),
 		os.Getenv("POSTGRES_USER"),
@@ -21,22 +19,5 @@ func Connect() error {
 		os.Getenv("POSTGRES_TIMEZONE"),
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return err
-	}
-
-	DB = db
-
-	return nil
-}
-
-func GetConnection() (*gorm.DB, error) {
-	if DB == nil {
-		err := Connect()
-		if err != nil {
-			return nil, err
-		}
-	}
-	return DB, nil
+	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }

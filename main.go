@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	db, err := database.GetConnection()
+	db, err := database.NewConnection()
 	if err != nil {
 		log.Fatalf("db connection failed: %v\n", err.Error())
 	}
@@ -20,7 +20,9 @@ func main() {
 		log.Fatalf("migrations failed: %v\n", err.Error())
 	}
 
-	server.RunServer(db)
+	e := server.NewServer()
+
+	server.RunServer(e, db)
 }
 
 func migrate(db *gorm.DB) error {
