@@ -4,14 +4,16 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
-var e *echo.Echo
-
-func init() {
-	e = echo.New()
+func NewServer() *echo.Echo {
+	return echo.New()
 }
 
-func RunServer() {
+func RunServer(e *echo.Echo, db *gorm.DB) {
+	// user routes
+	UserRoutes(e, db)
+
 	log.Fatal(e.Start(":8080"))
 }
