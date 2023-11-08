@@ -78,7 +78,6 @@ func (s *userService) Register(
 	if err := s.db.Create(&profile).Error; err != nil {
 		return http.StatusInternalServerError, err
 	}
-
 	// generate JWT token
 	token, err := utils.GenerateJWTToken(newUser)
 	if err != nil {
