@@ -8,6 +8,7 @@ type User struct {
 	Email         string `gorm:"type:varchar(255);unique;not null"`
 	Password      string `gorm:"type:varchar(255);not null"`
 	IsAdmin       bool   `gorm:"default:false"`
+	Token         string `gorm:"type:varchar(255)"`
 	Profile       Profile
 	Transaction   []Transaction
 	BankingInfo   []BankingInfo
