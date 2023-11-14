@@ -14,6 +14,7 @@ func NewServer() *echo.Echo {
 func RunServer(e *echo.Echo, db *gorm.DB) {
 	// user routes
 	UserRoutes(e, db)
-
+	PriceRoutes(e, db)
+	
 	log.Fatal(e.Start(":8080"))
 }
