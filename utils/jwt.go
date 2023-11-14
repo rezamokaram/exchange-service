@@ -15,7 +15,7 @@ func GenerateJWTToken(user models.User) (string, error) {
 		"adm": user.IsAdmin,
 	})
 
-	token, err := t.SignedString([]byte(os.Getenv("JWTSECRET")))
+	token, err := t.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	return token, err
 }
