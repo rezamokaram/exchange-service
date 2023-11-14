@@ -3,7 +3,7 @@ module qexchange
 go 1.21.3
 
 require (
-	github.com/golang-jwt/jwt/v5 v5.1.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.11.2
 	golang.org/x/crypto v0.14.0
 	gorm.io/driver/postgres v1.5.4
