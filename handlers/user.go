@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"qexchange/services"
+
+	"github.com/labstack/echo/v4"
 )
 
 type RegisterRequest struct {
@@ -23,7 +24,7 @@ type UserResponse struct {
 }
 
 type TokenResponse struct {
-	token string
+	Token string `json:"token"`
 }
 
 func UserRegister(service services.UserService) echo.HandlerFunc {
@@ -74,10 +75,11 @@ func UserLogin(service services.UserService) echo.HandlerFunc {
 			}
 			return c.JSON(status, response)
 		}
-		
+
 		tokenrespone := TokenResponse{
-			token: token,
+			Token: token,
 		}
+
 		return c.JSON(http.StatusOK, tokenrespone)
 	}
 }
