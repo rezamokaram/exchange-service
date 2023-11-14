@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"qexchange/models"
 	"qexchange/utils"
@@ -19,7 +18,7 @@ type UserService interface {
 		email string,
 	) (int, error) // returns statusCode, error
 
-	Login(username, password string) (int, error) // returns  statusCode, error
+	Login(username, password string) (int, string, error) // returns  statusCode, token ,error
 }
 
 type userService struct {
@@ -44,7 +43,6 @@ func (s *userService) Register(
 	if password != passwordRepeat {
 		return http.StatusBadRequest, errors.New("passwords do not match")
 	}
-	fmt.Println("after password match")
 
 	// check for duplicate username or email
 	var existingUser models.User
@@ -57,13 +55,11 @@ func (s *userService) Register(
 			return http.StatusBadRequest, errors.New("a user with this email already exists")
 		}
 	}
-	fmt.Println("after check duplicate")
 
 	// create user
 	var newUser models.User
 	newUser.Username = username
 	newUser.Email = email
-	fmt.Println("after check email")
 
 	//hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -71,21 +67,17 @@ func (s *userService) Register(
 		return http.StatusInternalServerError, err
 	}
 	newUser.Password = string(hash)
-	fmt.Println("after hash")
 
 	//insert user into database
 	if err := s.db.Create(&newUser).Error; err != nil { // Use newUser directly
 		return http.StatusInternalServerError, err
 	}
-	fmt.Println("after insert")
 
 	// Create a Profile for the new user
 	profile := models.Profile{UserID: newUser.ID}
 	if err := s.db.Create(&profile).Error; err != nil {
 		return http.StatusInternalServerError, err
 	}
-	fmt.Println("after create profile")
-
 	// generate JWT token
 	token, err := utils.GenerateJWTToken(newUser)
 	if err != nil {
@@ -93,19 +85,40 @@ func (s *userService) Register(
 	}
 	newUser.Token = token
 
-	fmt.Println("after token")
-
 	// commit changes
 	s.db.Save(&profile)
 	s.db.Save(&newUser)
 
-	fmt.Println("after commit")
-
 	return http.StatusCreated, nil
 }
 
-func (s *userService) Login(username string, password string) (int, error) {
-	// register logic here
-	// we have access to s.db here
-	return 0, nil
+func (s *userService) Login(username, password string) (int, string, error) {
+	var user models.User
+
+	// check for the existence of the user with the given username
+	if err := s.db.Where("username = ?", username).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// user not found
+			return http.StatusUnauthorized, "", errors.New("invalid username or password")
+		}
+		// other possible errors
+		return http.StatusInternalServerError, "", err
+	}
+
+	// user found, now compare the given password with the hashed password in the database
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		// incorrect password
+		return http.StatusUnauthorized, "", errors.New("invalid username or password")
+	}
+
+	// password is correct, now generate JWT token
+	token, err := utils.GenerateJWTToken(user)
+	if err != nil {
+		// error generating JWT token
+		return http.StatusInternalServerError, "", err
+	}
+
+	// return the token and a status of OK
+	return http.StatusOK, token, nil
 }
