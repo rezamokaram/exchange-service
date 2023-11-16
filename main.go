@@ -4,6 +4,7 @@ import (
 	"log"
 	"qexchange/database"
 	"qexchange/models"
+	"qexchange/models/trade"
 	"qexchange/server"
 
 	"gorm.io/gorm"
@@ -34,5 +35,7 @@ func migrate(db *gorm.DB) error {
 		&models.Transaction{},
 		&models.BankingInfo{},
 		&models.SupportTicket{},
+		&trade.OpenTrade{},
+		&trade.ClosedTrade{},
 	)
 }
