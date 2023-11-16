@@ -5,7 +5,7 @@ import (
 	"qexchange/models"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt"
 )
 
 func GenerateJWTToken(user models.User) (string, error) {
@@ -15,7 +15,7 @@ func GenerateJWTToken(user models.User) (string, error) {
 		"adm": user.IsAdmin,
 	})
 
-	token, err := t.SignedString([]byte(os.Getenv("JWTSECRET")))
+	token, err := t.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	return token, err
 }
