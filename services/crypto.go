@@ -8,6 +8,7 @@ import (
 	// "qexchange/utils"
 
 	// "golang.org/x/crypto/bcrypt"
+	"qexchange/database"
 	"qexchange/models"
 
 	"gorm.io/gorm"
@@ -30,12 +31,14 @@ type CryptoService interface {
 }
 
 type cryptoService struct {
-	db *gorm.DB
+	db        *gorm.DB
+	dbService database.DataBaseService
 }
 
 func NewCryptoService(db *gorm.DB) CryptoService {
 	return &cryptoService{
-		db: db,
+		db:        db,
+		dbService: database.NewDBService(db),
 	}
 }
 
@@ -59,8 +62,8 @@ func (s *cryptoService) SetCrypto(
 	if result.Error == nil {
 		return http.StatusBadRequest, errors.New("the crypto already exist")
 	}
-	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice/100) + 10
-	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice/100) + 10)
+	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice / 100) + 10
+	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice / 100) + 10)
 	if crypto.SellFee < 0 {
 		crypto.SellFee = 0
 	}
@@ -78,19 +81,18 @@ func (s *cryptoService) UpdateCrypto(
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
-	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice/100) + 10
-	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice/100) + 10)
+	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice / 100) + 10
+	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice / 100) + 10)
 	if crypto.SellFee < 0 {
 		crypto.SellFee = 0
 	}
-	
+
 	s.db.Save(&crypto)
 
 	return http.StatusOK, nil
 }
 
-func (s *cryptoService) GetAllCrypto(
-) ([]models.CryptoResponse, int, error) {
+func (s *cryptoService) GetAllCrypto() ([]models.CryptoResponse, int, error) {
 	var cryptoList []models.Crypto
 	result := s.db.Find(&cryptoList)
 	if result.Error != nil {

@@ -30,6 +30,7 @@ func migrate(db *gorm.DB) error {
 		&models.User{},
 		&models.Profile{},
 		&models.Crypto{},
+		&models.PaymentInfo{},
 		&models.Transaction{},
 		&models.BankingInfo{},
 		&models.SupportTicket{},

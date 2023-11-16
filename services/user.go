@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"net/http"
+	"qexchange/database"
 	"qexchange/models"
 	"qexchange/utils"
 
@@ -22,12 +23,14 @@ type UserService interface {
 }
 
 type userService struct {
-	db *gorm.DB
+	db        *gorm.DB
+	dbService database.DataBaseService
 }
 
 func NewUserService(db *gorm.DB) UserService {
 	return &userService{
-		db: db,
+		db:        db,
+		dbService: database.NewDBService(db),
 	}
 }
 
