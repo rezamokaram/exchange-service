@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"qexchange/database"
 	"qexchange/models"
 	"qexchange/models/trade"
@@ -20,6 +22,22 @@ func main() {
 	if err != nil {
 		log.Fatalf("migrations failed: %v\n", err.Error())
 	}
+
+	// start to dump test data into db
+	// Read SQL file
+	sqlFile, err := os.ReadFile("./main-data.sql")
+	if err != nil {
+		log.Fatalf("reading sql dump file failed: %v\n", err.Error())
+	}
+
+	sqlStatement := string(sqlFile)
+	// Execute SQL
+	result := db.Exec(sqlStatement)
+	if result.Error != nil {
+		log.Fatalf("executing sql dump file failed: %v\n", result.Error)
+	}
+
+	fmt.Println("Database operations done.")
 
 	e := server.NewServer()
 

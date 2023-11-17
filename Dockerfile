@@ -9,5 +9,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 FROM scratch
 WORKDIR /
 COPY --from=BuildStage /app /
+COPY --from=BuildStage /database/main-data.sql /
 EXPOSE 8080
 ENTRYPOINT ["./app"]
