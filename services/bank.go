@@ -25,6 +25,8 @@ const (
 type BankService interface {
 	ChargeAccount(amount int, user models.User) (string, int, error) // returns payment_url, status code, error
 	VerifyPayment(authority, status string) (int, error)             // returns status code, error
+	AddToUserBalanace(user models.User, amount int) (int, error)
+	SubtractFromUserBalanace(user models.User, amount int) (int, error)
 }
 
 type bankService struct {
@@ -235,4 +237,35 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		}
 		return http.StatusBadRequest, errors.New("no data in json")
 	}
+}
+
+
+func (s *bankService) AddToUserBalanace(user models.User, amount int) (int, error) {
+	var profile models.Profile
+	result := s.db.Where("id = ?", user.ID).First(&profile)
+	if result.Error != nil {
+		return http.StatusBadRequest, errors.New("there is no profile with this id")
+	}
+	profile.Balance += amount
+
+	result = s.db.Save(&profile)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+	return http.StatusAccepted, nil
+}
+
+func (s *bankService) SubtractFromUserBalanace(user models.User, amount int) (int, error) {
+	var profile models.Profile
+	result := s.db.Where("id = ?", user.ID).First(&profile)
+	if result.Error != nil {
+		return http.StatusBadRequest, errors.New("there is no profile with this id")
+	}
+	profile.Balance -= amount
+
+	result = s.db.Save(&profile)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+	return http.StatusAccepted, nil
 }
