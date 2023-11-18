@@ -7,6 +7,7 @@ import (
 	"qexchange/database"
 	"qexchange/models"
 	"qexchange/models/trade"
+	"qexchange/models/cryptocurrency"
 	"qexchange/server"
 
 	"gorm.io/gorm"
@@ -48,7 +49,7 @@ func migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&models.User{},
 		&models.Profile{},
-		&models.Crypto{},
+		&cryptocurrency.Crypto{},
 		&models.PaymentInfo{},
 		&models.Transaction{},
 		&models.BankingInfo{},

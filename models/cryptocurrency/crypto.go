@@ -1,4 +1,4 @@
-package models
+package cryptocurrency
 
 import "gorm.io/gorm"
 
