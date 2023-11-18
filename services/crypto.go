@@ -9,7 +9,7 @@ import (
 
 	// "golang.org/x/crypto/bcrypt"
 	"qexchange/database"
-	"qexchange/models"
+	"qexchange/models/cryptocurrency"
 
 	"gorm.io/gorm"
 )
@@ -17,17 +17,17 @@ import (
 type CryptoService interface {
 	GetCrypto(
 		id int,
-	) (models.CryptoResponse, int, error) // returns answer, statusCode, error
+	) (cryptocurrency.CryptoResponse, int, error) // returns answer, statusCode, error
 
 	SetCrypto(
-		crypto models.Crypto,
+		crypto cryptocurrency.Crypto,
 	) (int, error) // returns statusCode, error
 
 	UpdateCrypto(
-		crypto models.Crypto,
+		crypto cryptocurrency.Crypto,
 	) (int, error) // returns statusCode, error
 
-	GetAllCrypto() ([]models.CryptoResponse, int, error)
+	GetAllCrypto() ([]cryptocurrency.CryptoResponse, int, error)
 }
 
 type cryptoService struct {
@@ -44,20 +44,20 @@ func NewCryptoService(db *gorm.DB) CryptoService {
 
 func (s *cryptoService) GetCrypto(
 	id int,
-) (models.CryptoResponse, int, error) {
-	var crypto models.Crypto
+) (cryptocurrency.CryptoResponse, int, error) {
+	var crypto cryptocurrency.Crypto
 	result := s.db.Where("id = ?", id).First(&crypto)
 	if result.Error != nil {
-		return models.CryptoResponse{}, http.StatusBadRequest, errors.New("there is no crypto with this id")
+		return cryptocurrency.CryptoResponse{}, http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
 
-	return models.NewCryptoResponse(crypto), http.StatusOK, nil
+	return cryptocurrency.NewCryptoResponse(crypto), http.StatusOK, nil
 }
 
 func (s *cryptoService) SetCrypto(
-	crypto models.Crypto,
+	crypto cryptocurrency.Crypto,
 ) (int, error) {
-	var cryptoSearch models.Crypto
+	var cryptoSearch cryptocurrency.Crypto
 	result := s.db.Where("name = ?", crypto.Name).First(&cryptoSearch)
 	if result.Error == nil {
 		return http.StatusBadRequest, errors.New("the crypto already exist")
@@ -74,9 +74,9 @@ func (s *cryptoService) SetCrypto(
 }
 
 func (s *cryptoService) UpdateCrypto(
-	crypto models.Crypto,
+	crypto cryptocurrency.Crypto,
 ) (int, error) {
-	var cryptoSearch models.Crypto
+	var cryptoSearch cryptocurrency.Crypto
 	result := s.db.Where("id = ?", crypto.ID).First(&cryptoSearch)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
@@ -95,20 +95,20 @@ func (s *cryptoService) UpdateCrypto(
 	} else if cryptoSearch.CurrentPrice < crypto.CurrentPrice {
 		tradeService.CheckTakeProfit(crypto)
 	}
-	
+
 	return http.StatusOK, nil
 }
 
-func (s *cryptoService) GetAllCrypto() ([]models.CryptoResponse, int, error) {
-	var cryptoList []models.Crypto
+func (s *cryptoService) GetAllCrypto() ([]cryptocurrency.CryptoResponse, int, error) {
+	var cryptoList []cryptocurrency.Crypto
 	result := s.db.Find(&cryptoList)
 	if result.Error != nil {
-		return make([]models.CryptoResponse, 0), http.StatusBadRequest, errors.New("there is no crypto with this id")
+		return make([]cryptocurrency.CryptoResponse, 0), http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
 
-	cryptoResponseList := make([]models.CryptoResponse, 0)
+	cryptoResponseList := make([]cryptocurrency.CryptoResponse, 0)
 	for _, cr := range cryptoList {
-		cryptoResponseList = append(cryptoResponseList, models.NewCryptoResponse(cr))
+		cryptoResponseList = append(cryptoResponseList, cryptocurrency.NewCryptoResponse(cr))
 	}
 	return cryptoResponseList, http.StatusOK, nil
 }

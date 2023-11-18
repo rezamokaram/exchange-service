@@ -1,4 +1,4 @@
-package models
+package cryptocurrency
 
 type CryptoResponse struct {
 	Id			 int    `json:"id"`

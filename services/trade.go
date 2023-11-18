@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"sync"
 
+	"qexchange/models/cryptocurrency"
 	"qexchange/models"
 	"qexchange/models/trade"
 
@@ -35,11 +36,11 @@ type TradeService interface {
 	) ([]trade.OpenTrade, int, error)
 
 	CheckStopLoss(
-		crypto models.Crypto,
+		crypto cryptocurrency.Crypto,
 	)
 
 	CheckTakeProfit(
-		crypto models.Crypto,
+		crypto cryptocurrency.Crypto,
 	)
 }
 
@@ -57,7 +58,7 @@ func (s *tradeService) OpenTrade(
 	request trade.OpenTradeRequest,
 	user models.User,
 ) (int, error) {
-	var crypto models.Crypto
+	var crypto cryptocurrency.Crypto
 	result := s.db.Where("id = ?", request.CryptoID).First(&crypto)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
@@ -110,7 +111,7 @@ func (s *tradeService) CloseTrade(
 		return http.StatusBadRequest, errors.New("this trade belong to another user")
 	}
 
-	var crypto models.Crypto
+	var crypto cryptocurrency.Crypto
 	result = s.db.Where("id = ?", openTrade.CryptoID).First(&crypto) 
 	if result.Error != nil {
 		return http.StatusInternalServerError, errors.New("database error")
@@ -169,7 +170,7 @@ func (s *tradeService) GetAllOpenTrades(
 }
 
 func (s *tradeService) CheckStopLoss(
-	crypto models.Crypto,
+	crypto cryptocurrency.Crypto,
 ) {
 	fmt.Println("Stop Loss Processing ...")
 	var allTriggeredTrades []trade.OpenTrade
@@ -197,7 +198,7 @@ func (s *tradeService) CheckStopLoss(
 }
 
 func (s *tradeService) CheckTakeProfit(
-	crypto models.Crypto,
+	crypto cryptocurrency.Crypto,
 ) {
 	fmt.Println("Take Profit Processing ...")
 	var allTriggeredTrades []trade.OpenTrade
@@ -227,7 +228,7 @@ func (s *tradeService) CheckTakeProfit(
 func (s *tradeService) CloseTradeWithTrade( // faster
 	openTrade trade.OpenTrade,
 	user 	models.User,
-	crypto models.Crypto,
+	crypto cryptocurrency.Crypto,
 	amount float64,
 ) (int, error) {
 

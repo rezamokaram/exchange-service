@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"net/http"
-	// "qexchange/models"
+	"qexchange/models/cryptocurrency"
 	"qexchange/models"
 	"qexchange/services"
 
@@ -10,7 +10,7 @@ import (
 )
 
 type GetCryptoRequest struct {
-	Id       int `json:"id"`
+	Id int `json:"id"`
 }
 
 type CryptoRequest struct {
@@ -41,7 +41,7 @@ func GetCrypto(service services.CryptoService) echo.HandlerFunc {
 func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		request := new(models.Crypto)
+		request := new(cryptocurrency.Crypto)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorRespone("", err)
 			return c.JSON(http.StatusBadRequest, response)
@@ -60,7 +60,7 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		request := new(models.Crypto)
+		request := new(cryptocurrency.Crypto)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorRespone("", err)
 			return c.JSON(http.StatusBadRequest, response)
