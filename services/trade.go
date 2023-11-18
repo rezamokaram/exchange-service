@@ -2,11 +2,14 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"qexchange/models"
 	"qexchange/models/trade"
+
 	// "qexchange/services"
 
 	"gorm.io/gorm"
@@ -30,6 +33,14 @@ type TradeService interface {
 	GetAllOpenTrades(
 		user models.User,
 	) ([]trade.OpenTrade, int, error)
+
+	CheckStopLoss(
+		crypto models.Crypto,
+	)
+
+	CheckTakeProfit(
+		crypto models.Crypto,
+	)
 }
 
 type tradeService struct {
@@ -69,8 +80,6 @@ func (s *tradeService) OpenTrade(
 		return statusCode, errors.New("error in banking operations")
 	}
 
-	// authorization level
-
 	// start of opening trade
 	transaction := request.ToTransaction(user.ID, crypto.BuyFee)
 	result = s.db.Save(&transaction)
@@ -83,8 +92,6 @@ func (s *tradeService) OpenTrade(
 	if result.Error != nil {
 		return http.StatusInternalServerError, errors.New("database error")
 	}
-
-	// update balance
 
 	return http.StatusOK, nil
 }
@@ -112,8 +119,6 @@ func (s *tradeService) CloseTrade(
 	if request.Amount > openTrade.Amount {
 		return http.StatusBadRequest, errors.New("requested amount is too large")
 	}
-
-
 
 	if openTrade.Amount == request.Amount {
 		// s.db.Delete(&openTrade)
@@ -161,4 +166,91 @@ func (s *tradeService) GetAllOpenTrades(
 	}
 
 	return allOpenTrades, http.StatusAccepted, nil
+}
+
+func (s *tradeService) CheckStopLoss(
+	crypto models.Crypto,
+) {
+	fmt.Println("Stop Loss Processing ...")
+	var allTriggeredTrades []trade.OpenTrade
+	result := s.db.Where("stop_loss >= ?", crypto.SellFee).Find(&allTriggeredTrades)
+	if result.Error != nil {
+		return
+	}
+
+
+	fmt.Println(len(allTriggeredTrades), " trade detected for closing ...")
+	var wg sync.WaitGroup
+	for _, triggeredTrade := range allTriggeredTrades {
+		wg.Add(1)
+		go func (s *tradeService, toCloseTrade trade.OpenTrade) {
+			defer wg.Done()
+			var user models.User
+			res := s.db.Where("id = ?", toCloseTrade.UserID).First(&user)
+			if res.Error != nil {
+				return
+			}
+			s.CloseTradeWithTrade(toCloseTrade, user, crypto, toCloseTrade.Amount)
+		}(s, triggeredTrade)
+	}
+	wg.Wait()
+}
+
+func (s *tradeService) CheckTakeProfit(
+	crypto models.Crypto,
+) {
+	fmt.Println("Take Profit Processing ...")
+	var allTriggeredTrades []trade.OpenTrade
+	result := s.db.Where("take_profit <= ? and take_profit > 0", crypto.SellFee).Find(&allTriggeredTrades)
+	if result.Error != nil {
+		return
+	}
+
+
+	fmt.Println(len(allTriggeredTrades), " trade detected for closing ...")
+	var wg sync.WaitGroup
+	for _, triggeredTrade := range allTriggeredTrades {
+		wg.Add(1)
+		go func (s *tradeService, toCloseTrade trade.OpenTrade) {
+			defer wg.Done()
+			var user models.User
+			res := s.db.Where("id = ?", toCloseTrade.UserID).First(&user)
+			if res.Error != nil {
+				return
+			}
+			s.CloseTradeWithTrade(toCloseTrade, user, crypto, toCloseTrade.Amount)
+		}(s, triggeredTrade)
+	}
+	wg.Wait()
+}
+
+func (s *tradeService) CloseTradeWithTrade( // faster
+	openTrade trade.OpenTrade,
+	user 	models.User,
+	crypto models.Crypto,
+	amount float64,
+) (int, error) {
+
+	if openTrade.Amount == amount {
+		result := s.db.Exec("DELETE FROM open_trade WHERE id = ?", openTrade.ID)
+		if result.Error != nil {
+			return http.StatusBadRequest, errors.New("requested amount is too large")
+		}
+
+	} else {
+		openTrade.Amount -= amount
+		s.db.Save(&openTrade)
+	}
+
+	cost := amount * float64(crypto.SellFee)
+	bankService := NewBankService(s.db)
+	statusCode, err := bankService.AddToUserBalanace(user, int(cost))
+	if err != nil {
+		return statusCode, errors.New("error in banking operations")
+	}
+
+	newClosedTrade := openTrade.ToCloseTrade(crypto.SellFee)
+	s.db.Save(&newClosedTrade)
+
+	return http.StatusOK, nil
 }

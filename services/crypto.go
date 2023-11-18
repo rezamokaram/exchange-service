@@ -88,7 +88,14 @@ func (s *cryptoService) UpdateCrypto(
 	}
 
 	s.db.Save(&crypto)
+	tradeService := NewTradeService(s.db)
 
+	if cryptoSearch.CurrentPrice > crypto.CurrentPrice {
+		tradeService.CheckStopLoss(crypto)
+	} else if cryptoSearch.CurrentPrice < crypto.CurrentPrice {
+		tradeService.CheckTakeProfit(crypto)
+	}
+	
 	return http.StatusOK, nil
 }
 
