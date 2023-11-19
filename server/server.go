@@ -17,6 +17,6 @@ func RunServer(e *echo.Echo, db *gorm.DB) {
 	PriceRoutes(e, db)
 	TradeRoutes(e, db)
 	BankRoutes(e, db)
-
+	AdminRoutes(e, db)
 	log.Fatal(e.Start(":8080"))
 }
