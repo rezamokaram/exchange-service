@@ -52,6 +52,10 @@ type TradeService interface {
 		oldCrypto cryptocurrency.Crypto,
 		newCrypto cryptocurrency.Crypto,
 	)
+
+	GetAllFutureOrders(
+		user models.User,
+	) ([]trade.FutureOrder, int, error)
 }
 
 type tradeService struct {
@@ -332,53 +336,14 @@ func (s *tradeService) CheckFutureOrder(
 	wg.Wait()
 }
 
-// func (s *tradeService) OpenTradeWithFutureOrder(
-// 	futureOrder trade.FutureOrder,
-// 	crypto 		cryptocurrency.Crypto,
-// ) (int, error) {
-// 	var user models.User
-// 	result := s.db.Where("id = ?", futureOrder.UserID).First(&user)
-// 	if result.Error != nil {
-// 		return http.StatusBadRequest, errors.New("there is no user with this id")
-// 	}
+func (s *tradeService) GetAllFutureOrders(
+	user models.User,
+) ([]trade.FutureOrder, int, error) {
+	var allFutureOrders []trade.FutureOrder
+	result := s.db.Where("user_id = ?", user.ID).Find(&allFutureOrders)
+	if result.Error != nil {
+		return make([]trade.FutureOrder, 0), http.StatusInternalServerError, result.Error
+	}
 
-// 	var profile models.Profile
-// 	result = s.db.Where("id = ?", futureOrder.UserID).First(&profile)
-// 	if result.Error != nil {
-// 		return http.StatusBadRequest, errors.New("there is no profile with this id")
-// 	}
-
-// 	cost := futureOrder.Amount * float64(crypto.BuyFee)
-// 	if cost > float64(profile.Balance) {
-// 		return http.StatusBadRequest, errors.New("you do not have enough money in your account" + strconv.Itoa(profile.Balance)) // TODO
-// 	}
-
-// 	bankService := NewBankService(s.db)
-// 	statusCode, err := bankService.SubtractFromUserBalanace(user, int(cost))
-// 	if err != nil {
-// 		return statusCode, errors.New("error in banking operations")
-// 	}
-
-// 	// start of opening trade
-// 	transaction := futureOrder.ToTransaction(user.ID, crypto.BuyFee)
-// 	result = s.db.Save(&transaction)
-// 	if result.Error != nil {
-// 		return http.StatusInternalServerError, errors.New("database error")
-// 	}
-	
-// 	newTrade := futureOrder.ToOpenTrade(crypto)
-// 	result = s.db.Save(&newTrade)
-// 	if result.Error != nil {
-// 		return http.StatusInternalServerError, errors.New("database error")
-// 	}
-
-// 	//
-// 	result = s.db.Exec("DELETE FROM future_order WHERE id = ?", futureOrder.ID)
-// 	if result.Error != nil {
-// 		fmt.Printf("error in delete from future order table\n")
-// 		// i don`t know what should we do
-// 		// probably we need to repeat query
-// 	}
-
-// 	return http.StatusOK, nil
-// }
+	return allFutureOrders, http.StatusOK, nil
+}
