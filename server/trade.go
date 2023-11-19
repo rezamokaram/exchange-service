@@ -15,4 +15,6 @@ func TradeRoutes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/close-trade", handlers.CloseTrade(tradeService), middlewares.AuthMiddleware(db))
 	e.GET("/open-trade/get-all", handlers.GetAllOpenTrades(tradeService), middlewares.AuthMiddleware(db))
 	e.GET("/close-trade/get-all", handlers.GetAllClosedTrades(tradeService), middlewares.AuthMiddleware(db))
+	e.POST("/future-order", handlers.SetFutureOrder(tradeService), middlewares.AuthMiddleware(db))
+	e.GET("/future-order/get-all", handlers.GetAllFutureOrders(tradeService), middlewares.AuthMiddleware(db))
 }

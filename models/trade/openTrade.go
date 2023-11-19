@@ -4,12 +4,12 @@ import "gorm.io/gorm"
 
 type OpenTrade struct {
 	gorm.Model
-	UserID      uint    `gorm:"not null" json:"user_id"`
-	CryptoID    uint    `gorm:"not null" json:"crypto_id"`
-	Amount      float64 `gorm:"not null" json:"amount"`
-	BuyFee 		int     `gorm:"not null" json:"price_at_time"`
-	StopLoss	int		`gorm:"" json:"stop_loss"`
-	TakeProfit  int		`gorm:"" json:"take_profit"`
+	UserID      uint    `gorm:"not null"`
+	CryptoID    uint    `gorm:"not null"`
+	Amount      float64 `gorm:"not null"`
+	BuyFee 		int     `gorm:"not null"`
+	StopLoss	int		`gorm:""`
+	TakeProfit  int		`gorm:""`
 }
 
 func (OpenTrade) TableName() string {

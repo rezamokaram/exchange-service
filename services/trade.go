@@ -42,6 +42,20 @@ type TradeService interface {
 	CheckTakeProfit(
 		crypto cryptocurrency.Crypto,
 	)
+
+	SetFutureOrder(
+		req 	trade.FutureOrderRequest,
+		user 	models.User,
+	) (int, error)
+
+	CheckFutureOrder(
+		oldCrypto cryptocurrency.Crypto,
+		newCrypto cryptocurrency.Crypto,
+	)
+
+	GetAllFutureOrders(
+		user models.User,
+	) ([]trade.FutureOrder, int, error)
 }
 
 type tradeService struct {
@@ -154,7 +168,7 @@ func (s *tradeService) GetAllClosedTrades(
 	if result.Error != nil {
 		return make([]trade.ClosedTrade,0), http.StatusInternalServerError, result.Error//errors.New("data base error")
 	}
-	return allClosedTrades, http.StatusAccepted, nil
+	return allClosedTrades, http.StatusOK, nil
 }
 
 func (s *tradeService) GetAllOpenTrades(
@@ -166,7 +180,7 @@ func (s *tradeService) GetAllOpenTrades(
 		return make([]trade.OpenTrade,0), http.StatusInternalServerError, result.Error//errors.New("data base error")
 	}
 
-	return allOpenTrades, http.StatusAccepted, nil
+	return allOpenTrades, http.StatusOK, nil
 }
 
 func (s *tradeService) CheckStopLoss(
@@ -254,4 +268,82 @@ func (s *tradeService) CloseTradeWithTrade( // faster
 	s.db.Save(&newClosedTrade)
 
 	return http.StatusOK, nil
+}
+
+func (s *tradeService) SetFutureOrder(
+	req trade.FutureOrderRequest,
+	user 	models.User,
+) (int, error) {
+	futureOrder := req.ToFutureOrder(user.ID)
+	result := s.db.Save(&futureOrder)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+
+	return http.StatusOK, nil
+}
+
+func (s *tradeService) CheckFutureOrder(
+	oldCrypto cryptocurrency.Crypto,
+	newCrypto cryptocurrency.Crypto,
+) {
+	fmt.Printf("checking for future orders...\n")
+	if newCrypto.CurrentPrice == oldCrypto.CurrentPrice {
+		fmt.Printf("there is nothing to do!")
+		return
+	}
+	allTriggeredFutureOrders := make([]trade.FutureOrder, 0)
+	if newCrypto.CurrentPrice > oldCrypto.CurrentPrice {
+		res := s.db.Where("target_price >= ? and target_price <= ?", oldCrypto.BuyFee, newCrypto.BuyFee).Find(&allTriggeredFutureOrders)
+		if res.Error != nil {
+			fmt.Printf("server internal error: %v", res.Error)
+		}
+	} else {
+		res := s.db.Where("target_price >= ? and target_price <= ?", newCrypto.BuyFee, oldCrypto.BuyFee).Find(&allTriggeredFutureOrders)
+		if res.Error != nil {
+			fmt.Printf("server internal error: %v", res.Error)
+		}
+	}
+
+	var wg sync.WaitGroup
+	for _, toOpenFutureOrder := range allTriggeredFutureOrders {
+		wg.Add(1)
+		go func (s *tradeService, userID uint, fo trade.FutureOrder)  {
+			defer wg.Done()
+			toOpenTradeRequest := fo.ToOpenTradeRequest()
+			var user models.User
+			result := s.db.Where("id = ?", userID).First(&user)
+			if result.Error != nil {
+				// this error handling is a bad solution
+				// in fact we need to send otp
+				fmt.Printf("error while finding user in database")
+			}
+
+			status,err := s.OpenTrade(toOpenTradeRequest, user)
+			if err != nil {
+				fmt.Printf("the process failed with status code %v and error message %v \n", status, err.Error())
+			}
+
+			result = s.db.Exec("DELETE FROM future_order WHERE id = ?", fo.ID)
+			if result.Error != nil {
+				fmt.Printf("error in delete from future order table\n")
+				// i don`t know what should we do
+				// probably we need to repeat query
+			}
+
+		}(s, toOpenFutureOrder.UserID, toOpenFutureOrder)
+	}
+	wg.Wait()
+}
+
+func (s *tradeService) GetAllFutureOrders(
+	user models.User,
+) ([]trade.FutureOrder, int, error) {
+	var allFutureOrders []trade.FutureOrder
+	result := s.db.Where("user_id = ?", user.ID).Find(&allFutureOrders)
+	if result.Error != nil {
+		return make([]trade.FutureOrder, 0), http.StatusInternalServerError, result.Error
+	}
+
+	return allFutureOrders, http.StatusOK, nil
 }
