@@ -306,7 +306,7 @@ func (s *tradeService) CheckFutureOrder(
 		wg.Add(1)
 		go func (s *tradeService, userID uint, fo trade.FutureOrder)  {
 			defer wg.Done()
-			toOpenTradeRequest := toOpenFutureOrder.ToOpenTradeRequest()
+			toOpenTradeRequest := fo.ToOpenTradeRequest()
 			var user models.User
 			result := s.db.Where("id = ?", userID).First(&user)
 			if result.Error != nil {
