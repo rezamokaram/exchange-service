@@ -88,7 +88,10 @@ func (s *cryptoService) UpdateCrypto(
 	}
 
 	s.db.Save(&crypto)
+
 	tradeService := NewTradeService(s.db)
+
+	tradeService.CheckFutureOrder(cryptoSearch, crypto)
 
 	if cryptoSearch.CurrentPrice > crypto.CurrentPrice {
 		tradeService.CheckStopLoss(crypto)

@@ -108,3 +108,27 @@ func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 		return c.JSON(http.StatusOK, allClosedTrades)
 	}
 }
+
+func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		request := new(trade.FutureOrderRequest)
+		if err := c.Bind(request); err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorRespone("", errors.New("bad user data"))
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		statusCode, err := service.SetFutureOrder(*request, user)
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(http.StatusOK, models.NewRespone("the future order successfully set"))
+	}
+}
