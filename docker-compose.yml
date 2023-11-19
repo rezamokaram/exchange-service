@@ -48,6 +48,7 @@ services:
       - POSTGRES_TIMEZONE=${POSTGRES_TIMEZONE}
       - JWTSECRET=${JWTSECRET}
       - MerchantID=${MerchantID}
+      - ADMIN_PASSWORD =${ADMIN_PASSWORD}
     ports:
       - 8080:8080
     depends_on:
