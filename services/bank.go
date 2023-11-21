@@ -9,7 +9,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"qexchange/database"
 	"qexchange/models"
 
 	"gorm.io/gorm"
@@ -30,14 +29,12 @@ type BankService interface {
 }
 
 type bankService struct {
-	db        *gorm.DB
-	dbService database.DataBaseService
+	db *gorm.DB
 }
 
 func NewBankService(db *gorm.DB) BankService {
 	return &bankService{
-		db:        db,
-		dbService: database.NewDBService(db),
+		db: db,
 	}
 }
 
@@ -192,9 +189,11 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 						return http.StatusInternalServerError, errors.New("faild finsing user")
 					}
 
-					err = s.dbService.AddToUserBalanace(user, int(payment.Amount))
+					bankService := NewBankService(s.db)
+
+					statusCode, err := bankService.AddToUserBalanace(user, int(payment.Amount))
 					if err != nil {
-						return http.StatusInternalServerError, errors.New("faild updating user balance")
+						return statusCode, errors.New("faild updating user balance")
 					}
 
 					return http.StatusOK, nil
@@ -238,7 +237,6 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		return http.StatusBadRequest, errors.New("no data in json")
 	}
 }
-
 
 func (s *bankService) AddToUserBalanace(user models.User, amount int) (int, error) {
 	var profile models.Profile

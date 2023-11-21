@@ -2,10 +2,10 @@ package services
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"os"
-	"qexchange/database"
 	"qexchange/models"
+
+	"gorm.io/gorm"
 )
 
 type AdminService interface {
@@ -14,8 +14,7 @@ type AdminService interface {
 }
 
 type adminService struct {
-	db        *gorm.DB
-	dbService database.DataBaseService
+	db *gorm.DB
 }
 
 const (
@@ -25,8 +24,7 @@ const (
 
 func NewAdminService(db *gorm.DB) AdminService {
 	return &adminService{
-		db:        db,
-		dbService: database.NewDBService(db),
+		db: db,
 	}
 }
 
