@@ -6,8 +6,8 @@ import (
 	"os"
 	"qexchange/database"
 	"qexchange/models"
-	"qexchange/models/trade"
 	"qexchange/models/cryptocurrency"
+	"qexchange/models/trade"
 	"qexchange/server"
 
 	"gorm.io/gorm"
@@ -24,18 +24,21 @@ func main() {
 		log.Fatalf("migrations failed: %v\n", err.Error())
 	}
 
-	// start to dump test data into db
-	// Read SQL file
-	sqlFile, err := os.ReadFile("./main-data.sql")
-	if err != nil {
-		log.Fatalf("reading sql dump file failed: %v\n", err.Error())
-	}
+	// start to dump test data into db if it hasn't been done already
+	if !hasTestData(db) {
+		// Read SQL file
+		sqlFile, err := os.ReadFile("./main-data.sql")
+		if err != nil {
+			log.Fatalf("reading sql dump file failed: %v\n", err.Error())
+		}
 
-	sqlStatement := string(sqlFile)
-	// Execute SQL
-	result := db.Exec(sqlStatement)
-	if result.Error != nil {
-		log.Fatalf("executing sql dump file failed: %v\n", result.Error)
+		// Execute SQL
+		result := db.Exec(string(sqlFile))
+		if result.Error != nil {
+			log.Fatalf("executing sql dump file failed: %v\n", result.Error)
+		}
+
+		fmt.Println("Fake Data Inserted.")
 	}
 
 	fmt.Println("Database operations done.")
@@ -58,4 +61,10 @@ func migrate(db *gorm.DB) error {
 		&trade.ClosedTrade{},
 		&trade.FutureOrder{},
 	)
+}
+
+func hasTestData(db *gorm.DB) bool {
+	var count int64
+	db.Model(&models.User{}).Count(&count)
+	return count > 0
 }
