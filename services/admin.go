@@ -13,6 +13,7 @@ type AdminService interface {
 	UpgradeToAdmin(user models.User, adminPasswordJSON string) error
 	UpdateAuthenticationLevel(username string, newAuthLevel int) error
 	BlockUser(username string, temporary bool) (int, error)
+	UnblockUser(username string) (int, error)
 }
 
 type adminService struct {
@@ -86,7 +87,36 @@ func (s *adminService) BlockUser(username string, temporary bool) (int, error) {
 		newBlockedLevel = BlockedPermanently
 	}
 
-	err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", newBlockedLevel).Error
+	user.Profile.BlockedLevel = newBlockedLevel
 
-	return http.StatusOK, err
+	if err := s.db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		return http.StatusBadRequest, errors.New("failed updating user")
+	}
+
+	// instead of the above we can also do this do update the profile association
+	// err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", newBlockedLevel).Error
+
+	return http.StatusOK, nil
+}
+
+func (s *adminService) UnblockUser(username string) (int, error) {
+	var user models.User
+	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
+		return http.StatusNotFound, errors.New("user not found")
+	}
+
+	if user.Profile.BlockedLevel == Unblocked {
+		return http.StatusBadRequest, errors.New("user is not blocked")
+	}
+
+	user.Profile.BlockedLevel = Unblocked
+
+	if err := s.db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		return http.StatusBadRequest, errors.New("failed updating user")
+	}
+
+	// instead of the above we can also do this do update the profile association
+	// err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", Unblocked).Error
+
+	return http.StatusOK, nil
 }

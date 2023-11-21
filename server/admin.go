@@ -14,5 +14,5 @@ func AdminRoutes(e *echo.Echo, db *gorm.DB) {
 	e.PUT("/admin/update-to-admin", handlers.UpgradeToAdmin(AdminService), middlewares.AuthMiddleware(db))
 	e.PUT("/admin/update-auth-level", handlers.UpdateAuthenticationLevel(AdminService), middlewares.AuthMiddleware(db), middlewares.AdminCheckMiddleware)
 	e.PUT("/admin/block-user", handlers.BlockUser(AdminService), middlewares.AuthMiddleware(db), middlewares.AdminCheckMiddleware)
-	// e.PUT("/admin/unblock-user", handlers.UnblockUser(AdminService), middlewares.AuthMiddleware(db), middlewares.AdminCheckMiddleware)
+	e.PUT("/admin/unblock-user", handlers.UnblockUser(AdminService), middlewares.AuthMiddleware(db), middlewares.AdminCheckMiddleware)
 }

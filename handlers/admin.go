@@ -22,6 +22,10 @@ type BlockUserRequest struct {
 	Temporary bool   `json:"temporary"`
 }
 
+type UnblockUserRequest struct {
+	Username string `json:"username"`
+}
+
 func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var adminRequest struct {
@@ -64,7 +68,22 @@ func BlockUser(service services.AdminService) echo.HandlerFunc {
 		}
 
 		if statusCode, err := service.BlockUser(request.Username, request.Temporary); err != nil {
-			return c.JSON(statusCode, models.NewErrorRespone("failed to update user Authentication Level", err))
+			return c.JSON(statusCode, models.NewErrorRespone("failed to update user Blocked Level", err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewRespone("user Blocked level updated"))
+	}
+}
+
+func UnblockUser(service services.AdminService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		request := new(UnblockUserRequest)
+		if err := c.Bind(request); err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("invalid request", err))
+		}
+
+		if statusCode, err := service.UnblockUser(request.Username); err != nil {
+			return c.JSON(statusCode, models.NewErrorRespone("failed to update user Blocked Level", err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewRespone("user Blocked level updated"))
