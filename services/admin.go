@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"qexchange/models"
 
@@ -11,6 +12,7 @@ import (
 type AdminService interface {
 	UpgradeToAdmin(user models.User, adminPasswordJSON string) error
 	UpdateAuthenticationLevel(username string, newAuthLevel int) error
+	BlockUser(username string, temporary bool) (int, error)
 }
 
 type adminService struct {
@@ -20,6 +22,12 @@ type adminService struct {
 const (
 	Unauthenticated = iota
 	Authenticated
+)
+
+const (
+	Unblocked = iota
+	BlockedTemporarily
+	BlockedPermanently
 )
 
 func NewAdminService(db *gorm.DB) AdminService {
@@ -55,4 +63,30 @@ func (s *adminService) UpdateAuthenticationLevel(username string, newAuthLevel i
 
 	err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("authentication_level", newAuthLevel).Error
 	return err
+}
+
+func (s *adminService) BlockUser(username string, temporary bool) (int, error) {
+	var user models.User
+	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
+		return http.StatusNotFound, errors.New("user not found")
+	}
+
+	if temporary && user.Profile.BlockedLevel == BlockedTemporarily {
+		return http.StatusBadRequest, errors.New("user id already temporarily blocked")
+	}
+
+	if !temporary && user.Profile.BlockedLevel == BlockedPermanently {
+		return http.StatusBadRequest, errors.New("user id already permanently blocked")
+	}
+
+	var newBlockedLevel int
+	if temporary {
+		newBlockedLevel = BlockedTemporarily
+	} else {
+		newBlockedLevel = BlockedPermanently
+	}
+
+	err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", newBlockedLevel).Error
+
+	return http.StatusOK, err
 }

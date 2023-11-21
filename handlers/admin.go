@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
+
+	"github.com/labstack/echo/v4"
 )
 
 type UpdateUserToAdminRequest struct {
@@ -14,6 +15,11 @@ type UpdateUserToAdminRequest struct {
 type UpdateAuthenticationLevelRequest struct {
 	Username     string `json:"username"`
 	NewAuthLevel int    `json:"new_auth_level"`
+}
+
+type BlockUserRequest struct {
+	Username  string `json:"username"`
+	Temporary bool   `json:"temporary"`
 }
 
 func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
@@ -47,5 +53,20 @@ func UpdateAuthenticationLevel(service services.AdminService) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, models.NewErrorRespone("failed to update user Authentication Level", err))
 		}
 		return c.JSON(http.StatusOK, models.NewRespone("user Authentication Level updated "))
+	}
+}
+
+func BlockUser(service services.AdminService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		request := new(BlockUserRequest)
+		if err := c.Bind(request); err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("invalid request", err))
+		}
+
+		if statusCode, err := service.BlockUser(request.Username, request.Temporary); err != nil {
+			return c.JSON(statusCode, models.NewErrorRespone("failed to update user Authentication Level", err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewRespone("user Blocked level updated"))
 	}
 }
