@@ -8,7 +8,7 @@ import (
 	// "qexchange/utils"
 
 	// "golang.org/x/crypto/bcrypt"
-	"qexchange/database"
+
 	"qexchange/models/cryptocurrency"
 
 	"gorm.io/gorm"
@@ -31,14 +31,12 @@ type CryptoService interface {
 }
 
 type cryptoService struct {
-	db        *gorm.DB
-	dbService database.DataBaseService
+	db *gorm.DB
 }
 
 func NewCryptoService(db *gorm.DB) CryptoService {
 	return &cryptoService{
-		db:        db,
-		dbService: database.NewDBService(db),
+		db: db,
 	}
 }
 
