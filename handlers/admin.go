@@ -89,3 +89,16 @@ func UnblockUser(service services.AdminService) echo.HandlerFunc {
 		return c.JSON(http.StatusOK, models.NewRespone("user Blocked level updated"))
 	}
 }
+
+func GetUserInfo(service services.AdminService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		username := c.QueryParam("username")
+
+		userInfo, statusCode, err := service.GetUserInfo(username)
+		if err != nil {
+			return c.JSON(statusCode, models.NewErrorRespone("failed to get user information", err))
+		}
+
+		return c.JSON(http.StatusOK, userInfo)
+	}
+}

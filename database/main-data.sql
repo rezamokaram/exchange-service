@@ -10,6 +10,11 @@ VALUES
     (2, '9876543210', 1, 0, 5000000000, false),
     (3, '9876543210', 0, 1, 5000000000, false);
 
+INSERT INTO banking_info (user_id, bank_name, account_number, card_number, expire_date, cvv2)
+VALUES
+    (2, 'saman', '123456', '654321', '12/13', '123'),
+    (2, 'sepah', '12345678', '87654321', '14/15', '456');
+
 INSERT INTO crypto (name, symbol, current_price, buy_fee, sell_fee)
 VALUES
     ('Bitcoin', 'BTC', 500, 515, 485),
