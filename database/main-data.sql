@@ -24,9 +24,9 @@ VALUES
     (1, 1, 10, 515, 350, 700);
 
 
-INSERT INTO closed_trade (user_id, crypto_id, amount, buy_fee, sell_fee)
+INSERT INTO closed_trade (user_id, crypto_id, amount, buy_fee, sell_fee, profit)
 VALUES
-    (1, 1, 10, 300, 400),
-    (1, 1, 10, 500, 600),
-    (1, 1, 10, 600, 500);
+    (1, 1, 10, 300, 400, 1000 ),
+    (1, 1, 10, 500, 600, 1000 ),
+    (1, 1, 10, 600, 500, -1000);
 

@@ -150,3 +150,28 @@ func GetAllFutureOrders(service services.TradeService) echo.HandlerFunc {
 		return c.JSON(http.StatusOK, allFutureOrders)
 	}
 }
+
+func FilterTrades(service services.TradeService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		
+		request := new(trade.FilterTradesRequest)
+		if err := c.Bind(request); err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorRespone("", errors.New("bad user data"))
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		allTargetTrades, statusCode, err := service.FilterClosedTrades(user, *request)
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(http.StatusOK, allTargetTrades)
+	}
+}

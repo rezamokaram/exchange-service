@@ -25,5 +25,10 @@ func (openTrade OpenTrade)ToCloseTrade(
 		Amount: openTrade.Amount,
 		BuyFee: openTrade.BuyFee,
 		SellFee: sellFee,
+		Profit: profitCalculation(openTrade.Amount, openTrade.BuyFee, sellFee),
 	}
+}
+
+func profitCalculation(amount float64, buy , sell int) int {
+	return (sell - buy) * int(amount)
 }
