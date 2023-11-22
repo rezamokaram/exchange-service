@@ -10,6 +10,7 @@ type ClosedTrade struct {
 	Amount      float64 `gorm:"not null" json:"amount"`
 	BuyFee		int     `gorm:"not null" json:"buy_fee"`
 	SellFee		int 	`gorm:"not null" json:"sell_fee"`
+	Profit		int 	`gorm:"not null" json:"profit"`
 }
 
 func (ClosedTrade) TableName() string {
