@@ -11,6 +11,6 @@ import (
 
 func BankRoutes(e *echo.Echo, db *gorm.DB) {
 	bankService := services.NewBankService(db)
-	e.POST("/payment/charge", handlers.ChargeAccount(bankService), middlewares.AuthMiddleware(db))
+	e.POST("/payment/charge", handlers.ChargeAccount(bankService), middlewares.AuthMiddleware(db), middlewares.CheckIsBlocked(db))
 	e.GET("/payment/verify", handlers.VerifyPayment(bankService))
 }
