@@ -22,6 +22,7 @@ const (
 )
 
 type BankService interface {
+	AddBankAccount(user models.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error)
 	ChargeAccount(amount int, user models.User) (string, int, error) // returns payment_url, status code, error
 	VerifyPayment(authority, status string) (int, error)             // returns status code, error
 	AddToUserBalanace(user models.User, amount int) (int, error)
@@ -49,6 +50,28 @@ type ZarinpalData struct {
 type ZarinpalResponse struct {
 	Data   ZarinpalData  `json:"data"`
 	Errors []interface{} `json:"errors"`
+}
+
+func (s *bankService) AddBankAccount(user models.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error) {
+
+	if bank_name == "" || account_number == "" || card_number == "" || expire_date == "" || cvv2 == "" {
+		return http.StatusNotFound, errors.New("account data is not provided")
+	}
+
+	// Create a new BankingInfo instance
+	var bankInfo models.BankingInfo
+	bankInfo.UserID = user.ID
+	bankInfo.BankName = bank_name
+	bankInfo.AccountNumber = account_number
+	bankInfo.CardNumber = card_number
+	bankInfo.Cvv2 = cvv2
+	bankInfo.ExpireDate = expire_date
+
+	if err := s.db.Save(&bankInfo).Error; err != nil {
+		return http.StatusInternalServerError, errors.New("failed to save bank account")
+	}
+
+	return http.StatusOK, nil
 }
 
 func (s *bankService) ChargeAccount(amount int, user models.User) (string, int, error) {

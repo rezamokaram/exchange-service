@@ -6,8 +6,8 @@ import (
 
 type BankingInfo struct {
 	gorm.Model
-	UserID        string `gorm:"not null"`
-	BankName      string `gorm:"type:varchar(100);not null" json:"bank_name"`
+	UserID        uint   `gorm:"not null"`
+	BankName      string `gorm:"type:varchar(100);not null"`
 	AccountNumber string `gorm:"type:varchar(100);not null"`
 	CardNumber    string `gorm:"type:varchar(100);not null"`
 	ExpireDate    string `gorm:"not null"`

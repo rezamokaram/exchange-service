@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 
-	"qexchange/models/cryptocurrency"
 	"qexchange/models"
+	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
 
 	// "qexchange/services"
@@ -56,6 +57,11 @@ type TradeService interface {
 	GetAllFutureOrders(
 		user models.User,
 	) ([]trade.FutureOrder, int, error)
+
+	FilterClosedTrades(
+		user models.User,
+		req  trade.FilterTradesRequest,
+	) (trade.FilterTradesResponse, int, error)
 }
 
 type tradeService struct {
@@ -346,4 +352,35 @@ func (s *tradeService) GetAllFutureOrders(
 	}
 
 	return allFutureOrders, http.StatusOK, nil
+}
+
+func (s *tradeService) FilterClosedTrades(
+	user models.User,
+	req  trade.FilterTradesRequest,
+) (trade.FilterTradesResponse, int, error) {
+	if req.End.IsZero() {
+		req.End = time.Now().Add(time.Hour)
+	}
+	
+	var filterResponse trade.FilterTradesResponse
+	var trades []trade.ClosedTrade
+	var result *gorm.DB
+	if len(req.CryptoList) == 0 {
+		result = s.db.Where("created_at >= ? AND created_at <= ?", req.Start, req.End).Find(&trades)
+	} else {
+		result = s.db.Where("created_at BETWEEN ? AND ? AND crypto_id IN (?)", req.Start, req.End, req.CryptoList).Find(&trades)
+	}
+	if result.Error != nil {
+		return filterResponse, http.StatusInternalServerError, result.Error
+	}
+
+	filterResponse.Start = req.Start
+	filterResponse.End = req.End
+	filterResponse.CryptoList = req.CryptoList
+	for _, tr := range trades {
+		filterResponse.ProfitOverAll += tr.Profit
+	}
+	filterResponse.ClosedTrades = trades
+
+	return filterResponse, http.StatusOK, nil
 }
