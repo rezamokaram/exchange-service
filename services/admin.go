@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"qexchange/models"
 
@@ -11,6 +12,9 @@ import (
 type AdminService interface {
 	UpgradeToAdmin(user models.User, adminPasswordJSON string) error
 	UpdateAuthenticationLevel(username string, newAuthLevel int) error
+	BlockUser(username string, temporary bool) (int, error)
+	UnblockUser(username string) (int, error)
+	GetUserInfo(username string) (UserInfo, int, error)
 }
 
 type adminService struct {
@@ -18,14 +22,49 @@ type adminService struct {
 }
 
 const (
-	Unauthenticated = iota
-	Authenticated
+	Authenticated = iota
+	Unauthenticated
+)
+
+const (
+	Unblocked = iota
+	BlockedTemporarily
+	BlockedPermanently
 )
 
 func NewAdminService(db *gorm.DB) AdminService {
 	return &adminService{
 		db: db,
 	}
+}
+
+type UserInfo struct {
+	Username            string   `json:"username"`
+	Email               string   `json:"email"`
+	IsAdmin             bool     `json:"is_admin"`
+	PhoneNumber         string   `json:"phone_number"`
+	AuthenticationLevel int      `json:"authentication_level"`
+	BlockedLevel        int      `json:"blocked_level"`
+	Balance             int      `json:"balance"`
+	IsPremium           bool     `json:"is_premium"`
+	BanksNames          []string `json:"banks_names"`
+}
+
+func NewUserInfo(user models.User) UserInfo {
+	newUserInfo := UserInfo{}
+	newUserInfo.Username = user.Username
+	newUserInfo.Email = user.Email
+	newUserInfo.PhoneNumber = user.Profile.PhoneNumber
+	newUserInfo.AuthenticationLevel = user.Profile.AuthenticationLevel
+	newUserInfo.BlockedLevel = user.Profile.BlockedLevel
+	newUserInfo.Balance = user.Profile.Balance
+	newUserInfo.IsPremium = user.Profile.IsPremium
+
+	for _, bi := range user.BankingInfo {
+		newUserInfo.BanksNames = append(newUserInfo.BanksNames, bi.BankName)
+	}
+
+	return newUserInfo
 }
 
 func (s *adminService) UpgradeToAdmin(user models.User, adminPasswordJSON string) error {
@@ -55,4 +94,70 @@ func (s *adminService) UpdateAuthenticationLevel(username string, newAuthLevel i
 
 	err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("authentication_level", newAuthLevel).Error
 	return err
+}
+
+func (s *adminService) BlockUser(username string, temporary bool) (int, error) {
+	var user models.User
+	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
+		return http.StatusNotFound, errors.New("user not found")
+	}
+
+	if temporary && user.Profile.BlockedLevel == BlockedTemporarily {
+		return http.StatusBadRequest, errors.New("user id already temporarily blocked")
+	}
+
+	if !temporary && user.Profile.BlockedLevel == BlockedPermanently {
+		return http.StatusBadRequest, errors.New("user id already permanently blocked")
+	}
+
+	var newBlockedLevel int
+	if temporary {
+		newBlockedLevel = BlockedTemporarily
+	} else {
+		newBlockedLevel = BlockedPermanently
+	}
+
+	user.Profile.BlockedLevel = newBlockedLevel
+
+	if err := s.db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		return http.StatusBadRequest, errors.New("failed updating user")
+	}
+
+	// instead of the above we can also do this do update the profile association
+	// err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", newBlockedLevel).Error
+
+	return http.StatusOK, nil
+}
+
+func (s *adminService) UnblockUser(username string) (int, error) {
+	var user models.User
+	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
+		return http.StatusNotFound, errors.New("user not found")
+	}
+
+	if user.Profile.BlockedLevel == Unblocked {
+		return http.StatusBadRequest, errors.New("user is not blocked")
+	}
+
+	user.Profile.BlockedLevel = Unblocked
+
+	if err := s.db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		return http.StatusBadRequest, errors.New("failed updating user")
+	}
+
+	// instead of the above we can also do this do update the profile association
+	// err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("blocked_level", Unblocked).Error
+
+	return http.StatusOK, nil
+}
+
+func (s *adminService) GetUserInfo(username string) (UserInfo, int, error) {
+	var user models.User
+	if err := s.db.Where("username = ?", username).Preload("Profile").Preload("BankingInfo").First(&user).Error; err != nil {
+		return UserInfo{}, http.StatusNotFound, errors.New("user not found")
+	}
+
+	newUserInfo := NewUserInfo(user)
+
+	return newUserInfo, http.StatusOK, nil
 }

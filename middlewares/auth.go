@@ -57,7 +57,7 @@ func AuthMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 
 			// Fetch user from database using claims
 			var user models.User
-			if err := db.First(&user, claims.ID).Error; err != nil {
+			if err := db.First(&user, claims.ID).Preload("Profile").Error; err != nil {
 				if err == gorm.ErrRecordNotFound {
 					return c.JSON(http.StatusUnauthorized, map[string]string{"message": "User not found"})
 				}
