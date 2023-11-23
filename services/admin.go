@@ -22,8 +22,8 @@ type adminService struct {
 }
 
 const (
-	Unauthenticated = iota
-	Authenticated
+	Authenticated = iota
+	Unauthenticated
 )
 
 const (
