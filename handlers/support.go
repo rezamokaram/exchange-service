@@ -128,3 +128,23 @@ func SendMessage(service services.SupportService) echo.HandlerFunc {
 		return c.JSON(statusCode, models.NewRespone("message sent successfully"))
 	}
 }
+
+func CloseTicket(service services.SupportService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ticketID := c.QueryParam("ticket_id")
+
+		ticketIDStr, err := strconv.Atoi(ticketID)
+
+		if ticketID == "" || err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("wrong ticket_id")))
+		}
+
+		statusCode, err := service.CloseTicket(uint(ticketIDStr))
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(statusCode, models.NewRespone("ticket closed successfully"))
+	}
+}

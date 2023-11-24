@@ -16,6 +16,7 @@ type SupportService interface {
 	GetActiveTickets() ([]models.SupportTicket, int, error)
 	GetAllTickets(user models.User) ([]models.SupportTicket, int, error)
 	GetTicketMessages(ticketID uint) (models.SupportTicket, int, error)
+	CloseTicket(ticketID uint) (int, error)
 }
 
 type supportService struct {
@@ -122,4 +123,24 @@ func (s *supportService) GetTicketMessages(ticketID uint) (models.SupportTicket,
 	}
 
 	return ticket, http.StatusOK, nil
+}
+
+func (s *supportService) CloseTicket(ticketID uint) (int, error) {
+	var ticket models.SupportTicket
+
+	if s.db.Where("id = ?", ticketID).Preload("Messages").First(&ticket).Error != nil {
+		return http.StatusInternalServerError, errors.New("could not get the tickets")
+	}
+
+	if ticket.Status == models.ClosedTicket {
+		return http.StatusBadRequest, errors.New("ticket already closed")
+	}
+
+	ticket.Status = models.ClosedTicket
+
+	if s.db.Save(&ticket).Error != nil {
+		return http.StatusInternalServerError, errors.New("failed updating ticket in database")
+	}
+
+	return http.StatusOK, nil
 }
