@@ -15,6 +15,11 @@ type TicketRequest struct {
 	TradeId *uint  `json:"trade_id,omitempty"`
 }
 
+type MessageRequest struct {
+	Msg      string `json:"message"`
+	TicketID *uint  `json:"ticket_id"`
+}
+
 func OpenTicket(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(TicketRequest)
@@ -65,5 +70,34 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 		}
 
 		return c.JSON(statusCode, ticket)
+	}
+}
+
+func SendMessage(service services.SupportService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		request := new(MessageRequest)
+		if err := c.Bind(request); err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("invalid request format")))
+		}
+
+		// Validate that the subject and description are not empty
+		if request.Msg == "" || request.TicketID == nil {
+			response := models.NewErrorRespone("", errors.New("message and ticket_id are required"))
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorRespone("", errors.New("bad user data"))
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		statusCode, err := service.SendMessage(user, request.Msg, *request.TicketID)
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(statusCode, models.NewRespone("message sent successfully"))
 	}
 }

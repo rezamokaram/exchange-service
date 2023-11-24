@@ -12,7 +12,7 @@ import (
 
 type SupportService interface {
 	OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error)
-	SendMessage(ticketID uint, ticketMsg models.TicketMessage) (int, error)
+	SendMessage(user models.User, message string, ticketID uint) (int, error)
 	GetActiveTickets() ([]models.SupportTicket, int, error)
 	GetTicketMessages() (models.SupportTicket, int, error)
 }
@@ -75,7 +75,20 @@ func (s *supportService) OpenTicket(user models.User, subject, ticketMsg string,
 	return http.StatusOK, nil
 }
 
-func (s *supportService) SendMessage(ticketID uint, ticketMsg models.TicketMessage) (int, error) {
+func (s *supportService) SendMessage(user models.User, message string, ticketID uint) (int, error) {
+	var ticket models.SupportTicket
+	if s.db.Where("id = ?", ticketID).First(&ticket).Error != nil {
+		return http.StatusBadRequest, errors.New("wrong ticket_id")
+	}
+
+	var ticketMessage models.TicketMessage
+	ticketMessage.Msg = message
+	ticketMessage.SenderUsername = user.Username
+	ticketMessage.SupportTicketID = ticketID
+
+	if s.db.Save(&ticketMessage).Error != nil {
+		return http.StatusInternalServerError, errors.New("failed saving the message in database")
+	}
 
 	return http.StatusOK, nil
 }
