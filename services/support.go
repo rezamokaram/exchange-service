@@ -11,6 +11,7 @@ import (
 
 type SupportService interface {
 	SendTicket(user models.User, subject, description string, tradeID *uint) (int, error)
+	GetActiveTickets() ([]models.SupportTicket, int, error)
 }
 
 type supportService struct {
@@ -35,6 +36,7 @@ func (s *supportService) SendTicket(user models.User, subject, description strin
 
 	var newSupportTicket models.SupportTicket
 	newSupportTicket.UserID = user.ID
+	newSupportTicket.Username = user.Username
 	newSupportTicket.Subject = subject
 	newSupportTicket.Description = description
 	if hasTradeID {
@@ -46,4 +48,15 @@ func (s *supportService) SendTicket(user models.User, subject, description strin
 	}
 
 	return http.StatusOK, nil
+}
+
+func (s *supportService) GetActiveTickets() ([]models.SupportTicket, int, error) {
+	var tickets []models.SupportTicket
+
+	if s.db.Where("status IN (?)", []int{0, 1}).Find(&tickets).Error != nil {
+		// Handle any errors that occur during the database query
+		return nil, http.StatusInternalServerError, errors.New("could not get the tickets")
+	}
+
+	return tickets, http.StatusOK, nil
 }

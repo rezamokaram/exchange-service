@@ -24,13 +24,13 @@ func SendTicket(service services.SupportService) echo.HandlerFunc {
 
 		// Validate that the subject and description are not empty
 		if request.Subject == "" || request.Description == "" {
-			response := models.NewErrorRespone("subject and description are required", nil)
+			response := models.NewErrorRespone("", errors.New("subject and description are required"))
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorRespone("bad user data", nil)
+			response := models.NewErrorRespone("", errors.New("bad user data"))
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -41,5 +41,17 @@ func SendTicket(service services.SupportService) echo.HandlerFunc {
 		}
 
 		return c.JSON(statusCode, models.NewRespone("ticket made successfully"))
+	}
+}
+
+func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		tickets, statusCode, err := service.GetActiveTickets()
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(statusCode, tickets)
 	}
 }
