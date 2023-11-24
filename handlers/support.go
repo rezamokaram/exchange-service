@@ -82,6 +82,24 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 	}
 }
 
+func GetAllTickets(service services.SupportService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorRespone("", errors.New("bad user data"))
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		tickets, statusCode, err := service.GetAllTickets(user)
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(statusCode, tickets)
+	}
+}
+
 func SendMessage(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(MessageRequest)
