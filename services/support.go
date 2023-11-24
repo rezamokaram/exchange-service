@@ -14,6 +14,7 @@ type SupportService interface {
 	OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error)
 	SendMessage(ticketID uint, ticketMsg models.TicketMessage) (int, error)
 	GetActiveTickets() ([]models.SupportTicket, int, error)
+	GetTicketMessages() (models.SupportTicket, int, error)
 }
 
 type supportService struct {
@@ -82,9 +83,19 @@ func (s *supportService) SendMessage(ticketID uint, ticketMsg models.TicketMessa
 func (s *supportService) GetActiveTickets() ([]models.SupportTicket, int, error) {
 	var tickets []models.SupportTicket
 
-	if s.db.Where("status IN (?)", []int{models.OpenTicket, models.PendingTicket}).Preload("Messages").Find(&tickets).Error != nil {
+	if s.db.Where("status IN (?)", []int{models.OpenTicket, models.PendingTicket}).Omit("Messages").Find(&tickets).Error != nil {
 		return nil, http.StatusInternalServerError, errors.New("could not get the tickets")
 	}
 
 	return tickets, http.StatusOK, nil
+}
+
+func (s *supportService) GetTicketMessages() (models.SupportTicket, int, error) {
+	var ticket models.SupportTicket
+
+	if s.db.Where("status IN (?)", []int{models.OpenTicket, models.PendingTicket}).Preload("Messages").First(&ticket).Error != nil {
+		return models.SupportTicket{}, http.StatusInternalServerError, errors.New("could not get the tickets")
+	}
+
+	return ticket, http.StatusOK, nil
 }

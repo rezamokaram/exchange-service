@@ -11,7 +11,7 @@ type SupportTicket struct {
 	Subject   string          `gorm:"type:varchar(100);not null" json:"subject"`
 	Messages  []TicketMessage `json:"messages"`
 	TradeId   *uint           `json:"trade_id,omitempty"`
-	Status    int             `gorm:"default:0;not null" json:"status,omitempty"`
+	Status    int             `gorm:"default:0;not null" json:"status"`
 	CreatedAt time.Time       `gorm:"not null" json:"created_at"`
 	UpdatedAt time.Time       `gorm:"not null" json:"updated_at"`
 }

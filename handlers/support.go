@@ -55,3 +55,15 @@ func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 		return c.JSON(statusCode, tickets)
 	}
 }
+
+func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ticket, statusCode, err := service.GetTicketMessages()
+		if err != nil {
+			response := models.NewErrorRespone("", err)
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(statusCode, ticket)
+	}
+}
