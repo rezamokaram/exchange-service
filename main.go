@@ -57,6 +57,7 @@ func migrate(db *gorm.DB) error {
 		&models.Transaction{},
 		&models.BankingInfo{},
 		&models.SupportTicket{},
+		&models.TicketMessage{},
 		&trade.OpenTrade{},
 		&trade.ClosedTrade{},
 		&trade.FutureOrder{},
