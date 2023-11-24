@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"qexchange/models"
 	"qexchange/models/trade"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type SupportService interface {
-	SendTicket(user models.User, subject, description string, tradeID *uint) (int, error)
+	OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error)
+	SendMessage(ticketID uint, ticketMsg models.TicketMessage) (int, error)
 	GetActiveTickets() ([]models.SupportTicket, int, error)
 }
 
@@ -24,7 +26,7 @@ func NewSupportService(db *gorm.DB) SupportService {
 	}
 }
 
-func (s *supportService) SendTicket(user models.User, subject, description string, tradeID *uint) (int, error) {
+func (s *supportService) OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error) {
 	hasTradeID := false
 	if tradeID != nil {
 		hasTradeID = true // to know whether include the tradeId later or not
@@ -34,18 +36,45 @@ func (s *supportService) SendTicket(user models.User, subject, description strin
 		}
 	}
 
-	var newSupportTicket models.SupportTicket
-	newSupportTicket.UserID = user.ID
-	newSupportTicket.Username = user.Username
-	newSupportTicket.Subject = subject
-	newSupportTicket.Description = description
-	if hasTradeID {
-		newSupportTicket.TradeId = tradeID
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		var newSupportTicket models.SupportTicket
+		newSupportTicket.UserID = user.ID
+		newSupportTicket.Username = user.Username
+		newSupportTicket.Subject = subject
+		newSupportTicket.CreatedAt = time.Now()
+		newSupportTicket.UpdatedAt = time.Now()
+
+		var tMsg models.TicketMessage
+		tMsg.Msg = ticketMsg
+		tMsg.SenderUsername = user.Username
+		tMsg.CreatedAt = time.Now()
+
+		// Save the new SupportTicket first to get its ID
+		if err := s.db.Save(&newSupportTicket).Error; err != nil {
+			return err
+		}
+
+		tMsg.SupportTicketID = newSupportTicket.ID
+
+		if hasTradeID {
+			newSupportTicket.TradeId = tradeID
+		}
+
+		if err := s.db.Save(&tMsg).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, errors.New("failed saving the ticket in database")
 	}
 
-	if s.db.Save(&newSupportTicket).Error != nil {
-		return http.StatusBadRequest, errors.New("failed saving the ticket in database")
-	}
+	return http.StatusOK, nil
+}
+
+func (s *supportService) SendMessage(ticketID uint, ticketMsg models.TicketMessage) (int, error) {
 
 	return http.StatusOK, nil
 }
@@ -53,8 +82,7 @@ func (s *supportService) SendTicket(user models.User, subject, description strin
 func (s *supportService) GetActiveTickets() ([]models.SupportTicket, int, error) {
 	var tickets []models.SupportTicket
 
-	if s.db.Where("status IN (?)", []int{0, 1}).Find(&tickets).Error != nil {
-		// Handle any errors that occur during the database query
+	if s.db.Where("status IN (?)", []int{models.OpenTicket, models.PendingTicket}).Preload("Messages").Find(&tickets).Error != nil {
 		return nil, http.StatusInternalServerError, errors.New("could not get the tickets")
 	}
 

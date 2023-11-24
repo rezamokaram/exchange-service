@@ -11,6 +11,6 @@ import (
 
 func SupportRoutes(e *echo.Echo, db *gorm.DB) {
 	SupportService := services.NewSupportService(db)
-	e.POST("/support/send-ticket", handlers.SendTicket(SupportService), middlewares.AuthMiddleware(db))
+	e.POST("/support/open-ticket", handlers.OpenTicket(SupportService), middlewares.AuthMiddleware(db))
 	e.GET("/support/get-active-tickets", handlers.GetActiveTickets(SupportService), middlewares.AuthMiddleware(db), middlewares.AdminCheckMiddleware)
 }

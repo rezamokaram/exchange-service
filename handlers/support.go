@@ -10,12 +10,12 @@ import (
 )
 
 type TicketRequest struct {
-	Subject     string `json:"subject"`
-	Description string `json:"description"`
-	TradeId     *uint  `json:"trade_id,omitempty"`
+	Msg     string `json:"message"`
+	Subject string `json:"subject"`
+	TradeId *uint  `json:"trade_id,omitempty"`
 }
 
-func SendTicket(service services.SupportService) echo.HandlerFunc {
+func OpenTicket(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(TicketRequest)
 		if err := c.Bind(request); err != nil {
@@ -23,8 +23,8 @@ func SendTicket(service services.SupportService) echo.HandlerFunc {
 		}
 
 		// Validate that the subject and description are not empty
-		if request.Subject == "" || request.Description == "" {
-			response := models.NewErrorRespone("", errors.New("subject and description are required"))
+		if request.Subject == "" || request.Msg == "" {
+			response := models.NewErrorRespone("", errors.New("subject and message are required"))
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -34,13 +34,13 @@ func SendTicket(service services.SupportService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		statusCode, err := service.SendTicket(user, request.Subject, request.Description, request.TradeId)
+		statusCode, err := service.OpenTicket(user, request.Subject, request.Msg, request.TradeId)
 		if err != nil {
 			response := models.NewErrorRespone("", err)
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(statusCode, models.NewRespone("ticket made successfully"))
+		return c.JSON(statusCode, models.NewRespone("ticket opened successfully"))
 	}
 }
 
