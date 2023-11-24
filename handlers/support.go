@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -63,7 +64,15 @@ func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 
 func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ticket, statusCode, err := service.GetTicketMessages()
+		ticketID := c.QueryParam("ticket_id")
+
+		ticketIDStr, err := strconv.Atoi(ticketID)
+
+		if ticketID == "" || err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("wrong ticket_id")))
+		}
+
+		ticket, statusCode, err := service.GetTicketMessages(uint(ticketIDStr))
 		if err != nil {
 			response := models.NewErrorRespone("", err)
 			return c.JSON(statusCode, response)
