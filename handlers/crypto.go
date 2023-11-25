@@ -94,9 +94,14 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		request := new(cryptocurrency.Crypto)
+		request := new(cryptocurrency.UpdateCryptoRequest)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorResponse("", err.Error())
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		if !request.IsValid() {
+			response := models.NewErrorResponse("", "Bad Json Fields")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 

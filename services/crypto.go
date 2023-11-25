@@ -24,7 +24,7 @@ type CryptoService interface {
 	) (int, error) // returns statusCode, error
 
 	UpdateCrypto(
-		crypto cryptocurrency.Crypto,
+		crypto cryptocurrency.UpdateCryptoRequest,
 	) (int, error) // returns statusCode, error
 
 	GetAllCrypto() ([]cryptocurrency.CryptoResponse, int, error)
@@ -69,28 +69,31 @@ func (s *cryptoService) SetCrypto(
 }
 
 func (s *cryptoService) UpdateCrypto(
-	crypto cryptocurrency.Crypto,
+	req cryptocurrency.UpdateCryptoRequest,
 ) (int, error) {
-	var cryptoSearch cryptocurrency.Crypto
-	result := s.db.Where("id = ?", crypto.ID).First(&cryptoSearch)
+	var oldCrypto cryptocurrency.Crypto
+	result := s.db.Where("id = ?", req.Id).First(&oldCrypto)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
-	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice / 100) + 10
-	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice / 100) + 10)
-	if crypto.SellFee < 0 {
-		crypto.SellFee = 0
-	}
 
-	s.db.Save(&crypto)
+	crypto := req.UpdateCrypto(oldCrypto)
+	result = s.db.Save(&crypto)
+	if result.Error != nil {
+		return http.StatusBadRequest, result.Error
+	}
+	
+	if crypto.CurrentPrice == oldCrypto.CurrentPrice {
+		return http.StatusOK, nil
+	}
 
 	tradeService := NewTradeService(s.db)
 
-	tradeService.CheckFutureOrder(cryptoSearch, crypto)
+	tradeService.CheckFutureOrder(oldCrypto, crypto)
 
-	if cryptoSearch.CurrentPrice > crypto.CurrentPrice {
+	if oldCrypto.CurrentPrice > crypto.CurrentPrice {
 		tradeService.CheckStopLoss(crypto)
-	} else if cryptoSearch.CurrentPrice < crypto.CurrentPrice {
+	} else if oldCrypto.CurrentPrice < crypto.CurrentPrice {
 		tradeService.CheckTakeProfit(crypto)
 	}
 
