@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// SupportTicket represents a support ticket
 type SupportTicket struct {
 	ID        uint            `gorm:"primarykey" json:"-"`
 	UserID    uint            `gorm:"not null" json:"-"`
@@ -16,6 +17,7 @@ type SupportTicket struct {
 	UpdatedAt time.Time       `gorm:"not null" json:"updated_at"`
 }
 
+// TicketMessage represents a message within a support ticket
 type TicketMessage struct {
 	ID              uint   `gorm:"primarykey" json:"-"`
 	SupportTicketID uint   `json:"-"`

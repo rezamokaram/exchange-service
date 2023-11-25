@@ -2,6 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
+// Transaction represents a cryptocurrency transaction
 type Transaction struct {
 	gorm.Model
 	UserID      uint    `gorm:"not null" json:"user_id"`

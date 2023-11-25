@@ -3,6 +3,7 @@ package middlewares
 import (
 	"net/http"
 	"os"
+	"qexchange/models"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -14,25 +15,25 @@ func AdminCheckMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		tokenString := req.Header.Get("Authorization")
 
 		if tokenString == "" {
-			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorized"})
+			return c.JSON(http.StatusUnauthorized, models.NewErrorResponse("access denied", "Unauthorized"))
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 		if err != nil {
-			return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Invalid token"})
+			return c.JSON(http.StatusUnauthorized, models.NewErrorResponse("access denied", "Invalid token"))
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			return echo.NewHTTPError(http.StatusForbidden, "error : Invalid token claims")
+
+			return c.JSON(http.StatusUnauthorized, models.NewErrorResponse("access denied", "Invalid token claims"))
 		}
 		if adm, ok := claims["adm"].(bool); ok && adm {
 
 			return next(c)
 		}
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Insufficient privileges"})
+		return c.JSON(http.StatusUnauthorized, models.NewErrorResponse("access denied", "user does not have admin access"))
 	}
 }
-

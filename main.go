@@ -13,6 +13,15 @@ import (
 	"gorm.io/gorm"
 )
 
+//	@Title			QExchange-System
+//	@version		1.0
+//	@description	Quera Crypto Exchange server
+
+//	@contact.name	Go-Zilla
+//	@contact.url	https://github.com/Quera-Go-Zilla
+
+// @host						localhost:8080
+// @BasePath					/
 func main() {
 	db, err := database.NewConnection()
 	if err != nil {
