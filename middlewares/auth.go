@@ -28,7 +28,7 @@ func AuthMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 			tokenString := req.Header.Get("Authorization")
 			// Check if the token is missing
 			if tokenString == "" {
-				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Authorization token is missing"})
+				return c.JSON(http.StatusUnauthorized, models.NewErrorResponse("access denied", "Authorization token is missing"))
 			}
 
 			// Parse the token
@@ -41,27 +41,32 @@ func AuthMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 			})
 
 			if err != nil {
-				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Invalid token"})
+				response := models.NewErrorResponse("access denied", "Invalid token")
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			// Validate token claims
 			claims, ok := token.Claims.(*CustomClaims)
 			if !ok || !token.Valid {
-				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Invalid token claims"})
+				response := models.NewErrorResponse("access denied", "Invalid token claims")
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			// Check token expiration
 			if time.Now().Unix() > claims.Exp {
-				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Token has expired"})
+				response := models.NewErrorResponse("access denied", "Token has expired")
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			// Fetch user from database using claims
 			var user models.User
 			if err := db.First(&user, claims.ID).Preload("Profile").Error; err != nil {
 				if err == gorm.ErrRecordNotFound {
-					return c.JSON(http.StatusUnauthorized, map[string]string{"message": "User not found"})
+					response := models.NewErrorResponse("access denied", "User not found")
+					return c.JSON(http.StatusUnauthorized, response)
 				}
-				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Internal server error"})
+				response := models.NewErrorResponse("access denied", "Internal server error")
+				return c.JSON(http.StatusInternalServerError, response)
 			}
 
 			// Set user object in context

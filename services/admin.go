@@ -14,7 +14,7 @@ type AdminService interface {
 	UpdateAuthenticationLevel(username string, newAuthLevel int) error
 	BlockUser(username string, temporary bool) (int, error)
 	UnblockUser(username string) (int, error)
-	GetUserInfo(username string) (UserInfo, int, error)
+	GetUserInfo(username string) (models.UserInfo, int, error)
 }
 
 type adminService struct {
@@ -36,35 +36,6 @@ func NewAdminService(db *gorm.DB) AdminService {
 	return &adminService{
 		db: db,
 	}
-}
-
-type UserInfo struct {
-	Username            string   `json:"username"`
-	Email               string   `json:"email"`
-	IsAdmin             bool     `json:"is_admin"`
-	PhoneNumber         string   `json:"phone_number"`
-	AuthenticationLevel int      `json:"authentication_level"`
-	BlockedLevel        int      `json:"blocked_level"`
-	Balance             int      `json:"balance"`
-	IsPremium           bool     `json:"is_premium"`
-	BanksNames          []string `json:"banks_names"`
-}
-
-func NewUserInfo(user models.User) UserInfo {
-	newUserInfo := UserInfo{}
-	newUserInfo.Username = user.Username
-	newUserInfo.Email = user.Email
-	newUserInfo.PhoneNumber = user.Profile.PhoneNumber
-	newUserInfo.AuthenticationLevel = user.Profile.AuthenticationLevel
-	newUserInfo.BlockedLevel = user.Profile.BlockedLevel
-	newUserInfo.Balance = user.Profile.Balance
-	newUserInfo.IsPremium = user.Profile.IsPremium
-
-	for _, bi := range user.BankingInfo {
-		newUserInfo.BanksNames = append(newUserInfo.BanksNames, bi.BankName)
-	}
-
-	return newUserInfo
 }
 
 func (s *adminService) UpgradeToAdmin(user models.User, adminPasswordJSON string) error {
@@ -151,13 +122,13 @@ func (s *adminService) UnblockUser(username string) (int, error) {
 	return http.StatusOK, nil
 }
 
-func (s *adminService) GetUserInfo(username string) (UserInfo, int, error) {
+func (s *adminService) GetUserInfo(username string) (models.UserInfo, int, error) {
 	var user models.User
 	if err := s.db.Where("username = ?", username).Preload("Profile").Preload("BankingInfo").First(&user).Error; err != nil {
-		return UserInfo{}, http.StatusNotFound, errors.New("user not found")
+		return models.UserInfo{}, http.StatusNotFound, errors.New("user not found")
 	}
 
-	newUserInfo := NewUserInfo(user)
+	newUserInfo := models.NewUserInfo(user)
 
 	return newUserInfo, http.StatusOK, nil
 }

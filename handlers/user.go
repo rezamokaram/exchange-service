@@ -2,78 +2,85 @@ package handlers
 
 import (
 	"net/http"
+	"qexchange/models"
 	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
 )
 
+// RegisterRequest represents the request body for user registration
 type RegisterRequest struct {
 	Username       string `json:"username"`
 	Email          string `json:"email"`
 	Password       string `json:"password"`
 	PasswordRepeat string `json:"passwordrepeat"`
 }
+
+// LoginRequest represents the request body for user login
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+// UserResponse is the common response for user operations
 type UserResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message"`
 }
 
+// TokenResponse represents the response containing a JWT token
 type TokenResponse struct {
 	Token string `json:"token"`
 }
 
+// UserRegister handles the registration of a new user
+// @Summary User registration
+// @Description Register a new user
+// @Accept  json
+// @Produce json
+// @Param   body  body      RegisterRequest  true  "User Registration"
+// @Success 200   {object}  models.Response
+// @Failure 400   {object}  models.Response
+// @Failure 500   {object}  models.Response
+// @Router /user/register [post]
 func UserRegister(service services.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// parse body
 		request := new(RegisterRequest)
 		if err := c.Bind(request); err != nil {
-			response := UserResponse{
-				Error:   err.Error(),
-				Message: "",
-			}
-			return c.JSON(http.StatusBadRequest, response)
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("", err.Error()))
 		}
 
 		// call the register service
 		statusCode, err := service.Register(request.Username, request.Password, request.PasswordRepeat, request.Email)
 		if err != nil {
-			response := UserResponse{
-				Error:   err.Error(),
-				Message: "",
-			}
-			return c.JSON(statusCode, response)
+			return c.JSON(statusCode, models.NewErrorResponse("", err.Error()))
 		}
 
-		return c.JSON(http.StatusOK, UserResponse{
-			Error:   "",
-			Message: "user created successfuly",
-		})
+		return c.JSON(http.StatusOK, models.NewResponse("user created successfuly"))
 	}
 }
 
+// UserLogin handles user login
+// @Summary User login
+// @Description Logs in a user
+// @Accept  json
+// @Produce json
+// @Param   body  body      LoginRequest     true  "User Login"
+// @Success 200   {object}  TokenResponse
+// @Failure 400   {object}  models.Response
+// @Failure 500   {object}  models.Response
+// @Router /user/login [post]
 func UserLogin(service services.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(LoginRequest)
 		err := c.Bind(request)
 		if err != nil {
-			response := UserResponse{
-				Error:   err.Error(),
-				Message: "",
-			}
-			return c.JSON(http.StatusBadRequest, response)
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("", err.Error()))
 		}
 		status, token, err := service.Login(request.Username, request.Password)
 		if err != nil {
-			response := UserResponse{
-				Error:   err.Error(),
-				Message: "",
-			}
-			return c.JSON(status, response)
+			return c.JSON(status, models.NewErrorResponse("", err.Error()))
 		}
 
 		tokenrespone := TokenResponse{

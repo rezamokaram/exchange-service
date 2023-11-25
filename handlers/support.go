@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
@@ -10,51 +9,73 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// TicketRequest represents the request body for opening a support ticket
 type TicketRequest struct {
 	Msg     string `json:"message"`
 	Subject string `json:"subject"`
 	TradeId *uint  `json:"trade_id,omitempty"`
 }
 
+// MessageRequest represents the request body for sending a message to a support ticket
 type MessageRequest struct {
 	Msg      string `json:"message"`
 	TicketID *uint  `json:"ticket_id"`
 }
 
+// OpenTicket handles opening a new support ticket
+// @Summary Open a support ticket
+// @Description Opens a new support ticket
+// @Accept  json
+// @Produce json
+// @Param   body  body      TicketRequest  true  "Open Ticket"
+// @Security ApiKeyAuth
+// @Success 200   {object}  models.Response
+// @Failure 400   {object}  models.Response
+// @Router /support/open-ticket [post]
 func OpenTicket(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(TicketRequest)
 		if err := c.Bind(request); err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("invalid request format")))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request format", err.Error()))
 		}
 
 		// Validate that the subject and description are not empty
 		if request.Subject == "" || request.Msg == "" {
-			response := models.NewErrorRespone("", errors.New("subject and message are required"))
+			response := models.NewErrorResponse("", "subject and message are required")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorRespone("", errors.New("bad user data"))
+			response := models.NewErrorResponse("", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.OpenTicket(user, request.Subject, request.Msg, request.TradeId)
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(statusCode, models.NewRespone("ticket opened successfully"))
+		return c.JSON(statusCode, models.NewResponse("ticket opened successfully"))
 	}
 }
 
+// GetActiveTickets retrieves all active tickets (Admin only)
+// @Summary Admin: Get active support tickets
+// @Description Retrieves all active support tickets (Admin only)
+// @Accept  json
+// @Produce json
+// @Security ApiKeyAuth
+// @Security AdminAuth
+// @Success 200   {object}  []models.SupportTicket
+// @Failure 400   {object}  models.Response
+// @Router /support/admin/get-active-tickets [get]
 func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		tickets, statusCode, err := service.GetActiveTickets()
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -62,6 +83,16 @@ func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 	}
 }
 
+// GetTicketMessages retrieves messages for a specific support ticket
+// @Summary Get messages for a support ticket
+// @Description Retrieves all messages for a specific support ticket
+// @Accept  json
+// @Produce json
+// @Param   ticket_id  query  int  true  "Ticket ID"
+// @Security ApiKeyAuth
+// @Success 200   {object}  models.SupportTicket
+// @Failure 400   {object}  models.Response
+// @Router /support/get-ticket-messages [get]
 func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ticketID := c.QueryParam("ticket_id")
@@ -69,12 +100,12 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 		ticketIDStr, err := strconv.Atoi(ticketID)
 
 		if ticketID == "" || err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("wrong ticket_id")))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("wrong ticket_id", err.Error()))
 		}
 
 		ticket, statusCode, err := service.GetTicketMessages(uint(ticketIDStr))
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -82,17 +113,26 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 	}
 }
 
+// GetAllTickets retrieves all tickets for the authenticated user
+// @Summary Get all tickets for a user
+// @Description Retrieves all support tickets for the authenticated user
+// @Accept  json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200   {object}  []models.SupportTicket
+// @Failure 400   {object}  models.Response
+// @Router /support/get-all-tickets [get]
 func GetAllTickets(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorRespone("", errors.New("bad user data"))
+			response := models.NewErrorResponse("", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		tickets, statusCode, err := service.GetAllTickets(user)
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -100,35 +140,55 @@ func GetAllTickets(service services.SupportService) echo.HandlerFunc {
 	}
 }
 
+// SendMessage handles sending a message to an existing support ticket
+// @Summary Send a message to a support ticket
+// @Description Sends a message to a specific support ticket
+// @Accept  json
+// @Produce json
+// @Param   body  body      MessageRequest  true  "Send Message"
+// @Security ApiKeyAuth
+// @Success 200   {object}  models.Response
+// @Failure 400   {object}  models.Response
+// @Router /support/send-message [post]
 func SendMessage(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(MessageRequest)
 		if err := c.Bind(request); err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("invalid request format")))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request format", err.Error()))
 		}
 
 		// Validate that the subject and description are not empty
 		if request.Msg == "" || request.TicketID == nil {
-			response := models.NewErrorRespone("", errors.New("message and ticket_id are required"))
+			response := models.NewErrorResponse("", "message and ticket_id are required")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorRespone("", errors.New("bad user data"))
+			response := models.NewErrorResponse("", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.SendMessage(user, request.Msg, *request.TicketID)
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(statusCode, models.NewRespone("message sent successfully"))
+		return c.JSON(statusCode, models.NewResponse("message sent successfully"))
 	}
 }
 
+// CloseTicket handles closing an existing support ticket
+// @Summary Close a support ticket
+// @Description Closes an existing support ticket
+// @Accept  json
+// @Produce json
+// @Param   ticket_id  query  int  true  "Ticket ID"
+// @Security ApiKeyAuth
+// @Success 200   {object}  models.Response
+// @Failure 400   {object}  models.Response
+// @Router /support/close-ticket [patch]
 func CloseTicket(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ticketID := c.QueryParam("ticket_id")
@@ -136,15 +196,15 @@ func CloseTicket(service services.SupportService) echo.HandlerFunc {
 		ticketIDStr, err := strconv.Atoi(ticketID)
 
 		if ticketID == "" || err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorRespone("", errors.New("wrong ticket_id")))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("wrong ticket_id", err.Error()))
 		}
 
 		statusCode, err := service.CloseTicket(uint(ticketIDStr))
 		if err != nil {
-			response := models.NewErrorRespone("", err)
+			response := models.NewErrorResponse("", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(statusCode, models.NewRespone("ticket closed successfully"))
+		return c.JSON(statusCode, models.NewResponse("ticket closed successfully"))
 	}
 }

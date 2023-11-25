@@ -1,0 +1,977 @@
+basePath: /
+definitions:
+  cryptocurrency.CryptoResponse:
+    properties:
+      buy_fee:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      sell_fee:
+        type: integer
+      symbol:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  handlers.AddBankAccountRequest:
+    properties:
+      account_number:
+        type: string
+      bank_name:
+        type: string
+      card_number:
+        type: string
+      cvv2:
+        type: string
+      expire_date:
+        type: string
+    type: object
+  handlers.BlockUserRequest:
+    properties:
+      temporary:
+        type: boolean
+      username:
+        type: string
+    type: object
+  handlers.ChargeAccountRequest:
+    properties:
+      amount:
+        type: integer
+    type: object
+  handlers.ChargeAccountResponse:
+    properties:
+      payment_url:
+        type: string
+    type: object
+  handlers.CryptoRequest:
+    properties:
+      current_price:
+        type: integer
+      name:
+        type: string
+      symbol:
+        type: string
+    type: object
+  handlers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.MessageRequest:
+    properties:
+      message:
+        type: string
+      ticket_id:
+        type: integer
+    type: object
+  handlers.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      passwordrepeat:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.TicketRequest:
+    properties:
+      message:
+        type: string
+      subject:
+        type: string
+      trade_id:
+        type: integer
+    type: object
+  handlers.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  handlers.UnblockUserRequest:
+    properties:
+      username:
+        type: string
+    type: object
+  handlers.UpdateAuthenticationLevelRequest:
+    properties:
+      new_auth_level:
+        type: integer
+      username:
+        type: string
+    type: object
+  handlers.UpdateUserToAdminRequest:
+    properties:
+      admin_password:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      message:
+        type: string
+    type: object
+  models.SupportTicket:
+    properties:
+      created_at:
+        type: string
+      messages:
+        items:
+          $ref: '#/definitions/models.TicketMessage'
+        type: array
+      status:
+        type: integer
+      subject:
+        type: string
+      trade_id:
+        type: integer
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  models.TicketMessage:
+    properties:
+      createdAt:
+        type: string
+      message:
+        type: string
+      sender_username:
+        type: string
+    type: object
+  models.UserInfo:
+    properties:
+      authentication_level:
+        description: User's authentication level
+        example: 2
+        type: integer
+      balance:
+        description: User's account balance
+        example: 1000
+        type: integer
+      banks_names:
+        description: List of user's bank names
+        example:
+        - '[''Bank A'''
+        - ' ''Bank B'']'
+        items:
+          type: string
+        type: array
+      blocked_level:
+        description: User's blocked level
+        example: 0
+        type: integer
+      email:
+        description: User's email address
+        example: john@example.com
+        type: string
+      is_admin:
+        description: Indicates if user has admin privileges
+        example: true
+        type: boolean
+      is_premium:
+        description: Indicates if user has a premium account
+        example: false
+        type: boolean
+      phone_number:
+        description: User's phone number
+        example: 123-456-7890
+        type: string
+      username:
+        description: User's username
+        example: john_doe
+        type: string
+    type: object
+  trade.ClosedTrade:
+    properties:
+      amount:
+        type: number
+      buy_fee:
+        type: integer
+      createdAt:
+        type: string
+      crypto_id:
+        type: integer
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      profit:
+        type: integer
+      sell_fee:
+        type: integer
+      updatedAt:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  trade.ClosedTradeRequest:
+    properties:
+      amount:
+        type: number
+      id:
+        type: integer
+    type: object
+  trade.FilterTradesRequest:
+    properties:
+      crypto_list:
+        items:
+          type: integer
+        type: array
+      end:
+        type: string
+      start:
+        type: string
+    type: object
+  trade.FilterTradesResponse:
+    properties:
+      closed_trades:
+        items:
+          $ref: '#/definitions/trade.ClosedTrade'
+        type: array
+      crypto_list:
+        items:
+          type: integer
+        type: array
+      end:
+        type: string
+      profit_over_all:
+        type: integer
+      start:
+        type: string
+    type: object
+  trade.FutureOrder:
+    properties:
+      amount:
+        type: number
+      createdAt:
+        type: string
+      cryptoID:
+        type: integer
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      stopLoss:
+        type: integer
+      takeProfit:
+        type: integer
+      targetPrice:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  trade.FutureOrderRequest:
+    properties:
+      amount:
+        type: number
+      crypto_id:
+        type: integer
+      stop_loss:
+        type: integer
+      take_profit:
+        type: integer
+      target_price:
+        type: integer
+    type: object
+  trade.OpenTrade:
+    properties:
+      amount:
+        type: number
+      buyFee:
+        type: integer
+      createdAt:
+        type: string
+      cryptoID:
+        type: integer
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      stopLoss:
+        type: integer
+      takeProfit:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  trade.OpenTradeRequest:
+    properties:
+      amount:
+        type: number
+      crypto_id:
+        type: integer
+      stop_loss:
+        type: integer
+      take_profit:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Go-Zilla
+    url: https://github.com/Quera-Go-Zilla
+  description: Quera Crypto Exchange server
+  title: QExchange-System
+  version: "1.0"
+paths:
+  /admin/block-user:
+    put:
+      consumes:
+      - application/json
+      description: Blocks a user account
+      parameters:
+      - description: Block User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BlockUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      - AdminAuth: []
+      summary: Block user
+  /admin/unblock-user:
+    put:
+      consumes:
+      - application/json
+      description: Unblocks a user account
+      parameters:
+      - description: Unblock User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UnblockUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      - AdminAuth: []
+      summary: Unblock user
+  /admin/update-auth-level:
+    put:
+      consumes:
+      - application/json
+      description: Updates a user's authentication level
+      parameters:
+      - description: Update Auth Level
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateAuthenticationLevelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      - AdminAuth: []
+      summary: Update user authentication level
+  /admin/update-to-admin:
+    put:
+      consumes:
+      - application/json
+      description: Upgrades a regular user to an admin
+      parameters:
+      - description: Admin Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateUserToAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Upgrade user to admin
+  /admin/user-info:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves information for a specific user
+      parameters:
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserInfo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      - AdminAuth: []
+      summary: Get user information
+  /bank/add_account:
+    post:
+      consumes:
+      - application/json
+      description: Adds a bank account for a user
+      parameters:
+      - description: Add Bank Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddBankAccountRequest'
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Add Bank Account
+  /bank/payment/charge:
+    post:
+      consumes:
+      - application/json
+      description: Charges a user's account
+      parameters:
+      - description: Charge Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ChargeAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.ChargeAccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Charge Account
+  /bank/payment/verify:
+    get:
+      consumes:
+      - application/json
+      description: Verifies a payment transaction
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Verify Payment
+  /close-trade:
+    post:
+      consumes:
+      - application/json
+      description: Closes an existing trade
+      parameters:
+      - description: Close Trade
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.ClosedTradeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Close a trade
+  /close-trade/filter-all:
+    get:
+      consumes:
+      - application/json
+      description: Filters closed trades based on given criteria
+      parameters:
+      - description: Filter Criteria
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.FilterTradesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/trade.FilterTradesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Filter closed trades
+  /close-trade/get-all:
+    get:
+      description: Retrieves all closed trades for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.ClosedTrade'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all closed trades
+  /crypto:
+    get:
+      consumes:
+      - application/json
+      description: Gets details of a specific cryptocurrency by ID
+      parameters:
+      - description: Crypto ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cryptocurrency.CryptoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get cryptocurrency
+    post:
+      consumes:
+      - application/json
+      description: Adds a new cryptocurrency to the system
+      parameters:
+      - description: Crypto Information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CryptoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Add new cryptocurrency
+    put:
+      consumes:
+      - application/json
+      description: Updates details of an existing cryptocurrency
+      parameters:
+      - description: Crypto Update Information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CryptoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update cryptocurrency
+  /crypto/getall:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of all cryptocurrencies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/cryptocurrency.CryptoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get all cryptocurrencies
+  /future-order:
+    post:
+      consumes:
+      - application/json
+      description: Sets a future order
+      parameters:
+      - description: Future Order
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.FutureOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Set a future order
+  /future-order/get-all:
+    get:
+      description: Retrieves all future orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.FutureOrder'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all future orders
+  /open-trade:
+    post:
+      consumes:
+      - application/json
+      description: Opens a new trade
+      parameters:
+      - description: Open Trade
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.OpenTradeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Open a trade
+  /open-trade/get-all:
+    get:
+      description: Retrieves all open trades for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.OpenTrade'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all open trades
+  /support/admin/get-active-tickets:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all active support tickets (Admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SupportTicket'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      - AdminAuth: []
+      summary: 'Admin: Get active support tickets'
+  /support/close-ticket:
+    patch:
+      consumes:
+      - application/json
+      description: Closes an existing support ticket
+      parameters:
+      - description: Ticket ID
+        in: query
+        name: ticket_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Close a support ticket
+  /support/get-all-tickets:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all support tickets for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SupportTicket'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all tickets for a user
+  /support/get-ticket-messages:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all messages for a specific support ticket
+      parameters:
+      - description: Ticket ID
+        in: query
+        name: ticket_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SupportTicket'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get messages for a support ticket
+  /support/open-ticket:
+    post:
+      consumes:
+      - application/json
+      description: Opens a new support ticket
+      parameters:
+      - description: Open Ticket
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.TicketRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Open a support ticket
+  /support/send-message:
+    post:
+      consumes:
+      - application/json
+      description: Sends a message to a specific support ticket
+      parameters:
+      - description: Send Message
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.MessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Send a message to a support ticket
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user
+      parameters:
+      - description: User Login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: User login
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User Registration
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: User registration
+swagger: "2.0"
