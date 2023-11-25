@@ -20,7 +20,7 @@ type CryptoService interface {
 	) (cryptocurrency.CryptoResponse, int, error) // returns answer, statusCode, error
 
 	SetCrypto(
-		crypto cryptocurrency.Crypto,
+		crypto cryptocurrency.MakeCryptoRequest,
 	) (int, error) // returns statusCode, error
 
 	UpdateCrypto(
@@ -53,20 +53,17 @@ func (s *cryptoService) GetCrypto(
 }
 
 func (s *cryptoService) SetCrypto(
-	crypto cryptocurrency.Crypto,
+	req cryptocurrency.MakeCryptoRequest,
 ) (int, error) {
-	var cryptoSearch cryptocurrency.Crypto
-	result := s.db.Where("name = ?", crypto.Name).First(&cryptoSearch)
-	if result.Error == nil {
+	if s.db.Where("name = ?", req.Name).First(&cryptocurrency.Crypto{}).Error == nil {
 		return http.StatusBadRequest, errors.New("the crypto already exist")
 	}
-	crypto.BuyFee = crypto.CurrentPrice + (crypto.CurrentPrice / 100) + 10
-	crypto.SellFee = crypto.CurrentPrice - ((crypto.CurrentPrice / 100) + 10)
-	if crypto.SellFee < 0 {
-		crypto.SellFee = 0
-	}
 
-	s.db.Save(&crypto)
+	crypto := req.ToCrypto()
+	result := s.db.Save(&crypto)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
 
 	return http.StatusOK, nil
 }
