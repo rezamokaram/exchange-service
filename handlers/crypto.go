@@ -61,9 +61,14 @@ func GetCrypto(service services.CryptoService) echo.HandlerFunc {
 func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		request := new(cryptocurrency.Crypto)
+		request := new(cryptocurrency.MakeCryptoRequest)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorResponse("", err.Error())
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		if !request.IsValid() {
+			response := models.NewErrorResponse("", "Bad Json Fields")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -73,7 +78,7 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(http.StatusOK, models.NewResponse("the crypto successfuly added"))
+		return c.JSON(http.StatusOK, models.NewResponse("the crypto successfully added"))
 	}
 }
 
@@ -89,9 +94,14 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		request := new(cryptocurrency.Crypto)
+		request := new(cryptocurrency.UpdateCryptoRequest)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorResponse("", err.Error())
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		if !request.IsValid() {
+			response := models.NewErrorResponse("", "Bad Json Fields")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -101,7 +111,7 @@ func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 			return c.JSON(statusCode, response)
 		}
 
-		return c.JSON(http.StatusOK, models.NewResponse("the crypto successfuly updated"))
+		return c.JSON(http.StatusOK, models.NewResponse("the crypto successfully updated"))
 	}
 }
 
@@ -112,7 +122,7 @@ func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 // @Produce  json
 // @Success 200  {array}  cryptocurrency.CryptoResponse
 // @Failure 400  {object}  models.Response
-// @Router /crypto/getall [get]
+// @Router /crypto/get-all [get]
 func GetAllCrypto(service services.CryptoService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
