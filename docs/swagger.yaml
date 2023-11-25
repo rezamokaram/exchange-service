@@ -116,20 +116,6 @@ definitions:
       admin_password:
         type: string
     type: object
-  handlers.UserResponse:
-    properties:
-      error:
-        type: string
-      message:
-        type: string
-    type: object
-  models.ErrorResponse:
-    properties:
-      error:
-        type: string
-      message:
-        type: string
-    type: object
   models.Response:
     properties:
       message:
@@ -365,7 +351,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       - AdminAuth: []
@@ -392,7 +378,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       - AdminAuth: []
@@ -419,7 +405,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       - AdminAuth: []
@@ -446,7 +432,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Upgrade user to admin
@@ -471,13 +457,16 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       - AdminAuth: []
       summary: Get user information
   /bank/add_account:
     post:
+      consumes:
+      - application/json
+      description: Adds a bank account for a user
       parameters:
       - description: Add Bank Account
         in: body
@@ -487,6 +476,7 @@ paths:
           $ref: '#/definitions/handlers.AddBankAccountRequest'
       produces:
       - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -495,9 +485,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
+      summary: Add Bank Account
   /bank/payment/charge:
     post:
+      consumes:
+      - application/json
+      description: Charges a user's account
       parameters:
       - description: Charge Account
         in: body
@@ -515,16 +509,21 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
+      summary: Charge Account
   /bank/payment/verify:
     get:
+      consumes:
+      - application/json
+      description: Verifies a payment transaction
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
+      summary: Verify Payment
   /close-trade:
     post:
       consumes:
@@ -547,7 +546,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Close a trade
@@ -573,7 +572,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Filter closed trades
@@ -592,7 +591,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Get all closed trades
@@ -617,7 +616,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       summary: Get cryptocurrency
     post:
       consumes:
@@ -640,7 +639,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       summary: Add new cryptocurrency
     put:
       consumes:
@@ -663,7 +662,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       summary: Update cryptocurrency
   /crypto/getall:
     get:
@@ -682,7 +681,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       summary: Get all cryptocurrencies
   /future-order:
     post:
@@ -706,7 +705,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Set a future order
@@ -725,7 +724,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Get all future orders
@@ -751,7 +750,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Open a trade
@@ -770,12 +769,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       summary: Get all open trades
   /support/admin/get-active-tickets:
     get:
+      consumes:
+      - application/json
+      description: Retrieves all active support tickets (Admin only)
       produces:
       - application/json
       responses:
@@ -788,12 +790,16 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
       - AdminAuth: []
+      summary: 'Admin: Get active support tickets'
   /support/close-ticket:
     patch:
+      consumes:
+      - application/json
+      description: Closes an existing support ticket
       parameters:
       - description: Ticket ID
         in: query
@@ -810,11 +816,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
+      summary: Close a support ticket
   /support/get-all-tickets:
     get:
+      consumes:
+      - application/json
+      description: Retrieves all support tickets for the authenticated user
       produces:
       - application/json
       responses:
@@ -827,11 +837,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
+      summary: Get all tickets for a user
   /support/get-ticket-messages:
     get:
+      consumes:
+      - application/json
+      description: Retrieves all messages for a specific support ticket
       parameters:
       - description: Ticket ID
         in: query
@@ -848,11 +862,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
+      summary: Get messages for a support ticket
   /support/open-ticket:
     post:
+      consumes:
+      - application/json
+      description: Opens a new support ticket
       parameters:
       - description: Open Ticket
         in: body
@@ -870,11 +888,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
+      summary: Open a support ticket
   /support/send-message:
     post:
+      consumes:
+      - application/json
+      description: Sends a message to a specific support ticket
       parameters:
       - description: Send Message
         in: body
@@ -892,11 +914,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/models.Response'
       security:
       - ApiKeyAuth: []
+      summary: Send a message to a support ticket
   /user/login:
     post:
+      consumes:
+      - application/json
+      description: Logs in a user
       parameters:
       - description: User Login
         in: body
@@ -914,13 +940,17 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
+      summary: User login
   /user/register:
     post:
+      consumes:
+      - application/json
+      description: Register a new user
       parameters:
       - description: User Registration
         in: body
@@ -934,13 +964,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.UserResponse'
+            $ref: '#/definitions/models.Response'
+      summary: User registration
 swagger: "2.0"

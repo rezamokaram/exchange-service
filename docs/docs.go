@@ -57,7 +57,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -102,7 +102,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -189,7 +189,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -232,7 +232,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -240,9 +240,15 @@ const docTemplate = `{
         },
         "/bank/add_account": {
             "post": {
-                "produces": [
+                "description": "Adds a bank account for a user",
+                "consumes": [
                     "application/json"
                 ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "summary": "Add Bank Account",
                 "parameters": [
                     {
                         "description": "Add Bank Account",
@@ -264,7 +270,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -272,9 +278,14 @@ const docTemplate = `{
         },
         "/bank/payment/charge": {
             "post": {
+                "description": "Charges a user's account",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Charge Account",
                 "parameters": [
                     {
                         "description": "Charge Account",
@@ -296,7 +307,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -304,14 +315,19 @@ const docTemplate = `{
         },
         "/bank/payment/verify": {
             "get": {
+                "description": "Verifies a payment transaction",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Verify Payment",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -353,7 +369,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -395,7 +411,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -426,7 +442,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -461,7 +477,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -496,7 +512,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -531,7 +547,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -560,7 +576,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -602,7 +618,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -633,7 +649,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -675,7 +691,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -706,7 +722,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -722,9 +738,14 @@ const docTemplate = `{
                         "AdminAuth": []
                     }
                 ],
+                "description": "Retrieves all active support tickets (Admin only)",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Admin: Get active support tickets",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -738,7 +759,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -751,9 +772,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Closes an existing support ticket",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Close a support ticket",
                 "parameters": [
                     {
                         "type": "integer",
@@ -773,7 +799,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -786,9 +812,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Retrieves all support tickets for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Get all tickets for a user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -802,7 +833,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -815,9 +846,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Retrieves all messages for a specific support ticket",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Get messages for a support ticket",
                 "parameters": [
                     {
                         "type": "integer",
@@ -837,7 +873,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -850,9 +886,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Opens a new support ticket",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Open a support ticket",
                 "parameters": [
                     {
                         "description": "Open Ticket",
@@ -874,7 +915,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -887,9 +928,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Sends a message to a specific support ticket",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "Send a message to a support ticket",
                 "parameters": [
                     {
                         "description": "Send Message",
@@ -911,7 +957,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -919,9 +965,14 @@ const docTemplate = `{
         },
         "/user/login": {
             "post": {
+                "description": "Logs in a user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "User login",
                 "parameters": [
                     {
                         "description": "User Login",
@@ -943,13 +994,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -957,9 +1008,14 @@ const docTemplate = `{
         },
         "/user/register": {
             "post": {
+                "description": "Register a new user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
+                "summary": "User registration",
                 "parameters": [
                     {
                         "description": "User Registration",
@@ -975,19 +1031,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.UserResponse"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -1172,28 +1228,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "admin_password": {
-                    "type": "string"
-                }
-            }
-        },
-        "handlers.UserResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                },
-                "message": {
                     "type": "string"
                 }
             }
