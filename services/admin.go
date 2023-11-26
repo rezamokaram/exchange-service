@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"qexchange/models"
+	"qexchange/models/trade"
 
 	"gorm.io/gorm"
 )
@@ -129,6 +130,20 @@ func (s *adminService) GetUserInfo(username string) (models.UserInfo, int, error
 	}
 
 	newUserInfo := models.NewUserInfo(user)
+
+	tradeService := NewTradeService(s.db)
+	openTrades, status, err := tradeService.GetAllOpenTrades(user)
+	if err != nil {
+		return models.UserInfo{}, status, err
+	}
+	newUserInfo.OpenTrades = openTrades
+
+	var closedTrades []trade.ClosedTrade
+	closedTrades, status, err = tradeService.GetAllClosedTrades(user)
+	if err != nil {
+		return models.UserInfo{}, status, err
+	}
+	newUserInfo.ClosedTrades = closedTrades
 
 	return newUserInfo, http.StatusOK, nil
 }
