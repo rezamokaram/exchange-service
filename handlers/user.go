@@ -22,12 +22,6 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-// UserResponse is the common response for user operations
-type UserResponse struct {
-	Error   string `json:"error"`
-	Message string `json:"message"`
-}
-
 // TokenResponse represents the response containing a JWT token
 type TokenResponse struct {
 	Token string `json:"token"`
