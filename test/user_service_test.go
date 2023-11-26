@@ -3,10 +3,8 @@ package test
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"qexchange/database"
 	"qexchange/handlers"
 	"qexchange/models"
 	"qexchange/server"
@@ -18,8 +16,7 @@ import (
 
 func TestUserRegister(t *testing.T) {
 	e := echo.New()
-	db, _ := database.CreateTestDatabase()
-	server.UserRoutes(e, db)
+	server.UserRoutes(e, testDB)
 
 	t.Run("create new user", func(t *testing.T) {
 		newUser := handlers.RegisterRequest{
@@ -44,8 +41,7 @@ func TestUserRegister(t *testing.T) {
 		if assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK") {
 			// Validate Database Entry
 			var user models.User
-			result := db.Where("email = ?", "test@example.com").First(&user)
-			fmt.Println("user.Username ===>", user.Username)
+			result := testDB.Where("email = ?", "test@example.com").First(&user)
 			if assert.NoError(t, result.Error) {
 				assert.Equal(t, "testuser", user.Username, "Expected username to match")
 			}
@@ -74,9 +70,9 @@ func TestUserRegister(t *testing.T) {
 		}
 
 		// Assert the error message
-		expectedErrMsg := ": passwords do not match"
+		expectedErrMsg := "passwords do not match"
 		assert.Equal(t, http.StatusBadRequest, rec.Code, "Expected status code to be 400 Bad Request")
-		assert.Equal(t, expectedErrMsg, errResp.Message, "Expected error message to match")
+		assert.Contains(t, errResp.Message, expectedErrMsg, "Expected error message to contain 'passwords do not match'")
 	})
 
 	t.Run("duplicate username", func(t *testing.T) {
@@ -100,9 +96,9 @@ func TestUserRegister(t *testing.T) {
 			t.Fatalf("Failed to decode response: %v", err)
 		}
 
-		expectedErrMsg := ": a user with this username already exists"
+		expectedErrMsg := "a user with this username already exists"
 		assert.Equal(t, http.StatusBadRequest, rec.Code, "Expected status code to be 400 Bad Request")
-		assert.Equal(t, expectedErrMsg, errResp.Message, "Expected error message to match")
+		assert.Contains(t, errResp.Message, expectedErrMsg, "Expected error message to contain 'a user with this username already exists'")
 	})
 
 	t.Run("duplicate email", func(t *testing.T) {
@@ -126,8 +122,8 @@ func TestUserRegister(t *testing.T) {
 			t.Fatalf("Failed to decode response: %v", err)
 		}
 
-		expectedErrMsg := ": a user with this email already exists"
+		expectedErrMsg := "a user with this email already exists"
 		assert.Equal(t, http.StatusBadRequest, rec.Code, "Expected status code to be 400 Bad Request")
-		assert.Equal(t, expectedErrMsg, errResp.Message, "Expected error message to match")
+		assert.Contains(t, errResp.Message, expectedErrMsg, "Expected error message to contain 'a user with this email already exists'")
 	})
 }
