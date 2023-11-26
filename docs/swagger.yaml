@@ -13,6 +13,33 @@ definitions:
       symbol:
         type: string
     type: object
+  cryptocurrency.MakeCryptoRequest:
+    properties:
+      current_price:
+        example: 500
+        type: integer
+      name:
+        example: SomeCoin
+        type: string
+      symbol:
+        example: SMC
+        type: string
+    type: object
+  cryptocurrency.UpdateCryptoRequest:
+    properties:
+      current_price:
+        example: 510
+        type: integer
+      id:
+        example: 1
+        type: integer
+      name:
+        example: ""
+        type: string
+      symbol:
+        example: ""
+        type: string
+    type: object
   gorm.DeletedAt:
     properties:
       time:
@@ -24,21 +51,28 @@ definitions:
   handlers.AddBankAccountRequest:
     properties:
       account_number:
+        example: "123456"
         type: string
       bank_name:
+        example: eghtesad novin
         type: string
       card_number:
+        example: "654321"
         type: string
       cvv2:
+        example: "123"
         type: string
       expire_date:
+        example: 04/10
         type: string
     type: object
   handlers.BlockUserRequest:
     properties:
       temporary:
+        example: false
         type: boolean
       username:
+        example: user1
         type: string
     type: object
   handlers.ChargeAccountRequest:
@@ -51,47 +85,49 @@ definitions:
       payment_url:
         type: string
     type: object
-  handlers.CryptoRequest:
-    properties:
-      current_price:
-        type: integer
-      name:
-        type: string
-      symbol:
-        type: string
-    type: object
   handlers.LoginRequest:
     properties:
       password:
+        example: "123456"
         type: string
       username:
+        example: newUser
         type: string
     type: object
   handlers.MessageRequest:
     properties:
       message:
+        example: I have a problem
         type: string
       ticket_id:
+        example: 1
         type: integer
     type: object
   handlers.RegisterRequest:
     properties:
       email:
+        example: newUser@example.com
         type: string
       password:
+        example: "123456"
         type: string
       passwordrepeat:
+        example: "123456"
         type: string
       username:
+        example: newUser
         type: string
     type: object
   handlers.TicketRequest:
     properties:
       message:
+        example: I have a problem
         type: string
       subject:
+        example: problem with system
         type: string
       trade_id:
+        example: 1
         type: integer
     type: object
   handlers.TokenResponse:
@@ -102,18 +138,22 @@ definitions:
   handlers.UnblockUserRequest:
     properties:
       username:
+        example: user2
         type: string
     type: object
   handlers.UpdateAuthenticationLevelRequest:
     properties:
       new_auth_level:
+        example: 0
         type: integer
       username:
+        example: user2
         type: string
     type: object
   handlers.UpdateUserToAdminRequest:
     properties:
       admin_password:
+        example: secret
         type: string
     type: object
   models.Response:
@@ -124,46 +164,55 @@ definitions:
   models.SupportTicket:
     properties:
       created_at:
+        example: 2023-01-01T15:04:05Z07:00
         type: string
       messages:
         items:
           $ref: '#/definitions/models.TicketMessage'
         type: array
       status:
+        example: 0
         type: integer
       subject:
+        example: Issue with Trade Execution
         type: string
       trade_id:
+        example: 1
         type: integer
       updated_at:
+        example: 2023-01-02T15:04:05Z07:00
         type: string
       username:
+        example: user1
         type: string
     type: object
   models.TicketMessage:
     properties:
-      createdAt:
+      created_at:
+        example: 2023-01-01T15:04:05Z07:00
         type: string
       message:
+        example: I encountered an error when trying to execute a trade.
         type: string
       sender_username:
+        example: user1
         type: string
     type: object
   models.UserInfo:
     properties:
       authentication_level:
         description: User's authentication level
-        example: 2
+        example: 0
         type: integer
       balance:
         description: User's account balance
-        example: 1000
+        example: 5000000000
         type: integer
       banks_names:
         description: List of user's bank names
         example:
-        - '[''Bank A'''
-        - ' ''Bank B'']'
+        - '[''saman'''
+        - ' ''sepah'']'
         items:
           type: string
         type: array
@@ -173,11 +222,11 @@ definitions:
         type: integer
       email:
         description: User's email address
-        example: john@example.com
+        example: user1@example.com
         type: string
       is_admin:
         description: Indicates if user has admin privileges
-        example: true
+        example: false
         type: boolean
       is_premium:
         description: Indicates if user has a premium account
@@ -185,11 +234,11 @@ definitions:
         type: boolean
       phone_number:
         description: User's phone number
-        example: 123-456-7890
+        example: "9876543210"
         type: string
       username:
         description: User's username
-        example: john_doe
+        example: user1
         type: string
     type: object
   trade.ClosedTrade:
@@ -628,7 +677,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.CryptoRequest'
+          $ref: '#/definitions/cryptocurrency.MakeCryptoRequest'
       produces:
       - application/json
       responses:
@@ -651,7 +700,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.CryptoRequest'
+          $ref: '#/definitions/cryptocurrency.UpdateCryptoRequest'
       produces:
       - application/json
       responses:
@@ -664,7 +713,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Update cryptocurrency
-  /crypto/getall:
+  /crypto/get-all:
     get:
       consumes:
       - application/json

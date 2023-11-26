@@ -498,7 +498,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.CryptoRequest"
+                            "$ref": "#/definitions/cryptocurrency.UpdateCryptoRequest"
                         }
                     }
                 ],
@@ -533,7 +533,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.CryptoRequest"
+                            "$ref": "#/definitions/cryptocurrency.MakeCryptoRequest"
                         }
                     }
                 ],
@@ -553,7 +553,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/crypto/getall": {
+        "/crypto/get-all": {
             "get": {
                 "description": "Retrieves details of all cryptocurrencies",
                 "consumes": [
@@ -1071,6 +1071,44 @@ const docTemplate = `{
                 }
             }
         },
+        "cryptocurrency.MakeCryptoRequest": {
+            "type": "object",
+            "properties": {
+                "current_price": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "name": {
+                    "type": "string",
+                    "example": "SomeCoin"
+                },
+                "symbol": {
+                    "type": "string",
+                    "example": "SMC"
+                }
+            }
+        },
+        "cryptocurrency.UpdateCryptoRequest": {
+            "type": "object",
+            "properties": {
+                "current_price": {
+                    "type": "integer",
+                    "example": 510
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": ""
+                },
+                "symbol": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
         "gorm.DeletedAt": {
             "type": "object",
             "properties": {
@@ -1087,19 +1125,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "account_number": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 },
                 "bank_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eghtesad novin"
                 },
                 "card_number": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "654321"
                 },
                 "cvv2": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123"
                 },
                 "expire_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "04/10"
                 }
             }
         },
@@ -1107,10 +1150,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "temporary": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user1"
                 }
             }
         },
@@ -1130,28 +1175,16 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.CryptoRequest": {
-            "type": "object",
-            "properties": {
-                "current_price": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "symbol": {
-                    "type": "string"
-                }
-            }
-        },
         "handlers.LoginRequest": {
             "type": "object",
             "properties": {
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "newUser"
                 }
             }
         },
@@ -1159,10 +1192,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "I have a problem"
                 },
                 "ticket_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1170,16 +1205,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "newUser@example.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 },
                 "passwordrepeat": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "newUser"
                 }
             }
         },
@@ -1187,13 +1226,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "I have a problem"
                 },
                 "subject": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "problem with system"
                 },
                 "trade_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1209,7 +1251,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user2"
                 }
             }
         },
@@ -1217,10 +1260,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "new_auth_level": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 0
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user2"
                 }
             }
         },
@@ -1228,7 +1273,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "admin_password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "secret"
                 }
             }
         },
@@ -1244,7 +1290,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01T15:04:05Z07:00"
                 },
                 "messages": {
                     "type": "array",
@@ -1253,33 +1300,41 @@ const docTemplate = `{
                     }
                 },
                 "status": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 0
                 },
                 "subject": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Issue with Trade Execution"
                 },
                 "trade_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-02T15:04:05Z07:00"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user1"
                 }
             }
         },
         "models.TicketMessage": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
+                "created_at": {
+                    "type": "string",
+                    "example": "2023-01-01T15:04:05Z07:00"
                 },
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "I encountered an error when trying to execute a trade."
                 },
                 "sender_username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user1"
                 }
             }
         },
@@ -1289,12 +1344,12 @@ const docTemplate = `{
                 "authentication_level": {
                     "description": "User's authentication level",
                     "type": "integer",
-                    "example": 2
+                    "example": 0
                 },
                 "balance": {
                     "description": "User's account balance",
                     "type": "integer",
-                    "example": 1000
+                    "example": 5000000000
                 },
                 "banks_names": {
                     "description": "List of user's bank names",
@@ -1303,8 +1358,8 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "['Bank A'",
-                        " 'Bank B']"
+                        "['saman'",
+                        " 'sepah']"
                     ]
                 },
                 "blocked_level": {
@@ -1315,12 +1370,12 @@ const docTemplate = `{
                 "email": {
                     "description": "User's email address",
                     "type": "string",
-                    "example": "john@example.com"
+                    "example": "user1@example.com"
                 },
                 "is_admin": {
                     "description": "Indicates if user has admin privileges",
                     "type": "boolean",
-                    "example": true
+                    "example": false
                 },
                 "is_premium": {
                     "description": "Indicates if user has a premium account",
@@ -1330,12 +1385,12 @@ const docTemplate = `{
                 "phone_number": {
                     "description": "User's phone number",
                     "type": "string",
-                    "example": "123-456-7890"
+                    "example": "9876543210"
                 },
                 "username": {
                     "description": "User's username",
                     "type": "string",
-                    "example": "john_doe"
+                    "example": "user1"
                 }
             }
         },

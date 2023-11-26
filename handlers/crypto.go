@@ -16,9 +16,9 @@ type GetCryptoRequest struct {
 
 // CryptoRequest represents the request body for setting or updating a cryptocurrency
 type CryptoRequest struct {
-	Name         string `json:"name"`
-	Symbol       string `json:"symbol"`
-	CurrentPrice int    `json:"current_price"`
+	Name         string `json:"name" example:"Bitcoin"`
+	Symbol       string `json:"symbol" example:"BTC"`
+	CurrentPrice int    `json:"current_price" example:"500"`
 }
 
 // GetCrypto handles the retrieval of a specific cryptocurrency
@@ -54,7 +54,7 @@ func GetCrypto(service services.CryptoService) echo.HandlerFunc {
 // @Description Adds a new cryptocurrency to the system
 // @Accept  json
 // @Produce  json
-// @Param   body  body      CryptoRequest  true  "Crypto Information"
+// @Param   body  body      cryptocurrency.MakeCryptoRequest  true  "Crypto Information"
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /crypto [post]
@@ -87,7 +87,7 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 // @Description Updates details of an existing cryptocurrency
 // @Accept  json
 // @Produce  json
-// @Param   body  body      CryptoRequest  true  "Crypto Update Information"
+// @Param   body  body      cryptocurrency.UpdateCryptoRequest  true  "Crypto Update Information"
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /crypto [put]
