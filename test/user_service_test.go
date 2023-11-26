@@ -105,7 +105,7 @@ func TestUserRegister(t *testing.T) {
 		assert.Equal(t, expectedErrMsg, errResp.Message, "Expected error message to match")
 	})
 
-	t.Run("duplicate emai", func(t *testing.T) {
+	t.Run("duplicate email", func(t *testing.T) {
 		duplicateEmail := handlers.RegisterRequest{
 			Username:       "uniqueuser",
 			Email:          "test@example.com", // assuming "test@example.com" was used in the first test
