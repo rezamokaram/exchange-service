@@ -33,11 +33,3 @@ VALUES
     (1, 1, 10, 300, 400, 1000 ),
     (1, 1, 10, 500, 600, 1000 ),
     (1, 1, 10, 600, 500, -1000);
-
-INSERT INTO support_tickets (user_id, username, subject, created_at, updated_at)
-VALUES
-    (2, "user1", "salam", "2021-12-31T23:59:59Z", "2021-12-31T23:59:59Z");
-
-INSERT INTO ticket_messages (support_ticket_id, msg, sender_username, created_at)
-VALUES
-    (1, "salam salam", "user1", "2021-12-31T23:59:59Z");
