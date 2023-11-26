@@ -327,6 +327,48 @@
                 }
             }
         },
+        "/bank/payment/withdraw": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a user to withdraw a specified amount from their account balance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Withdraw from Account",
+                "parameters": [
+                    {
+                        "description": "Withdraw from Account",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.WithdrawFromAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/close-trade": {
             "post": {
                 "security": [
@@ -1269,6 +1311,19 @@
                 "admin_password": {
                     "type": "string",
                     "example": "secret"
+                }
+            }
+        },
+        "handlers.WithdrawFromAccountRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 5000
+                },
+                "bank_id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },

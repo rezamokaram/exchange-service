@@ -27,6 +27,7 @@ type BankService interface {
 	VerifyPayment(authority, status string) (int, error)             // returns status code, error
 	AddToUserBalanace(user models.User, amount int) (int, error)
 	SubtractFromUserBalanace(user models.User, amount int) (int, error)
+	WithdrawFromAccount(user models.User, amount int, BankID uint) (int, int, error) // returns newBalance, statusCode, error
 }
 
 type bankService struct {
@@ -289,4 +290,33 @@ func (s *bankService) SubtractFromUserBalanace(user models.User, amount int) (in
 		return http.StatusInternalServerError, result.Error
 	}
 	return http.StatusAccepted, nil
+}
+
+func (s *bankService) WithdrawFromAccount(user models.User, amount int, BankID uint) (int, int, error) {
+	// get user with profile
+	var userWithProfile models.User
+	if err := s.db.Where("username = ?", user.Username).Preload("Profile").First(&userWithProfile).Error; err != nil {
+		return -1, http.StatusNotFound, errors.New("user not found")
+	}
+
+	if userWithProfile.Profile.Balance < amount {
+		return -1, http.StatusBadRequest, errors.New("not enough money in account")
+	}
+
+	var bankInfo models.BankingInfo
+	if err := s.db.Where("id = ?", BankID).First(&bankInfo).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return -1, http.StatusNotFound, errors.New("banking info id is not valid")
+		}
+		return -1, http.StatusNotFound, err
+	}
+
+	newBalance := userWithProfile.Profile.Balance - amount
+	userWithProfile.Profile.Balance = newBalance
+
+	if err := s.db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&userWithProfile).Error; err != nil {
+		return -1, http.StatusBadRequest, errors.New("failed updating user")
+	}
+
+	return newBalance, http.StatusOK, nil
 }

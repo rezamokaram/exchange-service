@@ -156,6 +156,15 @@ definitions:
         example: secret
         type: string
     type: object
+  handlers.WithdrawFromAccountRequest:
+    properties:
+      amount:
+        example: 5000
+        type: integer
+      bank_id:
+        example: 1
+        type: integer
+    type: object
   models.Response:
     properties:
       message:
@@ -573,6 +582,33 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Verify Payment
+  /bank/payment/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to withdraw a specified amount from their account
+        balance
+      parameters:
+      - description: Withdraw from Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.WithdrawFromAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Withdraw from Account
   /close-trade:
     post:
       consumes:

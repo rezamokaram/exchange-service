@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
@@ -20,6 +21,12 @@ type AddBankAccountRequest struct {
 	CardNumber    string `json:"card_number" example:"654321"`
 	ExpireDate    string `json:"expire_date" example:"04/10"`
 	Cvv2          string `json:"cvv2" example:"123"`
+}
+
+// WithdrawFromAccountRequest represents the request body for withdrawing money from bank account
+type WithdrawFromAccountRequest struct {
+	Amount int  `json:"amount" example:"5000"`
+	BankID uint `json:"bank_id" example:"1"`
 }
 
 // ChargeAccountResponse represents the response for charging an account
@@ -126,5 +133,49 @@ func VerifyPayment(bankService services.BankService) echo.HandlerFunc {
 
 		// return correct response here
 		return c.JSON(http.StatusOK, models.NewResponse("success"))
+	}
+}
+
+// WithdrawFromAccount handles withdrawing money from a user's account balance
+// @Summary Withdraw from Account
+// @Description Allows a user to withdraw a specified amount from their account balance
+// @Accept  json
+// @Produce json
+// @Param   body  body      WithdrawFromAccountRequest  true  "Withdraw from Account"
+// @Security ApiKeyAuth
+// @Success 200   {object}  models.Response
+// @Failure 400   {object}  models.Response
+// @Router /bank/payment/withdraw [post]
+func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		request := new(WithdrawFromAccountRequest)
+		err := c.Bind(request)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("", err.Error()))
+		}
+
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		if request.Amount == 0 || request.BankID == 0 {
+			response := models.NewErrorResponse("", "amount or bank_id not provided")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		balanceAfterWithdraw, statusCode, err := bankService.WithdrawFromAccount(user, request.Amount, request.BankID)
+		if err != nil {
+			return c.JSON(statusCode, models.NewErrorResponse("", err.Error()))
+		}
+
+		msg := fmt.Sprintf("balance updated successfully. new balance: %v", balanceAfterWithdraw)
+
+		return c.JSON(
+			http.StatusOK,
+			models.NewResponse(msg),
+		)
 	}
 }
