@@ -48,7 +48,11 @@ func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}
 
-		user := c.Get("user").(models.User)
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
 
 		if err := service.UpgradeToAdmin(user, adminRequest.AdminPassword); err != nil {
 			response := models.NewErrorResponse("failed to upgrade user to admin", err.Error())

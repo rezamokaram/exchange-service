@@ -81,7 +81,12 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 func ChargeAccount(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Parse the request body for amount
-		user := c.Get("user").(models.User)
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
 		request := new(ChargeAccountRequest)
 		err := c.Bind(request)
 		if err != nil {
