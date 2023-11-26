@@ -188,7 +188,7 @@ func TestSupportService(t *testing.T) {
 	})
 
 	t.Run("Get all messages for specific ticket", func(t *testing.T) {
-		// Step 1: Create a ticket
+		// Create a ticket
 		newTicket := models.SupportTicket{
 			UserID:    2,
 			Username:  "user1",
@@ -200,7 +200,7 @@ func TestSupportService(t *testing.T) {
 			t.Fatalf("Failed to create ticket: %v", err)
 		}
 
-		// Step 2: Create messages for the ticket
+		// Create messages for the ticket
 		for i := 0; i < 3; i++ {
 			msg := models.TicketMessage{
 				SupportTicketID: newTicket.ID,
@@ -213,7 +213,7 @@ func TestSupportService(t *testing.T) {
 			}
 		}
 
-		// Step 3: Make a request to get ticket messages
+		// Make a request to get ticket messages
 		req := httptest.NewRequest(http.MethodGet, "/support/get-ticket-messages", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		req.Header.Set("Authorization", token)
@@ -222,7 +222,6 @@ func TestSupportService(t *testing.T) {
 
 		e.ServeHTTP(rec, req)
 
-		// Assert the response from the server
 		assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
 
 		var ticketWithMessages models.SupportTicket
@@ -235,7 +234,7 @@ func TestSupportService(t *testing.T) {
 			t.Fatalf("Failed to clear database tables: %v", err)
 		}
 
-		// Step 1: Create active tickets
+		// Create active tickets
 		for i := 0; i < 3; i++ {
 			activeTicket := models.SupportTicket{
 				UserID:    2,
@@ -286,7 +285,6 @@ func loginAndGetToken(e *echo.Echo, t *testing.T, user handlers.LoginRequest) st
 }
 
 func clearDatabaseTables(db *gorm.DB) error {
-	// List of models to clear. Adjust according to your actual models.
 	tables := []interface{}{
 		&models.SupportTicket{},
 		&models.TicketMessage{},
