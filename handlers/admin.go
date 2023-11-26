@@ -10,24 +10,24 @@ import (
 
 // UpdateUserToAdminRequest represents the request body for upgrading a user to admin
 type UpdateUserToAdminRequest struct {
-	AdminPassword string `json:"admin_password"`
+	AdminPassword string `json:"admin_password" example:"secret"`
 }
 
 // UpdateAuthenticationLevelRequest represents the request for updating a user's authentication level
 type UpdateAuthenticationLevelRequest struct {
-	Username     string `json:"username"`
-	NewAuthLevel int    `json:"new_auth_level"`
+	Username     string `json:"username" example:"user2"`
+	NewAuthLevel int    `json:"new_auth_level" example:"0"`
 }
 
 // BlockUserRequest represents the request for blocking a user
 type BlockUserRequest struct {
-	Username  string `json:"username"`
-	Temporary bool   `json:"temporary"`
+	Username  string `json:"username" example:"user1"`
+	Temporary bool   `json:"temporary" example:"false"`
 }
 
 // UnblockUserRequest represents the request for unblocking a user
 type UnblockUserRequest struct {
-	Username string `json:"username"`
+	Username string `json:"username" example:"user2"`
 }
 
 // UpgradeToAdmin upgrades a user to an admin role

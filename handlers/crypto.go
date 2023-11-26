@@ -16,9 +16,9 @@ type GetCryptoRequest struct {
 
 // CryptoRequest represents the request body for setting or updating a cryptocurrency
 type CryptoRequest struct {
-	Name         string `json:"name"`
-	Symbol       string `json:"symbol"`
-	CurrentPrice int    `json:"current_price"`
+	Name         string `json:"name" example:"Bitcoin"`
+	Symbol       string `json:"symbol" example:"BTC"`
+	CurrentPrice int    `json:"current_price" example:"500"`
 }
 
 // GetCrypto handles the retrieval of a specific cryptocurrency

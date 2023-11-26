@@ -11,15 +11,15 @@ import (
 
 // TicketRequest represents the request body for opening a support ticket
 type TicketRequest struct {
-	Msg     string `json:"message"`
-	Subject string `json:"subject"`
-	TradeId *uint  `json:"trade_id,omitempty"`
+	Msg     string `json:"message" example:"I have a problem"`
+	Subject string `json:"subject" example:"problem with system"`
+	TradeId *uint  `json:"trade_id,omitempty" example:"1"`
 }
 
 // MessageRequest represents the request body for sending a message to a support ticket
 type MessageRequest struct {
-	Msg      string `json:"message"`
-	TicketID *uint  `json:"ticket_id"`
+	Msg      string `json:"message" example:"I have a problem"`
+	TicketID *uint  `json:"ticket_id" example:"1"`
 }
 
 // OpenTicket handles opening a new support ticket

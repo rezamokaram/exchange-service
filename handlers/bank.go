@@ -15,11 +15,11 @@ type ChargeAccountRequest struct {
 
 // AddBankAccountRequest represents the request body for adding a bank account
 type AddBankAccountRequest struct {
-	BankName      string `json:"bank_name"`
-	AccountNumber string `json:"account_number"`
-	CardNumber    string `json:"card_number"`
-	ExpireDate    string `json:"expire_date"`
-	Cvv2          string `json:"cvv2"`
+	BankName      string `json:"bank_name" example:"eghtesad novin"`
+	AccountNumber string `json:"account_number" example:"123456"`
+	CardNumber    string `json:"card_number" example:"654321"`
+	ExpireDate    string `json:"expire_date" example:"04/10"`
+	Cvv2          string `json:"cvv2" example:"123"`
 }
 
 // ChargeAccountResponse represents the response for charging an account

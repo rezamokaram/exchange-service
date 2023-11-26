@@ -10,16 +10,16 @@ import (
 
 // RegisterRequest represents the request body for user registration
 type RegisterRequest struct {
-	Username       string `json:"username"`
-	Email          string `json:"email"`
-	Password       string `json:"password"`
-	PasswordRepeat string `json:"passwordrepeat"`
+	Username       string `json:"username" example:"newUser"`
+	Email          string `json:"email" example:"newUser@example.com"`
+	Password       string `json:"password" example:"123456"`
+	PasswordRepeat string `json:"passwordrepeat" example:"123456"`
 }
 
 // LoginRequest represents the request body for user login
 type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" example:"newUser"`
+	Password string `json:"password" example:"123456"`
 }
 
 // TokenResponse represents the response containing a JWT token
