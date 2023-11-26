@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log"
+	"os"
 	"qexchange/models"
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
@@ -11,7 +13,7 @@ import (
 )
 
 func CreateTestDatabase() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open("file:test.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent), // Set log level to Silent
 	})
 	if err != nil {
@@ -33,6 +35,17 @@ func CreateTestDatabase() (*gorm.DB, error) {
 	)
 	if err != nil {
 		return nil, err
+	}
+
+	sqlFile, err := os.ReadFile("../database/main-data.sql")
+	if err != nil {
+		log.Fatalf("reading sql dump file failed: %v\n", err.Error())
+	}
+
+	// Execute SQL
+	result := db.Exec(string(sqlFile))
+	if result.Error != nil {
+		log.Fatalf("executing sql dump file failed: %v\n", result.Error)
 	}
 
 	return db, nil
