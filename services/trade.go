@@ -49,6 +49,11 @@ type TradeService interface {
 		user 	models.User,
 	) (int, error)
 
+	DeleteFutureOrder(
+		req trade.DeleteFutureOrderRequest,
+		user 	models.User,
+	) (int, error)
+
 	CheckFutureOrder(
 		oldCrypto cryptocurrency.Crypto,
 		newCrypto cryptocurrency.Crypto,
@@ -145,7 +150,7 @@ func (s *tradeService) CloseTrade(
 		// s.db.Delete(&openTrade)
 		result = s.db.Exec("DELETE FROM open_trade WHERE id = ?", openTrade.ID)
 		if result.Error != nil {
-			return http.StatusBadRequest, errors.New("requested amount is too large")
+			return http.StatusInternalServerError, result.Error
 		}
 
 	} else {
@@ -284,6 +289,28 @@ func (s *tradeService) SetFutureOrder(
 	result := s.db.Save(&futureOrder)
 	if result.Error != nil {
 		return http.StatusInternalServerError, result.Error
+	}
+
+	return http.StatusOK, nil
+}
+
+func (s *tradeService) DeleteFutureOrder(
+	req trade.DeleteFutureOrderRequest,
+	user 	models.User,
+) (int, error) {
+	var futureOrder trade.FutureOrder
+	result := s.db.Where("id = ?", req.OrderID).First(&futureOrder)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+
+	if futureOrder.UserID != user.ID {
+		return http.StatusForbidden, errors.New("this order belong to another user")
+	}
+
+	result = s.db.Exec("DELETE FROM future_order WHERE id = ?", futureOrder.ID)
+	if result.Error != nil {
+		return http.StatusBadRequest, result.Error
 	}
 
 	return http.StatusOK, nil

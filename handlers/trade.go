@@ -178,6 +178,30 @@ func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 	}
 }
 
+func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		request := new(trade.DeleteFutureOrderRequest)
+		if err := c.Bind(request); err != nil {
+			response := models.NewErrorResponse("", err.Error())
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		statusCode, err := service.DeleteFutureOrder(*request, user)
+		if err != nil {
+			response := models.NewErrorResponse("", err.Error())
+			return c.JSON(statusCode, response)
+		}
+
+		return c.JSON(http.StatusOK, models.NewResponse("the future order successfully deleted"))
+	}
+}
+
 // GetAllFutureOrders retrieves all future orders for the authenticated user
 // @Summary Get all future orders
 // @Description Retrieves all future orders
