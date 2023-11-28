@@ -8,7 +8,7 @@ type FutureOrder struct {
 	gorm.Model
 	UserID      uint    `gorm:"not null"`
 	CryptoID    uint    `gorm:"not null"`
-	Amount      float64 `gorm:"not null"`
+	Amount      int 	`gorm:"not null"`
 	TargetPrice int     `gorm:"not null"`
 	StopLoss    int     `gorm:""`
 	TakeProfit  int     `gorm:""`

@@ -27,6 +27,13 @@ type TradeService interface {
 		request trade.ClosedTradeRequest,
 		user models.User,
 	) (int, error)
+	
+	CloseTradeWithTrade(
+		openTrade trade.OpenTrade,
+		user 	models.User,
+		crypto cryptocurrency.Crypto,
+		amount int,
+	) (int, error)
 
 	GetAllClosedTrades(
 		user models.User,
@@ -95,8 +102,8 @@ func (s *tradeService) OpenTrade(
 		return http.StatusBadRequest, errors.New("there is no profile with this id")
 	}
 
-	cost := request.Amount * float64(crypto.BuyFee)
-	if cost > float64(profile.Balance) {
+	cost := request.Amount * crypto.BuyFee
+	if cost > profile.Balance {
 		return http.StatusBadRequest, errors.New("you do not have enough money in your account" + strconv.Itoa(profile.Balance))
 	}
 
@@ -152,7 +159,7 @@ func (s *tradeService) CloseTrade(
 		s.db.Save(&openTrade)
 	}
 
-	cost := request.Amount * float64(crypto.SellFee)
+	cost := request.Amount * crypto.SellFee
 	bankService := NewBankService(s.db)
 	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, request.Amount, time.Now())
 	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
@@ -249,7 +256,7 @@ func (s *tradeService) CloseTradeWithTrade( // faster
 	openTrade trade.OpenTrade,
 	user 	models.User,
 	crypto cryptocurrency.Crypto,
-	amount float64,
+	amount int,
 ) (int, error) {
 
 	if openTrade.Amount == amount {
@@ -263,7 +270,7 @@ func (s *tradeService) CloseTradeWithTrade( // faster
 		s.db.Save(&openTrade)
 	}
 
-	cost := amount * float64(crypto.SellFee)
+	cost := amount * crypto.SellFee
 	bankService := NewBankService(s.db)
 	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, openTrade.Amount, time.Now())
 	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
