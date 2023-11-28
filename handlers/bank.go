@@ -53,12 +53,12 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 		request := new(AddBankAccountRequest)
 		err := c.Bind(request)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("", err.Error()))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -71,7 +71,7 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 			request.Cvv2,
 		)
 		if err != nil {
-			return c.JSON(statusCode, models.NewErrorResponse("", err.Error()))
+			return c.JSON(statusCode, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
 		// If successful, return a 200 OK response
@@ -96,7 +96,7 @@ func ChargeAccount(bankService services.BankService) echo.HandlerFunc {
 		// Parse the request body for amount
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
@@ -162,23 +162,23 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 		request := new(WithdrawFromAccountRequest)
 		err := c.Bind(request)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("", err.Error()))
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		if request.Amount == 0 || request.BankID == 0 {
-			response := models.NewErrorResponse("", "amount or bank_id not provided")
+			response := models.NewErrorResponse("bank action failed", "amount or bank_id not provided")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		balanceAfterWithdraw, statusCode, err := bankService.WithdrawFromAccount(user, request.Amount, request.BankID)
 		if err != nil {
-			return c.JSON(statusCode, models.NewErrorResponse("", err.Error()))
+			return c.JSON(statusCode, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
 		msg := fmt.Sprintf("balance updated successfully. new balance: %v", balanceAfterWithdraw)

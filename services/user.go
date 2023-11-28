@@ -37,13 +37,6 @@ func (s *userService) Register(
 	passwordRepeat,
 	email string,
 ) (int, error) {
-	// we have access to s.db here
-
-	// check if passwords match
-	if password != passwordRepeat {
-		return http.StatusBadRequest, errors.New("passwords do not match")
-	}
-
 	// check for duplicate username or email
 	var existingUser models.User
 	result := s.db.Where("username = ? OR email = ?", username, email).First(&existingUser)

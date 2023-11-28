@@ -36,13 +36,13 @@ func GetCrypto(service services.CryptoService) echo.HandlerFunc {
 
 		request := new(GetCryptoRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		cryptoResponse, statusCode, err := service.GetCrypto(request.Id)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -67,18 +67,18 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 
 		request := new(cryptocurrency.MakeCryptoRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		if !request.IsValid() {
-			response := models.NewErrorResponse("", "Bad Json Fields")
+			response := models.NewErrorResponse("trade failed", "Bad Json Fields")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.SetCrypto(*request)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -103,18 +103,18 @@ func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 
 		request := new(cryptocurrency.UpdateCryptoRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		if !request.IsValid() {
-			response := models.NewErrorResponse("", "Bad Json Fields")
+			response := models.NewErrorResponse("trade failed", "Bad Json Fields")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.UpdateCrypto(*request)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -136,7 +136,7 @@ func GetAllCrypto(service services.CryptoService) echo.HandlerFunc {
 
 		cryptoList, statusCode, err := service.GetAllCrypto()
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
