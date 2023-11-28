@@ -26,19 +26,19 @@ func OpenTrade(service services.TradeService) echo.HandlerFunc {
 
 		request := new(trade.OpenTradeRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.OpenTrade(*request, user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -63,19 +63,19 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 
 		request := new(trade.ClosedTradeRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.CloseTrade(*request, user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -98,19 +98,19 @@ func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 
 		request := new(trade.OpenTradeRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		allOpenTrades, statusCode, err := service.GetAllOpenTrades(user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -133,19 +133,19 @@ func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 
 		request := new(trade.ClosedTradeRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		allClosedTrades, statusCode, err := service.GetAllClosedTrades(user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 		return c.JSON(http.StatusOK, allClosedTrades)
@@ -168,19 +168,19 @@ func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(trade.FutureOrderRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.SetFutureOrder(*request, user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -206,19 +206,19 @@ func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(trade.DeleteFutureOrderRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.DeleteFutureOrder(*request, user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -241,13 +241,13 @@ func GetAllFutureOrders(service services.TradeService) echo.HandlerFunc {
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		allFutureOrders, statusCode, err := service.GetAllFutureOrders(user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 		return c.JSON(http.StatusOK, allFutureOrders)
@@ -271,19 +271,19 @@ func FilterTrades(service services.TradeService) echo.HandlerFunc {
 
 		request := new(trade.FilterTradesRequest)
 		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		allTargetTrades, statusCode, err := service.FilterClosedTrades(user, *request)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("trade failed", err.Error())
 			return c.JSON(statusCode, response)
 		}
 

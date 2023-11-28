@@ -252,10 +252,10 @@ definitions:
   trade.ClosedTrade:
     properties:
       amount:
-        type: number
+        type: integer
       buy_fee:
         type: integer
-      created_at:
+      createdAt:
         type: string
       crypto_id:
         type: integer
@@ -265,7 +265,7 @@ definitions:
         type: integer
       sell_fee:
         type: integer
-      updated_at:
+      updatedAt:
         type: string
       user_id:
         type: integer
@@ -273,7 +273,7 @@ definitions:
   trade.ClosedTradeRequest:
     properties:
       amount:
-        type: number
+        type: integer
       id:
         type: integer
     type: object
@@ -313,8 +313,8 @@ definitions:
   trade.FutureOrder:
     properties:
       amount:
-        type: number
-      created_at:
+        type: integer
+      createdAt:
         type: string
       cryptoID:
         type: integer
@@ -326,7 +326,7 @@ definitions:
         type: integer
       targetPrice:
         type: integer
-      updated_at:
+      updatedAt:
         type: string
       userID:
         type: integer
@@ -334,7 +334,7 @@ definitions:
   trade.FutureOrderRequest:
     properties:
       amount:
-        type: number
+        type: integer
       crypto_id:
         type: integer
       stop_loss:
@@ -347,10 +347,10 @@ definitions:
   trade.OpenTrade:
     properties:
       amount:
-        type: number
+        type: integer
       buyFee:
         type: integer
-      created_at:
+      createdAt:
         type: string
       cryptoID:
         type: integer
@@ -360,7 +360,7 @@ definitions:
         type: integer
       takeProfit:
         type: integer
-      updated_at:
+      updatedAt:
         type: string
       userID:
         type: integer
@@ -368,7 +368,7 @@ definitions:
   trade.OpenTradeRequest:
     properties:
       amount:
-        type: number
+        type: integer
       crypto_id:
         type: integer
       stop_loss:

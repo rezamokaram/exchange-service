@@ -1793,12 +1793,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "buy_fee": {
                     "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "crypto_id": {
@@ -1813,7 +1813,7 @@ const docTemplate = `{
                 "sell_fee": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "user_id": {
@@ -1825,7 +1825,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1887,9 +1887,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "cryptoID": {
@@ -1907,7 +1907,7 @@ const docTemplate = `{
                 "targetPrice": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "userID": {
@@ -1919,7 +1919,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "crypto_id": {
                     "type": "integer"
@@ -1939,12 +1939,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "buyFee": {
                     "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "cryptoID": {
@@ -1959,7 +1959,7 @@ const docTemplate = `{
                 "takeProfit": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "userID": {
@@ -1971,7 +1971,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "crypto_id": {
                     "type": "integer"

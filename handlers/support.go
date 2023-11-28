@@ -43,19 +43,19 @@ func OpenTicket(service services.SupportService) echo.HandlerFunc {
 
 		// Validate that the subject and description are not empty
 		if request.Subject == "" || request.Msg == "" {
-			response := models.NewErrorResponse("", "subject and message are required")
+			response := models.NewErrorResponse("failed to open ticket", "subject and message are required")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("failed to open ticket", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.OpenTicket(user, request.Subject, request.Msg, request.TradeId)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to open ticket", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -79,7 +79,7 @@ func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		tickets, statusCode, err := service.GetActiveTickets()
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to get tickets", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -111,7 +111,7 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 
 		ticket, statusCode, err := service.GetTicketMessages(uint(ticketIDStr))
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to get ticket", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -134,13 +134,13 @@ func GetAllTickets(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("failed to get tickets", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		tickets, statusCode, err := service.GetAllTickets(user)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to get tickets", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -169,19 +169,19 @@ func SendMessage(service services.SupportService) echo.HandlerFunc {
 
 		// Validate that the subject and description are not empty
 		if request.Msg == "" || request.TicketID == nil {
-			response := models.NewErrorResponse("", "message and ticket_id are required")
+			response := models.NewErrorResponse("failed to send message", "message and ticket_id are required")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("failed to send message", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		statusCode, err := service.SendMessage(user, request.Msg, *request.TicketID)
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to send message", err.Error())
 			return c.JSON(statusCode, response)
 		}
 
@@ -213,7 +213,7 @@ func CloseTicket(service services.SupportService) echo.HandlerFunc {
 
 		statusCode, err := service.CloseTicket(uint(ticketIDStr))
 		if err != nil {
-			response := models.NewErrorResponse("", err.Error())
+			response := models.NewErrorResponse("failed to close the ticket", err.Error())
 			return c.JSON(statusCode, response)
 		}
 

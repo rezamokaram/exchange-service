@@ -52,7 +52,7 @@ func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
-			response := models.NewErrorResponse("", "bad user data")
+			response := models.NewErrorResponse("Upgrade To Admin failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
