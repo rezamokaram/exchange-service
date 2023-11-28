@@ -1787,12 +1787,12 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "buy_fee": {
                     "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "crypto_id": {
@@ -1807,7 +1807,7 @@
                 "sell_fee": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "user_id": {
@@ -1819,7 +1819,7 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1881,9 +1881,9 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "cryptoID": {
@@ -1901,7 +1901,7 @@
                 "targetPrice": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "userID": {
@@ -1913,7 +1913,7 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "crypto_id": {
                     "type": "integer"
@@ -1933,12 +1933,12 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "buyFee": {
                     "type": "integer"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "cryptoID": {
@@ -1953,7 +1953,7 @@
                 "takeProfit": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 },
                 "userID": {
@@ -1965,7 +1965,7 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "crypto_id": {
                     "type": "integer"
