@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
@@ -176,16 +175,14 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		balanceAfterWithdraw, statusCode, err := bankService.WithdrawFromAccount(user, request.Amount, request.BankID)
+		statusCode, err := bankService.WithdrawFromAccount(user, request.Amount, request.BankID)
 		if err != nil {
 			return c.JSON(statusCode, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
-		msg := fmt.Sprintf("balance updated successfully. new balance: %v", balanceAfterWithdraw)
-
 		return c.JSON(
 			http.StatusOK,
-			models.NewResponse(msg),
+			models.NewResponse("balance updated successfully"),
 		)
 	}
 }
