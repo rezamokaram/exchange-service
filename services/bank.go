@@ -25,8 +25,8 @@ type BankService interface {
 	AddBankAccount(user models.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error)
 	ChargeAccount(amount int, user models.User) (string, int, error) // returns payment_url, status code, error
 	VerifyPayment(authority, status string) (int, error)             // returns status code, error
-	AddToUserBalanace(user models.User, amount int) (int, error)
-	SubtractFromUserBalanace(user models.User, amount int) (int, error)
+	AddToUserBalance(user models.User, amount, service int, description string) (int, error)
+	SubtractFromUserBalance(user models.User, amount, service int, description string) (int, error)
 	WithdrawFromAccount(user models.User, amount int, BankID uint) (int, int, error) // returns newBalance, statusCode, error
 }
 
@@ -214,8 +214,8 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 					}
 
 					bankService := NewBankService(s.db)
-
-					statusCode, err := bankService.AddToUserBalanace(user, int(payment.Amount))
+					description := fmt.Sprintf("Bank Service: for payment with id = %v at %v", payment.ID, payment.CreatedAt)
+					statusCode, err := bankService.AddToUserBalance(user, int(payment.Amount), 0, description)
 					if err != nil {
 						return statusCode, errors.New("faild updating user balance")
 					}
@@ -262,12 +262,19 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 	}
 }
 
-func (s *bankService) AddToUserBalanace(user models.User, amount int) (int, error) {
+func (s *bankService) AddToUserBalance(user models.User, amount, service int, description string) (int, error) {
 	var profile models.Profile
 	result := s.db.Where("id = ?", user.ID).First(&profile)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no profile with this id")
 	}
+
+	transaction := models.NewTransaction(user.ID, amount, service, true, description)
+	result = s.db.Save(&transaction)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+
 	profile.Balance += amount
 
 	result = s.db.Save(&profile)
@@ -277,12 +284,23 @@ func (s *bankService) AddToUserBalanace(user models.User, amount int) (int, erro
 	return http.StatusAccepted, nil
 }
 
-func (s *bankService) SubtractFromUserBalanace(user models.User, amount int) (int, error) {
+func (s *bankService) SubtractFromUserBalance(user models.User, amount, service int, description string) (int, error) {
 	var profile models.Profile
 	result := s.db.Where("id = ?", user.ID).First(&profile)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no profile with this id")
 	}
+
+	if profile.Balance < amount {
+		return http.StatusBadRequest, errors.New("profile balance is lower than requested amount")
+	}
+
+	transaction := models.NewTransaction(user.ID, amount, service, false, description)
+	result = s.db.Save(&transaction)
+	if result.Error != nil {
+		return http.StatusInternalServerError, result.Error
+	}
+
 	profile.Balance -= amount
 
 	result = s.db.Save(&profile)

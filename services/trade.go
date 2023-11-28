@@ -101,16 +101,10 @@ func (s *tradeService) OpenTrade(
 	}
 
 	bankService := NewBankService(s.db)
-	statusCode, err := bankService.SubtractFromUserBalanace(user, int(cost))
+	description := fmt.Sprintf("Trade Service: for opening a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, request.Amount, time.Now())
+	statusCode, err := bankService.SubtractFromUserBalance(user, int(cost), 1, description)
 	if err != nil {
-		return statusCode, errors.New("error in banking operations")
-	}
-
-	// start of opening trade
-	transaction := request.ToTransaction(user.ID, crypto.BuyFee)
-	result = s.db.Save(&transaction)
-	if result.Error != nil {
-		return http.StatusInternalServerError, errors.New("database error")
+		return statusCode, err
 	}
 	
 	newTrade := request.ToOpenTrade(user.ID, crypto.BuyFee)
@@ -160,7 +154,8 @@ func (s *tradeService) CloseTrade(
 
 	cost := request.Amount * float64(crypto.SellFee)
 	bankService := NewBankService(s.db)
-	statusCode, err := bankService.AddToUserBalanace(user, int(cost))
+	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, request.Amount, time.Now())
+	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
 	if err != nil {
 		return statusCode, errors.New("error in banking operations")
 	}
@@ -270,7 +265,8 @@ func (s *tradeService) CloseTradeWithTrade( // faster
 
 	cost := amount * float64(crypto.SellFee)
 	bankService := NewBankService(s.db)
-	statusCode, err := bankService.AddToUserBalanace(user, int(cost))
+	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, openTrade.Amount, time.Now())
+	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
 	if err != nil {
 		return statusCode, errors.New("error in banking operations")
 	}
