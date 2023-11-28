@@ -40,14 +40,6 @@ definitions:
         example: ""
         type: string
     type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   handlers.AddBankAccountRequest:
     properties:
       account_number:
@@ -84,6 +76,11 @@ definitions:
     properties:
       payment_url:
         type: string
+    type: object
+  handlers.GetCryptoRequest:
+    properties:
+      id:
+        type: integer
     type: object
   handlers.LoginRequest:
     properties:
@@ -229,6 +226,7 @@ definitions:
         description: User's blocked level
         example: 0
         type: integer
+      closed_trades: {}
       email:
         description: User's email address
         example: user1@example.com
@@ -241,6 +239,7 @@ definitions:
         description: Indicates if user has a premium account
         example: false
         type: boolean
+      open_trades: {}
       phone_number:
         description: User's phone number
         example: "9876543210"
@@ -256,19 +255,17 @@ definitions:
         type: number
       buy_fee:
         type: integer
-      createdAt:
+      created_at:
         type: string
       crypto_id:
         type: integer
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       profit:
         type: integer
       sell_fee:
         type: integer
-      updatedAt:
+      updated_at:
         type: string
       user_id:
         type: integer
@@ -277,6 +274,11 @@ definitions:
     properties:
       amount:
         type: number
+      id:
+        type: integer
+    type: object
+  trade.DeleteFutureOrderRequest:
+    properties:
       id:
         type: integer
     type: object
@@ -312,12 +314,10 @@ definitions:
     properties:
       amount:
         type: number
-      createdAt:
+      created_at:
         type: string
       cryptoID:
         type: integer
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       stopLoss:
@@ -326,7 +326,7 @@ definitions:
         type: integer
       targetPrice:
         type: integer
-      updatedAt:
+      updated_at:
         type: string
       userID:
         type: integer
@@ -350,19 +350,17 @@ definitions:
         type: number
       buyFee:
         type: integer
-      createdAt:
+      created_at:
         type: string
       cryptoID:
         type: integer
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       stopLoss:
         type: integer
       takeProfit:
         type: integer
-      updatedAt:
+      updated_at:
         type: string
       userID:
         type: integer
@@ -399,6 +397,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.BlockUserRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -411,9 +414,11 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       - AdminAuth: []
       summary: Block user
+      tags:
+      - Admin
   /admin/unblock-user:
     put:
       consumes:
@@ -426,6 +431,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.UnblockUserRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -438,9 +448,11 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       - AdminAuth: []
       summary: Unblock user
+      tags:
+      - Admin
   /admin/update-auth-level:
     put:
       consumes:
@@ -453,6 +465,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.UpdateAuthenticationLevelRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -465,9 +482,11 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       - AdminAuth: []
       summary: Update user authentication level
+      tags:
+      - Admin
   /admin/update-to-admin:
     put:
       consumes:
@@ -480,6 +499,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.UpdateUserToAdminRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -492,8 +516,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Upgrade user to admin
+      tags:
+      - Admin
   /admin/user-info:
     get:
       consumes:
@@ -503,6 +529,11 @@ paths:
       - description: Username
         in: query
         name: username
+        required: true
+        type: string
+      - description: Authorization token
+        in: header
+        name: Authorization
         required: true
         type: string
       produces:
@@ -517,15 +548,22 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       - AdminAuth: []
       summary: Get user information
+      tags:
+      - Admin
   /bank/add_account:
     post:
       consumes:
       - application/json
       description: Adds a bank account for a user
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Add Bank Account
         in: body
         name: body
@@ -544,13 +582,22 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
       summary: Add Bank Account
+      tags:
+      - Bank
   /bank/payment/charge:
     post:
       consumes:
       - application/json
       description: Charges a user's account
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Charge Account
         in: body
         name: body
@@ -568,7 +615,11 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
       summary: Charge Account
+      tags:
+      - Bank
   /bank/payment/verify:
     get:
       consumes:
@@ -582,6 +633,8 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Verify Payment
+      tags:
+      - Bank
   /bank/payment/withdraw:
     post:
       consumes:
@@ -589,6 +642,11 @@ paths:
       description: Allows a user to withdraw a specified amount from their account
         balance
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Withdraw from Account
         in: body
         name: body
@@ -607,8 +665,11 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
+      - BasicAuth: []
       - ApiKeyAuth: []
       summary: Withdraw from Account
+      tags:
+      - Bank
   /close-trade:
     post:
       consumes:
@@ -621,6 +682,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/trade.ClosedTradeRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -633,8 +699,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Close a trade
+      tags:
+      - Trade
   /close-trade/filter-all:
     get:
       consumes:
@@ -647,6 +715,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/trade.FilterTradesRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -659,11 +732,19 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Filter closed trades
+      tags:
+      - Trade
   /close-trade/get-all:
     get:
       description: Retrieves all closed trades for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -678,8 +759,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Get all closed trades
+      tags:
+      - Trade
   /crypto:
     get:
       consumes:
@@ -687,10 +770,11 @@ paths:
       description: Gets details of a specific cryptocurrency by ID
       parameters:
       - description: Crypto ID
-        in: query
-        name: id
+        in: body
+        name: body
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/handlers.GetCryptoRequest'
       produces:
       - application/json
       responses:
@@ -703,11 +787,18 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Get cryptocurrency
+      tags:
+      - Crypto
     post:
       consumes:
       - application/json
       description: Adds a new cryptocurrency to the system
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Crypto Information
         in: body
         name: body
@@ -725,12 +816,21 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
       summary: Add new cryptocurrency
+      tags:
+      - Crypto
     put:
       consumes:
       - application/json
       description: Updates details of an existing cryptocurrency
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Crypto Update Information
         in: body
         name: body
@@ -748,7 +848,11 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
       summary: Update cryptocurrency
+      tags:
+      - Crypto
   /crypto/get-all:
     get:
       consumes:
@@ -768,7 +872,50 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Get all cryptocurrencies
+      tags:
+      - Crypto
   /future-order:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specified future order belonging to the authenticated
+        user
+      parameters:
+      - description: Delete Future Order
+        in: body
+        name: order_id
+        required: true
+        schema:
+          $ref: '#/definitions/trade.DeleteFutureOrderRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: the future order successfully deleted
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "403":
+          description: Forbidden - Order belongs to another user
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Delete Future Order
+      tags:
+      - Trade
     post:
       consumes:
       - application/json
@@ -780,6 +927,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/trade.FutureOrderRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -792,11 +944,19 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Set a future order
+      tags:
+      - Trade
   /future-order/get-all:
     get:
       description: Retrieves all future orders
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -811,8 +971,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Get all future orders
+      tags:
+      - Trade
   /open-trade:
     post:
       consumes:
@@ -825,6 +987,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/trade.OpenTradeRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -837,11 +1004,19 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Open a trade
+      tags:
+      - Trade
   /open-trade/get-all:
     get:
       description: Retrieves all open trades for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -856,13 +1031,21 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Get all open trades
+      tags:
+      - Trade
   /support/admin/get-active-tickets:
     get:
       consumes:
       - application/json
       description: Retrieves all active support tickets (Admin only)
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -877,9 +1060,11 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       - AdminAuth: []
       summary: 'Admin: Get active support tickets'
+      tags:
+      - Support
   /support/close-ticket:
     patch:
       consumes:
@@ -891,6 +1076,11 @@ paths:
         name: ticket_id
         required: true
         type: integer
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -903,13 +1093,21 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Close a support ticket
+      tags:
+      - Support
   /support/get-all-tickets:
     get:
       consumes:
       - application/json
       description: Retrieves all support tickets for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -924,8 +1122,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Get all tickets for a user
+      tags:
+      - Support
   /support/get-ticket-messages:
     get:
       consumes:
@@ -937,6 +1137,11 @@ paths:
         name: ticket_id
         required: true
         type: integer
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -949,8 +1154,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Get messages for a support ticket
+      tags:
+      - Support
   /support/open-ticket:
     post:
       consumes:
@@ -963,6 +1170,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.TicketRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -975,8 +1187,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Open a support ticket
+      tags:
+      - Support
   /support/send-message:
     post:
       consumes:
@@ -989,6 +1203,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handlers.MessageRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1001,8 +1220,10 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       security:
-      - ApiKeyAuth: []
+      - BasicAuth: []
       summary: Send a message to a support ticket
+      tags:
+      - Support
   /user/login:
     post:
       consumes:
@@ -1031,6 +1252,8 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: User login
+      tags:
+      - User
   /user/register:
     post:
       consumes:
@@ -1059,4 +1282,6 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: User registration
+      tags:
+      - User
 swagger: "2.0"

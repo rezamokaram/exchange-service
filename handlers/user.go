@@ -30,6 +30,7 @@ type TokenResponse struct {
 // UserRegister handles the registration of a new user
 // @Summary User registration
 // @Description Register a new user
+// @Tags User
 // @Accept  json
 // @Produce json
 // @Param   body  body      RegisterRequest  true  "User Registration"
@@ -58,6 +59,7 @@ func UserRegister(service services.UserService) echo.HandlerFunc {
 // UserLogin handles user login
 // @Summary User login
 // @Description Logs in a user
+// @Tags User
 // @Accept  json
 // @Produce json
 // @Param   body  body      LoginRequest     true  "User Login"

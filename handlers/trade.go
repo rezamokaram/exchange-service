@@ -12,10 +12,12 @@ import (
 // OpenTrade opens a new trade
 // @Summary Open a trade
 // @Description Opens a new trade
+// @Tags Trade
 // @Accept  json
 // @Produce  json
 // @Param   body  body      trade.OpenTradeRequest  true  "Open Trade"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /open-trade [post]
@@ -47,10 +49,12 @@ func OpenTrade(service services.TradeService) echo.HandlerFunc {
 // CloseTrade closes an existing trade
 // @Summary Close a trade
 // @Description Closes an existing trade
+// @Tags Trade
 // @Accept  json
 // @Produce  json
 // @Param   body  body      trade.ClosedTradeRequest  true  "Close Trade"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /close-trade [post]
@@ -82,8 +86,10 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 // GetAllOpenTrades retrieves all open trades for the authenticated user
 // @Summary Get all open trades
 // @Description Retrieves all open trades for the authenticated user
+// @Tags Trade
 // @Produce  json
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {array}   trade.OpenTrade
 // @Failure 400   {object}  models.Response
 // @Router /open-trade/get-all [get]
@@ -115,8 +121,10 @@ func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 // GetAllClosedTrades retrieves all closed trades for the authenticated user
 // @Summary Get all closed trades
 // @Description Retrieves all closed trades for the authenticated user
+// @Tags Trade
 // @Produce  json
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {array}   trade.ClosedTrade
 // @Failure 400   {object}  models.Response
 // @Router /close-trade/get-all [get]
@@ -147,10 +155,12 @@ func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 // SetFutureOrder sets a future order for the authenticated user
 // @Summary Set a future order
 // @Description Sets a future order
+// @Tags Trade
 // @Accept  json
 // @Produce  json
 // @Param   body  body      trade.FutureOrderRequest  true  "Future Order"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /future-order [post]
@@ -178,6 +188,20 @@ func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 	}
 }
 
+// DeleteFutureOrder handles the deletion of a future order
+// @Summary Delete Future Order
+// @Description Deletes a specified future order belonging to the authenticated user
+// @Tags Trade
+// @Accept  json
+// @Produce  json
+// @Param   order_id  body    trade.DeleteFutureOrderRequest  true  "Delete Future Order"
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
+// @Success 200  {object}  models.Response  "the future order successfully deleted"
+// @Failure 400  {object}  models.Response  "Bad Request"
+// @Failure 403  {object}  models.Response  "Forbidden - Order belongs to another user"
+// @Failure 500  {object}  models.Response  "Internal Server Error"
+// @Router /future-order [delete]
 func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		request := new(trade.DeleteFutureOrderRequest)
@@ -205,8 +229,10 @@ func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 // GetAllFutureOrders retrieves all future orders for the authenticated user
 // @Summary Get all future orders
 // @Description Retrieves all future orders
+// @Tags Trade
 // @Produce  json
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {array}   trade.FutureOrder
 // @Failure 400   {object}  models.Response
 // @Router /future-order/get-all [get]
@@ -231,10 +257,12 @@ func GetAllFutureOrders(service services.TradeService) echo.HandlerFunc {
 // FilterTrades filters closed trades based on criteria for the authenticated user
 // @Summary Filter closed trades
 // @Description Filters closed trades based on given criteria
+// @Tags Trade
 // @Accept  json
 // @Produce  json
 // @Param   body  body      trade.FilterTradesRequest  true  "Filter Criteria"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  trade.FilterTradesResponse
 // @Failure 400   {object}  models.Response
 // @Router /close-trade/filter-all [get]

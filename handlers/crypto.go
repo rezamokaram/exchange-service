@@ -24,9 +24,10 @@ type CryptoRequest struct {
 // GetCrypto handles the retrieval of a specific cryptocurrency
 // @Summary Get cryptocurrency
 // @Description Gets details of a specific cryptocurrency by ID
+// @Tags Crypto
 // @Accept  json
 // @Produce  json
-// @Param   id  query  int  true  "Crypto ID"
+// @Param   body  body     GetCryptoRequest  true  "Crypto ID"
 // @Success 200  {object}  cryptocurrency.CryptoResponse
 // @Failure 400  {object}  models.Response
 // @Router /crypto [get]
@@ -52,7 +53,10 @@ func GetCrypto(service services.CryptoService) echo.HandlerFunc {
 // SetCrypto handles adding a new cryptocurrency
 // @Summary Add new cryptocurrency
 // @Description Adds a new cryptocurrency to the system
+// @Tags Crypto
 // @Accept  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Produce  json
 // @Param   body  body      cryptocurrency.MakeCryptoRequest  true  "Crypto Information"
 // @Success 200   {object}  models.Response
@@ -85,7 +89,10 @@ func SetCrypto(service services.CryptoService) echo.HandlerFunc {
 // UpdateCrypto handles updating an existing cryptocurrency
 // @Summary Update cryptocurrency
 // @Description Updates details of an existing cryptocurrency
+// @Tags Crypto
 // @Accept  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Produce  json
 // @Param   body  body      cryptocurrency.UpdateCryptoRequest  true  "Crypto Update Information"
 // @Success 200   {object}  models.Response
@@ -118,6 +125,7 @@ func UpdateCrypto(service services.CryptoService) echo.HandlerFunc {
 // GetAllCrypto handles retrieving all cryptocurrencies
 // @Summary Get all cryptocurrencies
 // @Description Retrieves details of all cryptocurrencies
+// @Tags Crypto
 // @Accept  json
 // @Produce  json
 // @Success 200  {array}  cryptocurrency.CryptoResponse

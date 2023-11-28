@@ -33,10 +33,12 @@ type UnblockUserRequest struct {
 // UpgradeToAdmin upgrades a user to an admin role
 // @Summary Upgrade user to admin
 // @Description Upgrades a regular user to an admin
+// @Tags Admin
 // @Accept  json
 // @Produce json
 // @Param   body  body      UpdateUserToAdminRequest  true  "Admin Password"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /admin/update-to-admin [put]
@@ -66,10 +68,12 @@ func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 // UpdateAuthenticationLevel updates a user's authentication level
 // @Summary Update user authentication level
 // @Description Updates a user's authentication level
+// @Tags Admin
 // @Accept  json
 // @Produce json
 // @Param   body  body      UpdateAuthenticationLevelRequest  true  "Update Auth Level"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Security AdminAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
@@ -92,10 +96,12 @@ func UpdateAuthenticationLevel(service services.AdminService) echo.HandlerFunc {
 // BlockUser blocks a user account
 // @Summary Block user
 // @Description Blocks a user account
+// @Tags Admin
 // @Accept  json
 // @Produce json
 // @Param   body  body      BlockUserRequest  true  "Block User"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Security AdminAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
@@ -118,10 +124,12 @@ func BlockUser(service services.AdminService) echo.HandlerFunc {
 // UnblockUser unblocks a user account
 // @Summary Unblock user
 // @Description Unblocks a user account
+// @Tags Admin
 // @Accept  json
 // @Produce json
 // @Param   body  body      UnblockUserRequest  true  "Unblock User"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Security AdminAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
@@ -144,10 +152,12 @@ func UnblockUser(service services.AdminService) echo.HandlerFunc {
 // GetUserInfo retrieves information for a specific user
 // @Summary Get user information
 // @Description Retrieves information for a specific user
+// @Tags Admin
 // @Accept  json
 // @Produce json
 // @Param   username  query  string  true  "Username"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Security AdminAuth
 // @Success 200   {object}  models.UserInfo
 // @Failure 400   {object}  models.Response

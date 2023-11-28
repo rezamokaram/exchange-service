@@ -20,8 +20,8 @@ import (
 //	@contact.name	Go-Zilla
 //	@contact.url	https://github.com/Quera-Go-Zilla
 
-// @host						localhost:8080
-// @BasePath					/
+// @host			localhost:8080
+// @BasePath		/
 func main() {
 	db, err := database.NewConnection()
 	if err != nil {

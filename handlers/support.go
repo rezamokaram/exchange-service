@@ -25,10 +25,12 @@ type MessageRequest struct {
 // OpenTicket handles opening a new support ticket
 // @Summary Open a support ticket
 // @Description Opens a new support ticket
+// @Tags Support
 // @Accept  json
 // @Produce json
 // @Param   body  body      TicketRequest  true  "Open Ticket"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /support/open-ticket [post]
@@ -64,9 +66,11 @@ func OpenTicket(service services.SupportService) echo.HandlerFunc {
 // GetActiveTickets retrieves all active tickets (Admin only)
 // @Summary Admin: Get active support tickets
 // @Description Retrieves all active support tickets (Admin only)
+// @Tags Support
 // @Accept  json
 // @Produce json
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Security AdminAuth
 // @Success 200   {object}  []models.SupportTicket
 // @Failure 400   {object}  models.Response
@@ -86,10 +90,12 @@ func GetActiveTickets(service services.SupportService) echo.HandlerFunc {
 // GetTicketMessages retrieves messages for a specific support ticket
 // @Summary Get messages for a support ticket
 // @Description Retrieves all messages for a specific support ticket
+// @Tags Support
 // @Accept  json
 // @Produce json
 // @Param   ticket_id  query  int  true  "Ticket ID"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.SupportTicket
 // @Failure 400   {object}  models.Response
 // @Router /support/get-ticket-messages [get]
@@ -116,9 +122,11 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 // GetAllTickets retrieves all tickets for the authenticated user
 // @Summary Get all tickets for a user
 // @Description Retrieves all support tickets for the authenticated user
+// @Tags Support
 // @Accept  json
 // @Produce json
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  []models.SupportTicket
 // @Failure 400   {object}  models.Response
 // @Router /support/get-all-tickets [get]
@@ -143,10 +151,12 @@ func GetAllTickets(service services.SupportService) echo.HandlerFunc {
 // SendMessage handles sending a message to an existing support ticket
 // @Summary Send a message to a support ticket
 // @Description Sends a message to a specific support ticket
+// @Tags Support
 // @Accept  json
 // @Produce json
 // @Param   body  body      MessageRequest  true  "Send Message"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /support/send-message [post]
@@ -182,10 +192,12 @@ func SendMessage(service services.SupportService) echo.HandlerFunc {
 // CloseTicket handles closing an existing support ticket
 // @Summary Close a support ticket
 // @Description Closes an existing support ticket
+// @Tags Support
 // @Accept  json
 // @Produce json
 // @Param   ticket_id  query  int  true  "Ticket ID"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /support/close-ticket [patch]

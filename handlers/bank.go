@@ -37,7 +37,10 @@ type ChargeAccountResponse struct {
 // AddBankAccount handles adding a new bank account
 // @Summary Add Bank Account
 // @Description Adds a bank account for a user
+// @Tags Bank
 // @Accept  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Produce  json
 // @Produce json
 // @Param   body  body      AddBankAccountRequest  true  "Add Bank Account"
@@ -79,7 +82,10 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 // ChargeAccount handles charging a user's account
 // @Summary Charge Account
 // @Description Charges a user's account
+// @Tags Bank
 // @Accept  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Produce json
 // @Param   body  body      ChargeAccountRequest   true  "Charge Account"
 // @Success 200   {object}  ChargeAccountResponse
@@ -117,6 +123,7 @@ func ChargeAccount(bankService services.BankService) echo.HandlerFunc {
 // VerifyPayment handles the verification of a payment transaction
 // @Summary Verify Payment
 // @Description Verifies a payment transaction
+// @Tags Bank
 // @Accept  json
 // @Produce json
 // @Success 200   {object}  models.Response
@@ -139,7 +146,10 @@ func VerifyPayment(bankService services.BankService) echo.HandlerFunc {
 // WithdrawFromAccount handles withdrawing money from a user's account balance
 // @Summary Withdraw from Account
 // @Description Allows a user to withdraw a specified amount from their account balance
+// @Tags Bank
 // @Accept  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
 // @Produce json
 // @Param   body  body      WithdrawFromAccountRequest  true  "Withdraw from Account"
 // @Security ApiKeyAuth

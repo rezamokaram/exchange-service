@@ -22,7 +22,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     },
                     {
                         "AdminAuth": []
@@ -35,6 +35,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Admin"
+                ],
                 "summary": "Block user",
                 "parameters": [
                     {
@@ -45,6 +48,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.BlockUserRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -67,7 +77,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     },
                     {
                         "AdminAuth": []
@@ -80,6 +90,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Admin"
+                ],
                 "summary": "Unblock user",
                 "parameters": [
                     {
@@ -90,6 +103,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.UnblockUserRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -112,7 +132,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     },
                     {
                         "AdminAuth": []
@@ -125,6 +145,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Admin"
+                ],
                 "summary": "Update user authentication level",
                 "parameters": [
                     {
@@ -135,6 +158,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.UpdateAuthenticationLevelRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -157,7 +187,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Upgrades a regular user to an admin",
@@ -166,6 +196,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Admin"
                 ],
                 "summary": "Upgrade user to admin",
                 "parameters": [
@@ -177,6 +210,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.UpdateUserToAdminRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -199,7 +239,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     },
                     {
                         "AdminAuth": []
@@ -212,6 +252,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Admin"
+                ],
                 "summary": "Get user information",
                 "parameters": [
                     {
@@ -219,6 +262,13 @@ const docTemplate = `{
                         "description": "Username",
                         "name": "username",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -240,6 +290,11 @@ const docTemplate = `{
         },
         "/bank/add_account": {
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Adds a bank account for a user",
                 "consumes": [
                     "application/json"
@@ -248,8 +303,18 @@ const docTemplate = `{
                     "application/json",
                     "application/json"
                 ],
+                "tags": [
+                    "Bank"
+                ],
                 "summary": "Add Bank Account",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Add Bank Account",
                         "name": "body",
@@ -278,6 +343,11 @@ const docTemplate = `{
         },
         "/bank/payment/charge": {
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Charges a user's account",
                 "consumes": [
                     "application/json"
@@ -285,8 +355,18 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Bank"
+                ],
                 "summary": "Charge Account",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Charge Account",
                         "name": "body",
@@ -322,6 +402,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Bank"
+                ],
                 "summary": "Verify Payment",
                 "responses": {
                     "200": {
@@ -337,6 +420,9 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
+                        "BasicAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -347,8 +433,18 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Bank"
+                ],
                 "summary": "Withdraw from Account",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Withdraw from Account",
                         "name": "body",
@@ -379,7 +475,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Closes an existing trade",
@@ -388,6 +484,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Trade"
                 ],
                 "summary": "Close a trade",
                 "parameters": [
@@ -399,6 +498,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/trade.ClosedTradeRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -421,7 +527,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Filters closed trades based on given criteria",
@@ -430,6 +536,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Trade"
                 ],
                 "summary": "Filter closed trades",
                 "parameters": [
@@ -441,6 +550,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/trade.FilterTradesRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -463,14 +579,26 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Retrieves all closed trades for the authenticated user",
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Trade"
+                ],
                 "summary": "Get all closed trades",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -499,14 +627,19 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Crypto"
+                ],
                 "summary": "Get cryptocurrency",
                 "parameters": [
                     {
-                        "type": "integer",
                         "description": "Crypto ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.GetCryptoRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -525,6 +658,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Updates details of an existing cryptocurrency",
                 "consumes": [
                     "application/json"
@@ -532,8 +670,18 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Crypto"
+                ],
                 "summary": "Update cryptocurrency",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Crypto Update Information",
                         "name": "body",
@@ -560,6 +708,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Adds a new cryptocurrency to the system",
                 "consumes": [
                     "application/json"
@@ -567,8 +720,18 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Crypto"
+                ],
                 "summary": "Add new cryptocurrency",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Crypto Information",
                         "name": "body",
@@ -604,6 +767,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Crypto"
+                ],
                 "summary": "Get all cryptocurrencies",
                 "responses": {
                     "200": {
@@ -628,7 +794,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Sets a future order",
@@ -637,6 +803,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Trade"
                 ],
                 "summary": "Set a future order",
                 "parameters": [
@@ -648,6 +817,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/trade.FutureOrderRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -664,20 +840,94 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Deletes a specified future order belonging to the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trade"
+                ],
+                "summary": "Delete Future Order",
+                "parameters": [
+                    {
+                        "description": "Delete Future Order",
+                        "name": "order_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/trade.DeleteFutureOrderRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the future order successfully deleted",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Order belongs to another user",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
             }
         },
         "/future-order/get-all": {
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Retrieves all future orders",
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Trade"
+                ],
                 "summary": "Get all future orders",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -701,7 +951,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Opens a new trade",
@@ -710,6 +960,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Trade"
                 ],
                 "summary": "Open a trade",
                 "parameters": [
@@ -721,6 +974,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/trade.OpenTradeRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -743,14 +1003,26 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Retrieves all open trades for the authenticated user",
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Trade"
+                ],
                 "summary": "Get all open trades",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -774,7 +1046,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     },
                     {
                         "AdminAuth": []
@@ -787,7 +1059,19 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Support"
+                ],
                 "summary": "Admin: Get active support tickets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -811,7 +1095,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Closes an existing support ticket",
@@ -821,6 +1105,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Support"
+                ],
                 "summary": "Close a support ticket",
                 "parameters": [
                     {
@@ -828,6 +1115,13 @@ const docTemplate = `{
                         "description": "Ticket ID",
                         "name": "ticket_id",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -851,7 +1145,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Retrieves all support tickets for the authenticated user",
@@ -861,7 +1155,19 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Support"
+                ],
                 "summary": "Get all tickets for a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -885,7 +1191,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Retrieves all messages for a specific support ticket",
@@ -895,6 +1201,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Support"
+                ],
                 "summary": "Get messages for a support ticket",
                 "parameters": [
                     {
@@ -902,6 +1211,13 @@ const docTemplate = `{
                         "description": "Ticket ID",
                         "name": "ticket_id",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -925,7 +1241,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Opens a new support ticket",
@@ -934,6 +1250,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Support"
                 ],
                 "summary": "Open a support ticket",
                 "parameters": [
@@ -945,6 +1264,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.TicketRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -967,7 +1293,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BasicAuth": []
                     }
                 ],
                 "description": "Sends a message to a specific support ticket",
@@ -976,6 +1302,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Support"
                 ],
                 "summary": "Send a message to a support ticket",
                 "parameters": [
@@ -987,6 +1316,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/handlers.MessageRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1013,6 +1349,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "User"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -1056,6 +1395,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "User"
                 ],
                 "summary": "User registration",
                 "parameters": [
@@ -1151,18 +1493,6 @@ const docTemplate = `{
                 }
             }
         },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "handlers.AddBankAccountRequest": {
             "type": "object",
             "properties": {
@@ -1214,6 +1544,14 @@ const docTemplate = `{
             "properties": {
                 "payment_url": {
                     "type": "string"
+                }
+            }
+        },
+        "handlers.GetCryptoRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1422,6 +1760,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 0
                 },
+                "closed_trades": {},
                 "email": {
                     "description": "User's email address",
                     "type": "string",
@@ -1437,6 +1776,7 @@ const docTemplate = `{
                     "type": "boolean",
                     "example": false
                 },
+                "open_trades": {},
                 "phone_number": {
                     "description": "User's phone number",
                     "type": "string",
@@ -1458,14 +1798,11 @@ const docTemplate = `{
                 "buy_fee": {
                     "type": "integer"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "crypto_id": {
                     "type": "integer"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "id": {
                     "type": "integer"
@@ -1476,7 +1813,7 @@ const docTemplate = `{
                 "sell_fee": {
                     "type": "integer"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {
@@ -1490,6 +1827,14 @@ const docTemplate = `{
                 "amount": {
                     "type": "number"
                 },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "trade.DeleteFutureOrderRequest": {
+            "type": "object",
+            "properties": {
                 "id": {
                     "type": "integer"
                 }
@@ -1544,14 +1889,11 @@ const docTemplate = `{
                 "amount": {
                     "type": "number"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "cryptoID": {
                     "type": "integer"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "id": {
                     "type": "integer"
@@ -1565,7 +1907,7 @@ const docTemplate = `{
                 "targetPrice": {
                     "type": "integer"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 },
                 "userID": {
@@ -1602,14 +1944,11 @@ const docTemplate = `{
                 "buyFee": {
                     "type": "integer"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "cryptoID": {
                     "type": "integer"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "id": {
                     "type": "integer"
@@ -1620,7 +1959,7 @@ const docTemplate = `{
                 "takeProfit": {
                     "type": "integer"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 },
                 "userID": {
