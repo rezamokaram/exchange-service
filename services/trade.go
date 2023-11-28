@@ -101,7 +101,8 @@ func (s *tradeService) OpenTrade(
 	}
 
 	bankService := NewBankService(s.db)
-	statusCode, err := bankService.SubtractFromUserBalanace(user, int(cost))
+	description := fmt.Sprintf("Trade Service: for opening a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, request.Amount, time.Now())
+	statusCode, err := bankService.SubtractFromUserBalance(user, int(cost), 1, description)
 	if err != nil {
 		return statusCode, err
 	}
