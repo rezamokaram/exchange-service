@@ -1,8 +1,6 @@
 package trade
 
 import (
-	"qexchange/models"
-
 	"gorm.io/gorm"
 )
 
@@ -26,17 +24,5 @@ func (fo FutureOrder) ToOpenTradeRequest() OpenTradeRequest {
 		Amount:     fo.Amount,
 		StopLoss:   fo.StopLoss,
 		TakeProfit: fo.TakeProfit,
-	}
-}
-
-func (fo FutureOrder) ToTransaction(
-	userId uint,
-	priceAtTime int,
-) models.Transaction {
-	return models.Transaction{
-		UserID:      userId,
-		CryptoID:    fo.CryptoID,
-		Amount:      fo.Amount,
-		PriceAtTime: priceAtTime,
 	}
 }

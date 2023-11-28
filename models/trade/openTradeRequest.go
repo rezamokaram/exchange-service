@@ -1,25 +1,11 @@
 package trade
 
-import "qexchange/models"
-
 // OpenTradeRequest represents the request to open a trade
 type OpenTradeRequest struct {
 	CryptoID   uint    `json:"crypto_id"`
 	Amount     float64 `json:"amount"`
 	StopLoss   int     `json:"stop_loss"`
 	TakeProfit int     `json:"take_profit"`
-}
-
-func (req OpenTradeRequest) ToTransaction(
-	userId uint,
-	priceAtTime int,
-) models.Transaction {
-	return models.Transaction{
-		UserID:      userId,
-		CryptoID:    req.CryptoID,
-		Amount:      req.Amount,
-		PriceAtTime: priceAtTime,
-	}
 }
 
 func (req OpenTradeRequest) ToOpenTrade(
