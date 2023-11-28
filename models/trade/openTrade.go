@@ -6,7 +6,7 @@ type OpenTrade struct {
 	gorm.Model
 	UserID      uint    `gorm:"not null"`
 	CryptoID    uint    `gorm:"not null"`
-	Amount      float64 `gorm:"not null"`
+	Amount      int 	`gorm:"not null"`
 	BuyFee 		int     `gorm:"not null"`
 	StopLoss	int		`gorm:""`
 	TakeProfit  int		`gorm:""`
@@ -29,6 +29,6 @@ func (openTrade OpenTrade)ToCloseTrade(
 	}
 }
 
-func profitCalculation(amount float64, buy , sell int) int {
-	return (sell - buy) * int(amount)
+func profitCalculation(amount int, buy , sell int) int {
+	return (sell - buy) * amount
 }
