@@ -12,6 +12,12 @@ func NewResponse(message string) Response {
 }
 
 func NewErrorResponse(message string, err string) Response {
+	if message == "" || err == "" {
+		return Response{
+			Message: message + err,
+		}
+	}
+
 	return Response{
 		Message: message + ": " + err,
 	}

@@ -10,6 +10,13 @@ import (
 
 func UserRoutes(e *echo.Echo, db *gorm.DB) {
 	userService := services.NewUserService(db)
-	e.POST("/user/register", handlers.UserRegister(userService))
-	e.POST("/user/login", handlers.UserLogin(userService))
+	e.POST(
+		"/user/register",
+		handlers.UserRegister(userService),
+	)
+
+	e.POST(
+		"/user/login",
+		handlers.UserLogin(userService),
+	)
 }
