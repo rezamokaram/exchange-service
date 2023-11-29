@@ -1,0 +1,1384 @@
+basePath: /
+definitions:
+  cryptocurrency.CryptoResponse:
+    properties:
+      buy_fee:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      sell_fee:
+        type: integer
+      symbol:
+        type: string
+    type: object
+  cryptocurrency.MakeCryptoRequest:
+    properties:
+      current_price:
+        example: 500
+        type: integer
+      name:
+        example: SomeCoin
+        type: string
+      symbol:
+        example: SMC
+        type: string
+    type: object
+  cryptocurrency.UpdateCryptoRequest:
+    properties:
+      current_price:
+        example: 510
+        type: integer
+      id:
+        example: 1
+        type: integer
+      name:
+        example: ""
+        type: string
+      symbol:
+        example: ""
+        type: string
+    type: object
+  handlers.AddBankAccountRequest:
+    properties:
+      account_number:
+        example: "123456"
+        type: string
+      bank_name:
+        example: eghtesad novin
+        type: string
+      card_number:
+        example: "654321"
+        type: string
+      cvv2:
+        example: "123"
+        type: string
+      expire_date:
+        example: 04/10
+        type: string
+    type: object
+  handlers.BlockUserRequest:
+    properties:
+      temporary:
+        example: false
+        type: boolean
+      username:
+        example: user1
+        type: string
+    type: object
+  handlers.ChargeAccountRequest:
+    properties:
+      amount:
+        type: integer
+    type: object
+  handlers.ChargeAccountResponse:
+    properties:
+      payment_url:
+        type: string
+    type: object
+  handlers.GetCryptoRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  handlers.LoginRequest:
+    properties:
+      password:
+        example: "123456"
+        type: string
+      username:
+        example: newUser
+        type: string
+    type: object
+  handlers.MessageRequest:
+    properties:
+      message:
+        example: I have a problem
+        type: string
+      ticket_id:
+        example: 1
+        type: integer
+    type: object
+  handlers.RegisterRequest:
+    properties:
+      email:
+        example: newUser@example.com
+        type: string
+      password:
+        example: "123456"
+        type: string
+      passwordrepeat:
+        example: "123456"
+        type: string
+      username:
+        example: newUser
+        type: string
+    type: object
+  handlers.TicketRequest:
+    properties:
+      message:
+        example: I have a problem
+        type: string
+      subject:
+        example: problem with system
+        type: string
+      trade_id:
+        example: 1
+        type: integer
+    type: object
+  handlers.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  handlers.UnblockUserRequest:
+    properties:
+      username:
+        example: user2
+        type: string
+    type: object
+  handlers.UpdateAuthenticationLevelRequest:
+    properties:
+      new_auth_level:
+        example: 0
+        type: integer
+      username:
+        example: user2
+        type: string
+    type: object
+  handlers.UpdateUserToAdminRequest:
+    properties:
+      admin_password:
+        example: secret
+        type: string
+    type: object
+  handlers.WithdrawFromAccountRequest:
+    properties:
+      amount:
+        example: 5000
+        type: integer
+      bank_id:
+        example: 1
+        type: integer
+    type: object
+  models.PaymentInfo:
+    properties:
+      amount:
+        type: integer
+      authority:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  models.Response:
+    properties:
+      message:
+        type: string
+    type: object
+  models.SupportTicket:
+    properties:
+      created_at:
+        example: 2023-01-01T15:04:05Z07:00
+        type: string
+      messages:
+        items:
+          $ref: '#/definitions/models.TicketMessage'
+        type: array
+      status:
+        example: 0
+        type: integer
+      subject:
+        example: Issue with Trade Execution
+        type: string
+      trade_id:
+        example: 1
+        type: integer
+      updated_at:
+        example: 2023-01-02T15:04:05Z07:00
+        type: string
+      username:
+        example: user1
+        type: string
+    type: object
+  models.TicketMessage:
+    properties:
+      created_at:
+        example: 2023-01-01T15:04:05Z07:00
+        type: string
+      message:
+        example: I encountered an error when trying to execute a trade.
+        type: string
+      sender_username:
+        example: user1
+        type: string
+    type: object
+  models.Transaction:
+    properties:
+      amount:
+        example: 515
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      method:
+        description: 'method: false -> withdraw, true -> deposit'
+        example: false
+        type: boolean
+      service:
+        description: 'service: 0 -> payment, 1 -> trade'
+        example: 1
+        type: integer
+      updatedAt:
+        type: string
+      user_id:
+        example: 2
+        type: integer
+    type: object
+  models.UserInfo:
+    properties:
+      authentication_level:
+        description: User's authentication level
+        example: 0
+        type: integer
+      balance:
+        description: User's account balance
+        example: 5000000000
+        type: integer
+      banks_names:
+        description: List of user's bank names
+        example:
+        - '[''saman'''
+        - ' ''sepah'']'
+        items:
+          type: string
+        type: array
+      blocked_level:
+        description: User's blocked level
+        example: 0
+        type: integer
+      closed_trades: {}
+      email:
+        description: User's email address
+        example: user1@example.com
+        type: string
+      is_admin:
+        description: Indicates if user has admin privileges
+        example: false
+        type: boolean
+      is_premium:
+        description: Indicates if user has a premium account
+        example: false
+        type: boolean
+      open_trades: {}
+      payments: {}
+      phone_number:
+        description: User's phone number
+        example: "9876543210"
+        type: string
+      transactions: {}
+      username:
+        description: User's username
+        example: user1
+        type: string
+    type: object
+  trade.ClosedTrade:
+    properties:
+      amount:
+        type: integer
+      buy_fee:
+        type: integer
+      createdAt:
+        type: string
+      crypto_id:
+        type: integer
+      id:
+        type: integer
+      profit:
+        type: integer
+      sell_fee:
+        type: integer
+      updatedAt:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  trade.ClosedTradeRequest:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: integer
+    type: object
+  trade.DeleteFutureOrderRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  trade.FilterTradesRequest:
+    properties:
+      crypto_list:
+        items:
+          type: integer
+        type: array
+      end:
+        type: string
+      start:
+        type: string
+    type: object
+  trade.FilterTradesResponse:
+    properties:
+      closed_trades:
+        items:
+          $ref: '#/definitions/trade.ClosedTrade'
+        type: array
+      crypto_list:
+        items:
+          type: integer
+        type: array
+      end:
+        type: string
+      profit_over_all:
+        type: integer
+      start:
+        type: string
+    type: object
+  trade.FutureOrder:
+    properties:
+      amount:
+        type: integer
+      createdAt:
+        type: string
+      cryptoID:
+        type: integer
+      id:
+        type: integer
+      stopLoss:
+        type: integer
+      takeProfit:
+        type: integer
+      targetPrice:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  trade.FutureOrderRequest:
+    properties:
+      amount:
+        type: integer
+      crypto_id:
+        type: integer
+      stop_loss:
+        type: integer
+      take_profit:
+        type: integer
+      target_price:
+        type: integer
+    type: object
+  trade.OpenTrade:
+    properties:
+      amount:
+        type: integer
+      buyFee:
+        type: integer
+      createdAt:
+        type: string
+      cryptoID:
+        type: integer
+      id:
+        type: integer
+      stopLoss:
+        type: integer
+      takeProfit:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  trade.OpenTradeRequest:
+    properties:
+      amount:
+        type: integer
+      crypto_id:
+        type: integer
+      stop_loss:
+        type: integer
+      take_profit:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Go-Zilla
+    url: https://github.com/Quera-Go-Zilla
+  description: Quera Crypto Exchange server
+  title: QExchange-System
+  version: "1.0"
+paths:
+  /admin/block-user:
+    put:
+      consumes:
+      - application/json
+      description: Blocks a user account
+      parameters:
+      - description: Block User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BlockUserRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      - AdminAuth: []
+      summary: Block user
+      tags:
+      - Admin
+  /admin/unblock-user:
+    put:
+      consumes:
+      - application/json
+      description: Unblocks a user account
+      parameters:
+      - description: Unblock User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UnblockUserRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      - AdminAuth: []
+      summary: Unblock user
+      tags:
+      - Admin
+  /admin/update-auth-level:
+    put:
+      consumes:
+      - application/json
+      description: Updates a user's authentication level
+      parameters:
+      - description: Update Auth Level
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateAuthenticationLevelRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      - AdminAuth: []
+      summary: Update user authentication level
+      tags:
+      - Admin
+  /admin/update-to-admin:
+    put:
+      consumes:
+      - application/json
+      description: Upgrades a regular user to an admin
+      parameters:
+      - description: Admin Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateUserToAdminRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Upgrade user to admin
+      tags:
+      - Admin
+  /admin/user-info:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves information for a specific user
+      parameters:
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserInfo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      - AdminAuth: []
+      summary: Get user information
+      tags:
+      - Admin
+  /bank/add_account:
+    post:
+      consumes:
+      - application/json
+      description: Adds a bank account for a user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Add Bank Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddBankAccountRequest'
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Add Bank Account
+      tags:
+      - Bank
+  /bank/payment/charge:
+    post:
+      consumes:
+      - application/json
+      description: Charges a user's account
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Charge Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ChargeAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.ChargeAccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Charge Account
+      tags:
+      - Bank
+  /bank/payment/get-all:
+    get:
+      description: Retrieves all payments
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PaymentInfo'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all payments
+      tags:
+      - Bank
+  /bank/payment/verify:
+    get:
+      consumes:
+      - application/json
+      description: Verifies a payment transaction
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Verify Payment
+      tags:
+      - Bank
+  /bank/payment/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to withdraw a specified amount from their account
+        balance
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Withdraw from Account
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.WithdrawFromAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Withdraw from Account
+      tags:
+      - Bank
+  /bank/transaction/get-all:
+    get:
+      description: Retrieves all transactions
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all transactions
+      tags:
+      - Bank
+  /close-trade:
+    post:
+      consumes:
+      - application/json
+      description: Closes an existing trade
+      parameters:
+      - description: Close Trade
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.ClosedTradeRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Close a trade
+      tags:
+      - Trade
+  /close-trade/filter-all:
+    get:
+      consumes:
+      - application/json
+      description: Filters closed trades based on given criteria
+      parameters:
+      - description: Filter Criteria
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.FilterTradesRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/trade.FilterTradesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Filter closed trades
+      tags:
+      - Trade
+  /close-trade/get-all:
+    get:
+      description: Retrieves all closed trades for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.ClosedTrade'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all closed trades
+      tags:
+      - Trade
+  /crypto:
+    get:
+      consumes:
+      - application/json
+      description: Gets details of a specific cryptocurrency by ID
+      parameters:
+      - description: Crypto ID
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.GetCryptoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cryptocurrency.CryptoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get cryptocurrency
+      tags:
+      - Crypto
+    post:
+      consumes:
+      - application/json
+      description: Adds a new cryptocurrency to the system
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Crypto Information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/cryptocurrency.MakeCryptoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Add new cryptocurrency
+      tags:
+      - Crypto
+    put:
+      consumes:
+      - application/json
+      description: Updates details of an existing cryptocurrency
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Crypto Update Information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/cryptocurrency.UpdateCryptoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Update cryptocurrency
+      tags:
+      - Crypto
+  /crypto/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of all cryptocurrencies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/cryptocurrency.CryptoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get all cryptocurrencies
+      tags:
+      - Crypto
+  /future-order:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specified future order belonging to the authenticated
+        user
+      parameters:
+      - description: Delete Future Order
+        in: body
+        name: order_id
+        required: true
+        schema:
+          $ref: '#/definitions/trade.DeleteFutureOrderRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: the future order successfully deleted
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "403":
+          description: Forbidden - Order belongs to another user
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Delete Future Order
+      tags:
+      - Trade
+    post:
+      consumes:
+      - application/json
+      description: Sets a future order
+      parameters:
+      - description: Future Order
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.FutureOrderRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Set a future order
+      tags:
+      - Trade
+  /future-order/get-all:
+    get:
+      description: Retrieves all future orders
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.FutureOrder'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all future orders
+      tags:
+      - Trade
+  /open-trade:
+    post:
+      consumes:
+      - application/json
+      description: Opens a new trade
+      parameters:
+      - description: Open Trade
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/trade.OpenTradeRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Open a trade
+      tags:
+      - Trade
+  /open-trade/get-all:
+    get:
+      description: Retrieves all open trades for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trade.OpenTrade'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all open trades
+      tags:
+      - Trade
+  /support/admin/get-active-tickets:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all active support tickets (Admin only)
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SupportTicket'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      - AdminAuth: []
+      summary: 'Admin: Get active support tickets'
+      tags:
+      - Support
+  /support/close-ticket:
+    patch:
+      consumes:
+      - application/json
+      description: Closes an existing support ticket
+      parameters:
+      - description: Ticket ID
+        in: query
+        name: ticket_id
+        required: true
+        type: integer
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Close a support ticket
+      tags:
+      - Support
+  /support/get-all-tickets:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all support tickets for the authenticated user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SupportTicket'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all tickets for a user
+      tags:
+      - Support
+  /support/get-ticket-messages:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all messages for a specific support ticket
+      parameters:
+      - description: Ticket ID
+        in: query
+        name: ticket_id
+        required: true
+        type: integer
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SupportTicket'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get messages for a support ticket
+      tags:
+      - Support
+  /support/open-ticket:
+    post:
+      consumes:
+      - application/json
+      description: Opens a new support ticket
+      parameters:
+      - description: Open Ticket
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.TicketRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Open a support ticket
+      tags:
+      - Support
+  /support/send-message:
+    post:
+      consumes:
+      - application/json
+      description: Sends a message to a specific support ticket
+      parameters:
+      - description: Send Message
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.MessageRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Send a message to a support ticket
+      tags:
+      - Support
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user
+      parameters:
+      - description: User Login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: User login
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User Registration
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: User registration
+      tags:
+      - User
+swagger: "2.0"
