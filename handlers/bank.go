@@ -151,7 +151,6 @@ func VerifyPayment(bankService services.BankService) echo.HandlerFunc {
 // @Security BasicAuth
 // @Produce json
 // @Param   body  body      WithdrawFromAccountRequest  true  "Withdraw from Account"
-// @Security ApiKeyAuth
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Router /bank/payment/withdraw [post]
@@ -187,6 +186,16 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 	}
 }
 
+// GetAllTransactions gets all transactions
+// @Summary Get all transactions
+// @Description Retrieves all transactions
+// @Tags Bank
+// @Produce  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
+// @Success 200  {array}   models.Transaction
+// @Failure 400  {object}  models.Response
+// @Router /bank/transaction/get-all [get]
 func GetAllTransactions(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, bind := c.Get("user").(models.User)
@@ -207,6 +216,16 @@ func GetAllTransactions(bankService services.BankService) echo.HandlerFunc {
 	}
 }
 
+// GetAllPayments gets all payments
+// @Summary Get all payments
+// @Description Retrieves all payments
+// @Tags Bank
+// @Produce  json
+// @Param Authorization header string true "Authorization token"
+// @Security BasicAuth
+// @Success 200  {array}   models.PaymentInfo
+// @Failure 400  {object}  models.Response
+// @Router /bank/payment/get-all [get]
 func GetAllPayments(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, bind := c.Get("user").(models.User)

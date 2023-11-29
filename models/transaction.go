@@ -15,8 +15,8 @@ type Transaction struct {
 
 	UserID      uint   `gorm:"not null" json:"user_id,omitempty" example:"2"`
 	Amount      int    `gorm:"not null" json:"amount,omitempty" example:"515"`
-	Method      bool   `gorm:"not null" json:"method,omitempty" example:"0"`  // method: false -> withdraw, true -> deposit
-	Service     int    `gorm:"not null" json:"service,omitempty" example:"1"` // service: 0 -> payment, 1 -> trade
+	Method      bool   `gorm:"not null" json:"method" example:"0"`  // method: false -> withdraw, true -> deposit
+	Service     int    `gorm:"not null" json:"service" example:"1"` // service: 0 -> payment, 1 -> trade
 	Description string `gorm:"type:varchar(255)" json:"description,omitempty"`
 }
 

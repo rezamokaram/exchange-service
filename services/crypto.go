@@ -2,13 +2,7 @@ package services
 
 import (
 	"errors"
-	// "fmt"
 	"net/http"
-	// "qexchange/models"
-	// "qexchange/utils"
-
-	// "golang.org/x/crypto/bcrypt"
-
 	"qexchange/models/cryptocurrency"
 
 	"gorm.io/gorm"
@@ -82,7 +76,7 @@ func (s *cryptoService) UpdateCrypto(
 	if result.Error != nil {
 		return http.StatusBadRequest, result.Error
 	}
-	
+
 	if crypto.CurrentPrice == oldCrypto.CurrentPrice {
 		return http.StatusOK, nil
 	}

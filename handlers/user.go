@@ -77,7 +77,7 @@ func UserRegister(service services.UserService) echo.HandlerFunc {
 			return c.JSON(statusCode, models.NewErrorResponse("registration failed", err.Error()))
 		}
 
-		return c.JSON(http.StatusOK, models.NewResponse("user created successfuly"))
+		return c.JSON(http.StatusOK, models.NewResponse("user created successfully"))
 	}
 }
 
@@ -109,10 +109,10 @@ func UserLogin(service services.UserService) echo.HandlerFunc {
 			return c.JSON(status, models.NewErrorResponse("login failed", err.Error()))
 		}
 
-		tokenrespone := TokenResponse{
+		tokenResponse := TokenResponse{
 			Token: token,
 		}
 
-		return c.JSON(http.StatusOK, tokenrespone)
+		return c.JSON(http.StatusOK, tokenResponse)
 	}
 }

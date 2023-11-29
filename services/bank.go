@@ -148,7 +148,7 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		payment.Status = "Failed"
 		dbResult = s.db.Save(&payment)
 		if dbResult.Error != nil {
-			return http.StatusInternalServerError, errors.New("faild updating payment record")
+			return http.StatusInternalServerError, errors.New("failed updating payment record")
 		}
 		return http.StatusBadRequest, errors.New("payment verification failed")
 	}
@@ -164,9 +164,9 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		payment.Status = "Failed"
 		dbResult = s.db.Save(&payment)
 		if dbResult.Error != nil {
-			return http.StatusInternalServerError, errors.New("faild updating payment record")
+			return http.StatusInternalServerError, errors.New("failed updating payment record")
 		}
-		return http.StatusInternalServerError, errors.New("faild parsing bank data to verify payment")
+		return http.StatusInternalServerError, errors.New("failed parsing bank data to verify payment")
 	}
 
 	// this line disables ssl check
@@ -181,9 +181,9 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		payment.Status = "Failed"
 		dbResult = s.db.Save(&payment)
 		if dbResult.Error != nil {
-			return http.StatusInternalServerError, errors.New("faild updating payment record")
+			return http.StatusInternalServerError, errors.New("failed updating payment record")
 		}
-		return http.StatusInternalServerError, errors.New("faild to send request to verify payment")
+		return http.StatusInternalServerError, errors.New("failed to send request to verify payment")
 	}
 	defer res.Body.Close()
 
@@ -193,9 +193,9 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 		payment.Status = "Failed"
 		dbResult = s.db.Save(&payment)
 		if dbResult.Error != nil {
-			return http.StatusInternalServerError, errors.New("faild updating payment record")
+			return http.StatusInternalServerError, errors.New("failed updating payment record")
 		}
-		return http.StatusInternalServerError, errors.New("faild to parse verification response")
+		return http.StatusInternalServerError, errors.New("failed to parse verification response")
 	}
 
 	if data, ok := jsonBody["data"]; ok {
@@ -206,21 +206,21 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 					payment.Status = "Successful"
 					dbResult = s.db.Save(&payment)
 					if dbResult.Error != nil {
-						return http.StatusInternalServerError, errors.New("faild updating payment record")
+						return http.StatusInternalServerError, errors.New("failed updating payment record")
 					}
 
 					// update user balance
 					var user models.User
 					result := s.db.Where("id = ?", payment.UserID).First(&user)
 					if result.Error != nil {
-						return http.StatusInternalServerError, errors.New("faild finsing user")
+						return http.StatusInternalServerError, errors.New("failed finding user")
 					}
 
 					bankService := NewBankService(s.db)
 					description := fmt.Sprintf("Bank Service: for payment with id = %v at %v", payment.ID, payment.CreatedAt)
 					statusCode, err := bankService.AddToUserBalance(user, int(payment.Amount), 0, description)
 					if err != nil {
-						return statusCode, errors.New("faild updating user balance")
+						return statusCode, errors.New("failed updating user balance")
 					}
 
 					return http.StatusOK, nil
@@ -232,7 +232,7 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 					payment.Status = "Failed"
 					dbResult = s.db.Save(&payment)
 					if dbResult.Error != nil {
-						return http.StatusInternalServerError, errors.New("faild updating payment record")
+						return http.StatusInternalServerError, errors.New("failed updating payment record")
 					}
 					return http.StatusBadRequest, errors.New("code other than 100 or 101 returned")
 				}
@@ -241,7 +241,7 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 				payment.Status = "Failed"
 				dbResult = s.db.Save(&payment)
 				if dbResult.Error != nil {
-					return http.StatusInternalServerError, errors.New("faild updating payment record")
+					return http.StatusInternalServerError, errors.New("failed updating payment record")
 				}
 				return http.StatusBadRequest, errors.New("no code in the json")
 			}
@@ -250,16 +250,16 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 			payment.Status = "Failed"
 			dbResult = s.db.Save(&payment)
 			if dbResult.Error != nil {
-				return http.StatusInternalServerError, errors.New("faild updating payment record")
+				return http.StatusInternalServerError, errors.New("failed updating payment record")
 			}
 			return http.StatusBadRequest, errors.New("data in json failed")
 		}
 	} else {
 		// failed => update database
-		payment.Status = "Faield"
+		payment.Status = "Failed"
 		dbResult = s.db.Save(&payment)
 		if dbResult.Error != nil {
-			return http.StatusInternalServerError, errors.New("faild updating payment record")
+			return http.StatusInternalServerError, errors.New("failed updating payment record")
 		}
 		return http.StatusBadRequest, errors.New("no data in json")
 	}
