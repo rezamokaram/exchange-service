@@ -12,8 +12,6 @@ import (
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
 
-	// "qexchange/services"
-
 	"gorm.io/gorm"
 )
 
@@ -143,26 +141,39 @@ func (s *tradeService) CloseTrade(
 		return http.StatusInternalServerError, errors.New("database error")
 	}
 
-	if request.Amount > openTrade.Amount {
+	return s.CloseTradeWithTrade(openTrade, user, crypto, request.Amount)
+}
+
+func (s *tradeService) CloseTradeWithTrade(
+	openTrade trade.OpenTrade,
+	user 	models.User,
+	crypto cryptocurrency.Crypto,
+	amount int,
+) (int, error) {
+
+	if openTrade.UserID != user.ID {
+		return http.StatusBadRequest, errors.New("this trade belong to another user")
+	}
+
+	if amount > openTrade.Amount {
 		return http.StatusBadRequest, errors.New("requested amount is too large")
 	}
 
-	if openTrade.Amount == request.Amount {
-		// s.db.Delete(&openTrade)
-		result = s.db.Exec("DELETE FROM open_trade WHERE id = ?", openTrade.ID)
+	if openTrade.Amount == amount {
+		result := s.db.Exec("DELETE FROM open_trade WHERE id = ?", openTrade.ID)
 		if result.Error != nil {
-			return http.StatusInternalServerError, result.Error
+			return http.StatusBadRequest, errors.New("requested amount is too large")
 		}
 
 	} else {
-		openTrade.Amount -= request.Amount
+		openTrade.Amount -= amount
 		s.db.Save(&openTrade)
 	}
 
-	cost := request.Amount * crypto.SellFee
+	cost := amount * crypto.SellFee
 	bankService := NewBankService(s.db)
-	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, request.Amount, time.Now())
-	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
+	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, openTrade.Amount, time.Now())
+	statusCode, err := bankService.AddToUserBalance(user, cost, 1, description)
 	if err != nil {
 		return statusCode, errors.New("error in banking operations")
 	}
@@ -250,38 +261,6 @@ func (s *tradeService) CheckTakeProfit(
 		}(s, triggeredTrade)
 	}
 	wg.Wait()
-}
-
-func (s *tradeService) CloseTradeWithTrade( // faster
-	openTrade trade.OpenTrade,
-	user 	models.User,
-	crypto cryptocurrency.Crypto,
-	amount int,
-) (int, error) {
-
-	if openTrade.Amount == amount {
-		result := s.db.Exec("DELETE FROM open_trade WHERE id = ?", openTrade.ID)
-		if result.Error != nil {
-			return http.StatusBadRequest, errors.New("requested amount is too large")
-		}
-
-	} else {
-		openTrade.Amount -= amount
-		s.db.Save(&openTrade)
-	}
-
-	cost := amount * crypto.SellFee
-	bankService := NewBankService(s.db)
-	description := fmt.Sprintf("Trade Service: for closing a trade, crypto = %v with crypto id = %v and amount = %v at %v", crypto.Name, crypto.ID, openTrade.Amount, time.Now())
-	statusCode, err := bankService.AddToUserBalance(user, int(cost), 1, description)
-	if err != nil {
-		return statusCode, errors.New("error in banking operations")
-	}
-
-	newClosedTrade := openTrade.ToCloseTrade(crypto.SellFee)
-	s.db.Save(&newClosedTrade)
-
-	return http.StatusOK, nil
 }
 
 func (s *tradeService) SetFutureOrder(
