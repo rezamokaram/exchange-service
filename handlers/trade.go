@@ -95,13 +95,7 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 // @Router /open-trade/get-all [get]
 func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-
-		request := new(trade.OpenTradeRequest)
-		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("trade failed", err.Error())
-			return c.JSON(http.StatusBadRequest, response)
-		}
-
+		
 		user, bind := c.Get("user").(models.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
@@ -130,12 +124,6 @@ func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 // @Router /close-trade/get-all [get]
 func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-
-		request := new(trade.ClosedTradeRequest)
-		if err := c.Bind(request); err != nil {
-			response := models.NewErrorResponse("trade failed", err.Error())
-			return c.JSON(http.StatusBadRequest, response)
-		}
 
 		user, bind := c.Get("user").(models.User)
 		if !bind {
@@ -166,6 +154,7 @@ func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 // @Router /future-order [post]
 func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		request := new(trade.FutureOrderRequest)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorResponse("trade failed", err.Error())
@@ -204,6 +193,7 @@ func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 // @Router /future-order [delete]
 func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		request := new(trade.DeleteFutureOrderRequest)
 		if err := c.Bind(request); err != nil {
 			response := models.NewErrorResponse("trade failed", err.Error())
