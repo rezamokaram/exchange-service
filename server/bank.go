@@ -15,4 +15,6 @@ func BankRoutes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/bank/payment/withdraw", handlers.WithdrawFromAccount(bankService), middlewares.AuthMiddleware(db))
 	e.POST("/bank/payment/charge", handlers.ChargeAccount(bankService), middlewares.AuthMiddleware(db))
 	e.GET("/bank/payment/verify", handlers.VerifyPayment(bankService))
+	e.GET("/bank/transaction/get-all", handlers.GetAllTransactions(bankService), middlewares.AuthMiddleware(db))
+	e.GET("/bank/payment/get-all", handlers.GetAllPayments(bankService), middlewares.AuthMiddleware(db))
 }
