@@ -39,10 +39,10 @@ To generate the docs run this in the root directory:
    ```
 Then start the project using docker-compose and access the docs at this url:
 
-[http://localhost:8080/swagger/](http://localhost:8080/swagger/)
+[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
    
 ## Testing
 Run the following command in the root directory of the project:
 ```bash
-   go test ./test
+go test ./test
 ```
