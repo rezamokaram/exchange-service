@@ -145,5 +145,20 @@ func (s *adminService) GetUserInfo(username string) (models.UserInfo, int, error
 	}
 	newUserInfo.ClosedTrades = closedTrades
 
+	bankService := NewBankService(s.db)
+	var allTransactions []models.Transaction
+	allTransactions, status, err = bankService.GetAllTransactions(user)
+	if err != nil {
+		return models.UserInfo{}, status, err
+	}
+	newUserInfo.Transactions = allTransactions
+
+	var allPayments []models.PaymentInfo
+	allPayments, status, err = bankService.GetAllPayments(user)
+	if err != nil {
+		return models.UserInfo{}, status, err
+	}
+	newUserInfo.Payments = allPayments
+
 	return newUserInfo, http.StatusOK, nil
 }
