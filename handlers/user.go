@@ -59,12 +59,12 @@ func UserRegister(service services.UserService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "username not provided"))
 		}
 
-		if request.Password != request.PasswordRepeat {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "passwords do not match"))
-		}
-
 		if request.Password == "" || request.PasswordRepeat == "" {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "password not provided"))
+		}
+
+		if request.Password != request.PasswordRepeat {
+			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "passwords do not match"))
 		}
 
 		if !utils.IsPasswordSecure(request.Password) {

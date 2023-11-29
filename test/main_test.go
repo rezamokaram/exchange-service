@@ -1,15 +1,36 @@
 package test
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"qexchange/database"
+	"qexchange/handlers"
+	"qexchange/models"
+	"qexchange/models/cryptocurrency"
 	"testing"
 
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
 
-var testDB *gorm.DB
+var (
+	mockValidUser = handlers.LoginRequest{
+		Username: "user1",
+		Password: "password",
+	}
+
+	mockAdminUser = handlers.LoginRequest{
+		Username: "admin",
+		Password: "password",
+	}
+
+	testDB *gorm.DB
+)
 
 func TestMain(m *testing.M) {
 	var err error
@@ -29,4 +50,39 @@ func TestMain(m *testing.M) {
 	}
 
 	os.Exit(code)
+}
+
+func LoginAndGetToken(e *echo.Echo, t *testing.T, user handlers.LoginRequest) string {
+	requestBody, _ := json.Marshal(user)
+	req := httptest.NewRequest(http.MethodPost, "/user/login", bytes.NewReader(requestBody))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+
+	e.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
+
+	var tokenResponse handlers.TokenResponse
+	err := json.NewDecoder(rec.Body).Decode(&tokenResponse)
+	if err != nil {
+		t.Fatalf("Failed to decode token response: %v", err)
+	}
+
+	return tokenResponse.Token
+}
+
+func ClearDatabaseTables(db *gorm.DB) error {
+	tables := []interface{}{
+		&models.SupportTicket{},
+		&models.TicketMessage{},
+		&cryptocurrency.Crypto{},
+	}
+
+	for _, model := range tables {
+		if err := db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(model).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
