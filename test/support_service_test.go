@@ -15,25 +15,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
-
-var mockValidUser = handlers.LoginRequest{
-	Username: "user1",
-	Password: "password",
-}
-
-var mockAdminUser = handlers.LoginRequest{
-	Username: "admin",
-	Password: "password",
-}
 
 func TestSupportService(t *testing.T) {
 	e := echo.New()
 	server.UserRoutes(e, testDB)
 	server.SupportRoutes(e, testDB)
-	token := loginAndGetToken(e, t, mockValidUser)
-	adminToken := loginAndGetToken(e, t, mockAdminUser)
+	token := LoginAndGetToken(e, t, mockValidUser)
+	adminToken := LoginAndGetToken(e, t, mockAdminUser)
 
 	t.Run("Open new ticket", func(t *testing.T) {
 		// Sub-test for "Invalid request format"
@@ -230,7 +219,7 @@ func TestSupportService(t *testing.T) {
 	})
 
 	t.Run("Get active tickets (Admin only)", func(t *testing.T) {
-		if err := clearDatabaseTables(testDB); err != nil {
+		if err := ClearDatabaseTables(testDB); err != nil {
 			t.Fatalf("Failed to clear database tables: %v", err)
 		}
 
@@ -263,38 +252,4 @@ func TestSupportService(t *testing.T) {
 		assert.Len(t, activeTickets, 3, "Expected 3 active tickets in the response")
 	})
 
-}
-
-func loginAndGetToken(e *echo.Echo, t *testing.T, user handlers.LoginRequest) string {
-	requestBody, _ := json.Marshal(user)
-	req := httptest.NewRequest(http.MethodPost, "/user/login", bytes.NewReader(requestBody))
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-
-	e.ServeHTTP(rec, req)
-
-	assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
-
-	var tokenResponse handlers.TokenResponse
-	err := json.NewDecoder(rec.Body).Decode(&tokenResponse)
-	if err != nil {
-		t.Fatalf("Failed to decode token response: %v", err)
-	}
-
-	return tokenResponse.Token
-}
-
-func clearDatabaseTables(db *gorm.DB) error {
-	tables := []interface{}{
-		&models.SupportTicket{},
-		&models.TicketMessage{},
-	}
-
-	for _, model := range tables {
-		if err := db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(model).Error; err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
