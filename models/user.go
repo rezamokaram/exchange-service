@@ -31,8 +31,10 @@ type UserInfo struct {
 	Balance             int      			`json:"balance" example:"5000000000"`             // User's account balance
 	IsPremium           bool     			`json:"is_premium" example:"false"`               // Indicates if user has a premium account
 	BanksNames          []string 			`json:"banks_names" example:"['saman', 'sepah']"` // List of user's bank names
-	OpenTrades 			interface{}   `json:"open_trades,omitempty"`
-	ClosedTrades 		interface{} `json:"closed_trades,omitempty"`
+	OpenTrades 			interface{}   		`json:"open_trades,omitempty"`
+	ClosedTrades 		interface{} 		`json:"closed_trades,omitempty"`
+	Transactions		interface{}			`json:"transactions,omitempty"`
+	Payments			interface{}			`json:"payments,omitempty"`
 }
 
 func NewUserInfo(user User) UserInfo {

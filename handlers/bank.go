@@ -186,3 +186,43 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 		)
 	}
 }
+
+func GetAllTransactions(bankService services.BankService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("bank action failed", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		allTransactions, statusCode, err := bankService.GetAllTransactions(user)
+		if err != nil {
+			return c.JSON(statusCode, models.NewErrorResponse("bank action failed", err.Error()))
+		}
+
+		return c.JSON(
+			http.StatusOK,
+			allTransactions,
+		)
+	}
+}
+
+func GetAllPayments(bankService services.BankService) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user, bind := c.Get("user").(models.User)
+		if !bind {
+			response := models.NewErrorResponse("bank action failed", "bad user data")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		allPayments, statusCode, err := bankService.GetAllPayments(user)
+		if err != nil {
+			return c.JSON(statusCode, models.NewErrorResponse("bank action failed", err.Error()))
+		}
+
+		return c.JSON(
+			http.StatusOK,
+			allPayments,
+		)
+	}
+}

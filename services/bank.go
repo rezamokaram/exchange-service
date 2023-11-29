@@ -29,6 +29,8 @@ type BankService interface {
 	AddToUserBalance(user models.User, amount, service int, description string) (int, error)
 	SubtractFromUserBalance(user models.User, amount, service int, description string) (int, error)
 	WithdrawFromAccount(user models.User, amount int, BankID uint) (int, error)
+	GetAllTransactions(user models.User) ([]models.Transaction, int, error)
+	GetAllPayments(user models.User) ([]models.PaymentInfo, int, error)
 }
 
 type bankService struct {
@@ -344,4 +346,22 @@ func (s *bankService) WithdrawFromAccount(user models.User, amount int, BankID u
 	}
 
 	return http.StatusOK, nil
+}
+
+func (s *bankService) GetAllTransactions(user models.User) ([]models.Transaction, int, error) {
+	var allTransactions []models.Transaction
+	result := s.db.Where("user_id = ?", user.ID).Find(&allTransactions)
+	if result.Error != nil {
+		return make([]models.Transaction, 0), http.StatusInternalServerError, result.Error
+	}
+	return allTransactions, http.StatusOK, nil
+}
+
+func (s *bankService) GetAllPayments(user models.User) ([]models.PaymentInfo, int, error) {
+	var allPayments []models.PaymentInfo
+	result := s.db.Where("user_id = ?", user.ID).Find(&allPayments)
+	if result.Error != nil {
+		return make([]models.PaymentInfo, 0), http.StatusInternalServerError, result.Error
+	}
+	return allPayments, http.StatusOK, nil
 }
