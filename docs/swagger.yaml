@@ -162,6 +162,23 @@ definitions:
         example: 1
         type: integer
     type: object
+  models.PaymentInfo:
+    properties:
+      amount:
+        type: integer
+      authority:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
   models.Response:
     properties:
       message:
@@ -204,6 +221,31 @@ definitions:
         example: user1
         type: string
     type: object
+  models.Transaction:
+    properties:
+      amount:
+        example: 515
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      method:
+        description: 'method: false -> withdraw, true -> deposit'
+        example: false
+        type: boolean
+      service:
+        description: 'service: 0 -> payment, 1 -> trade'
+        example: 1
+        type: integer
+      updatedAt:
+        type: string
+      user_id:
+        example: 2
+        type: integer
+    type: object
   models.UserInfo:
     properties:
       authentication_level:
@@ -240,10 +282,12 @@ definitions:
         example: false
         type: boolean
       open_trades: {}
+      payments: {}
       phone_number:
         description: User's phone number
         example: "9876543210"
         type: string
+      transactions: {}
       username:
         description: User's username
         example: user1
@@ -620,6 +664,33 @@ paths:
       summary: Charge Account
       tags:
       - Bank
+  /bank/payment/get-all:
+    get:
+      description: Retrieves all payments
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PaymentInfo'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all payments
+      tags:
+      - Bank
   /bank/payment/verify:
     get:
       consumes:
@@ -666,8 +737,34 @@ paths:
             $ref: '#/definitions/models.Response'
       security:
       - BasicAuth: []
-      - ApiKeyAuth: []
       summary: Withdraw from Account
+      tags:
+      - Bank
+  /bank/transaction/get-all:
+    get:
+      description: Retrieves all transactions
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - BasicAuth: []
+      summary: Get all transactions
       tags:
       - Bank
   /close-trade:
