@@ -14,7 +14,7 @@
 - sqlite
 
 ## Setup
-Fisrt install the dependancies, then:
+First install the dependencies, then:
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/Quera-Go-Zilla/QExchange-System.git
