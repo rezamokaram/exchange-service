@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
+	userModels "qexchange/models/user"
 
 	"github.com/labstack/echo/v4"
 )
@@ -50,7 +51,7 @@ func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("Upgrade To Admin failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)

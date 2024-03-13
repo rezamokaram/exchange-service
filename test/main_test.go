@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"testing"
+
 	"qexchange/database"
-	"qexchange/handlers"
 	"qexchange/models"
 	"qexchange/models/cryptocurrency"
-	"testing"
+	userModels "qexchange/models/user"
+
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -19,12 +21,12 @@ import (
 )
 
 var (
-	mockValidUser = handlers.LoginRequest{
+	mockValidUser = userModels.LoginRequest{
 		Username: "user1",
 		Password: "password",
 	}
 
-	mockAdminUser = handlers.LoginRequest{
+	mockAdminUser = userModels.LoginRequest{
 		Username: "admin",
 		Password: "password",
 	}
@@ -52,7 +54,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func LoginAndGetToken(e *echo.Echo, t *testing.T, user handlers.LoginRequest) string {
+func LoginAndGetToken(e *echo.Echo, t *testing.T, user userModels.LoginRequest) string {
 	requestBody, _ := json.Marshal(user)
 	req := httptest.NewRequest(http.MethodPost, "/user/login", bytes.NewReader(requestBody))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -62,7 +64,7 @@ func LoginAndGetToken(e *echo.Echo, t *testing.T, user handlers.LoginRequest) st
 
 	assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
 
-	var tokenResponse handlers.TokenResponse
+	var tokenResponse userModels.LoginResponse
 	err := json.NewDecoder(rec.Body).Decode(&tokenResponse)
 	if err != nil {
 		t.Fatalf("Failed to decode token response: %v", err)

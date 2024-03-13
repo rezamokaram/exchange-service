@@ -9,6 +9,7 @@ import (
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
 	"qexchange/server"
+	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
 )
@@ -59,8 +60,8 @@ func main() {
 
 func migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&models.User{},
-		&models.Profile{},
+		&userModels.User{},
+		&userModels.Profile{},
 		&cryptocurrency.Crypto{},
 		&models.PaymentInfo{},
 		&models.Transaction{},
@@ -75,6 +76,6 @@ func migrate(db *gorm.DB) error {
 
 func hasTestData(db *gorm.DB) bool {
 	var count int64
-	db.Model(&models.User{}).Count(&count)
+	db.Model(&userModels.User{}).Count(&count)
 	return count > 0
 }

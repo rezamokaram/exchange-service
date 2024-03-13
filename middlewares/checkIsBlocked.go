@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"qexchange/models"
 	"qexchange/services"
+	userModels "qexchange/models/user"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -12,13 +13,13 @@ import (
 func CheckIsBlocked(db *gorm.DB) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user, bind := c.Get("user").(models.User)
+			user, bind := c.Get("user").(userModels.User)
 			if !bind {
 				response := models.NewErrorResponse("Check Blocked", "bad user data")
 				return c.JSON(http.StatusBadRequest, response)
 			}
 
-			var profile models.Profile
+			var profile userModels.Profile
 			if db.Where("user_id = ?", user.ID).First(&profile).Error != nil {
 				response := models.NewErrorResponse("Check Blocked", "profile not found")
 				return c.JSON(http.StatusBadRequest, response)

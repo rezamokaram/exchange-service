@@ -3,9 +3,11 @@ package database
 import (
 	"log"
 	"os"
+
 	"qexchange/models"
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
+	userModels "qexchange/models/user"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -21,8 +23,8 @@ func CreateTestDatabase() (*gorm.DB, error) {
 	}
 
 	err = db.AutoMigrate(
-		&models.User{},
-		&models.Profile{},
+		&userModels.User{},
+		&userModels.Profile{},
 		&cryptocurrency.Crypto{},
 		&models.PaymentInfo{},
 		&models.Transaction{},

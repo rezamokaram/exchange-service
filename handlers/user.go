@@ -3,30 +3,12 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
+	userModels "qexchange/models/user"
 	"qexchange/services"
 	"qexchange/utils"
 
 	"github.com/labstack/echo/v4"
 )
-
-// RegisterRequest represents the request body for user registration
-type RegisterRequest struct {
-	Username       string `json:"username" example:"newUser"`
-	Email          string `json:"email" example:"newUser@example.com"`
-	Password       string `json:"password" example:"123456"`
-	PasswordRepeat string `json:"passwordrepeat" example:"123456"`
-}
-
-// LoginRequest represents the request body for user login
-type LoginRequest struct {
-	Username string `json:"username" example:"newUser"`
-	Password string `json:"password" example:"123456"`
-}
-
-// TokenResponse represents the response containing a JWT token
-type TokenResponse struct {
-	Token string `json:"token"`
-}
 
 // UserRegister handles the registration of a new user
 // @Summary User registration
@@ -42,7 +24,7 @@ type TokenResponse struct {
 func UserRegister(service services.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// parse body
-		request := new(RegisterRequest)
+		request := new(userModels.RegisterRequest)
 		if err := c.Bind(request); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", err.Error()))
 		}
@@ -94,7 +76,7 @@ func UserRegister(service services.UserService) echo.HandlerFunc {
 // @Router /user/login [post]
 func UserLogin(service services.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		request := new(LoginRequest)
+		request := new(userModels.LoginRequest)
 		err := c.Bind(request)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("login failed", err.Error()))
@@ -109,7 +91,7 @@ func UserLogin(service services.UserService) echo.HandlerFunc {
 			return c.JSON(status, models.NewErrorResponse("login failed", err.Error()))
 		}
 
-		tokenResponse := TokenResponse{
+		tokenResponse := userModels.LoginResponse{
 			Token: token,
 		}
 

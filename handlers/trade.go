@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
+	userModels "qexchange/models/user"
 	"qexchange/models/trade"
 	"qexchange/services"
 
@@ -30,7 +31,7 @@ func OpenTrade(service services.TradeService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -67,7 +68,7 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -96,7 +97,7 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -125,7 +126,7 @@ func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 func GetAllClosedTrades(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -161,7 +162,7 @@ func SetFutureOrder(service services.TradeService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -200,7 +201,7 @@ func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -229,7 +230,7 @@ func DeleteFutureOrder(service services.TradeService) echo.HandlerFunc {
 func GetAllFutureOrders(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -265,7 +266,7 @@ func FilterTrades(service services.TradeService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)

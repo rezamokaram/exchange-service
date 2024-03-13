@@ -3,7 +3,8 @@ package services
 import (
 	"errors"
 	"net/http"
-	"qexchange/models"
+
+	userModels "qexchange/models/user"
 	"qexchange/utils"
 
 	"golang.org/x/crypto/bcrypt"
@@ -38,7 +39,7 @@ func (s *userService) Register(
 	email string,
 ) (int, error) {
 	// check for duplicate username or email
-	var existingUser models.User
+	var existingUser userModels.User
 	result := s.db.Where("username = ? OR email = ?", username, email).First(&existingUser)
 	if result.Error == nil {
 		if existingUser.Username == username {
@@ -50,7 +51,7 @@ func (s *userService) Register(
 	}
 
 	// create user
-	var newUser models.User
+	var newUser userModels.User
 	newUser.Username = username
 	newUser.Email = email
 
@@ -67,7 +68,7 @@ func (s *userService) Register(
 	}
 
 	// Create a Profile for the new user
-	profile := models.Profile{UserID: newUser.ID}
+	profile := userModels.Profile{UserID: newUser.ID}
 	if err := s.db.Create(&profile).Error; err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -80,7 +81,7 @@ func (s *userService) Register(
 }
 
 func (s *userService) Login(username, password string) (int, string, error) {
-	var user models.User
+	var user userModels.User
 
 	// check for the existence of the user with the given username
 	if err := s.db.Where("username = ?", username).First(&user).Error; err != nil {
