@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"testing"
 	"net/http/httptest"
+	"testing"
 
 	"qexchange/models"
-	"qexchange/server"
 	userModels "qexchange/models/user"
+	"qexchange/server"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

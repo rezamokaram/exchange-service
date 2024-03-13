@@ -3,8 +3,8 @@ package middlewares
 import (
 	"net/http"
 	"qexchange/models"
-	"qexchange/services"
 	userModels "qexchange/models/user"
+	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"

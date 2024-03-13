@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"qexchange/models"
-	"qexchange/services"
-	userModels "qexchange/models/user"
 	adminModels "qexchange/models/admin"
+	userModels "qexchange/models/user"
+	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
 )

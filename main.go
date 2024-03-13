@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	
+
 	"qexchange/database"
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
-	"qexchange/server"
 	userModels "qexchange/models/user"
-	bankModels "qexchange/models/bank"
+	"qexchange/server"
 
 	"gorm.io/gorm"
 )

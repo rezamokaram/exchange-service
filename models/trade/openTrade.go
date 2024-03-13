@@ -26,7 +26,7 @@ func (OpenTrade) TableName() string {
 
 func (openTrade OpenTrade) ToCloseTrade(
 	sellFee int,
-	amount  int,
+	amount int,
 ) ClosedTrade {
 	return ClosedTrade{
 		UserID:   openTrade.UserID,

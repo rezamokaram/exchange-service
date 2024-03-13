@@ -14,7 +14,6 @@ import (
 	"qexchange/models/cryptocurrency"
 	userModels "qexchange/models/user"
 
-
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"

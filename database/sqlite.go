@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
 	userModels "qexchange/models/user"
-	bankModels "qexchange/models/bank"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -19,7 +19,7 @@ func CreateTestDatabase() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("file:test.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent), // Set log level to Silent
 	})
-	
+
 	if err != nil {
 		return nil, err
 	}

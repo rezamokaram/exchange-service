@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
-	"qexchange/services"
 	userModels "qexchange/models/user"
+	"qexchange/services"
 	"strconv"
 
 	"github.com/labstack/echo/v4"

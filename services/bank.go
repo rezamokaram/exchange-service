@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	userModels "qexchange/models/user"
-	bankModels "qexchange/models/bank"
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
+	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
 )
@@ -28,7 +28,7 @@ const (
 type BankService interface {
 	AddBankAccount(user userModels.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error)
 	ChargeAccount(amount int, user userModels.User) (string, int, error) // returns payment_url, status code, error
-	VerifyPayment(authority, status string) (int, error)             // returns status code, error
+	VerifyPayment(authority, status string) (int, error)                 // returns status code, error
 	AddToUserBalance(user userModels.User, amount, service int, description string) (int, error)
 	SubtractFromUserBalance(user userModels.User, amount, service int, description string) (int, error)
 	WithdrawFromAccount(user userModels.User, amount int, BankID uint) (int, error)

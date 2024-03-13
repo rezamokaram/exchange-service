@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 	"qexchange/models/trade"
 	userModels "qexchange/models/user"
-	bankModels "qexchange/models/bank"
 
 	"gorm.io/gorm"
 )

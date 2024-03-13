@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
-	userModels "qexchange/models/user"
 	"qexchange/models/trade"
+	userModels "qexchange/models/user"
 	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
@@ -96,7 +96,7 @@ func CloseTrade(service services.TradeService) echo.HandlerFunc {
 // @Router /open-trade/get-all [get]
 func GetAllOpenTrades(service services.TradeService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		
+
 		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("trade failed", "bad user data")
