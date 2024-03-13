@@ -8,6 +8,7 @@ import (
 	"qexchange/models"
 	"qexchange/models/trade"
 	userModels "qexchange/models/user"
+	bankModels "qexchange/models/bank"
 
 	"gorm.io/gorm"
 )
@@ -155,7 +156,7 @@ func (s *adminService) GetUserInfo(username string) (userModels.UserInfo, int, e
 	}
 	newUserInfo.Transactions = allTransactions
 
-	var allPayments []models.PaymentInfo
+	var allPayments []bankModels.PaymentInfo
 	allPayments, status, err = bankService.GetAllPayments(user)
 	if err != nil {
 		return userModels.UserInfo{}, status, err

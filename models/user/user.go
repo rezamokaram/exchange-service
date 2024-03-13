@@ -2,6 +2,7 @@ package user
 
 import (
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 
 	"gorm.io/gorm"
 )
@@ -14,7 +15,7 @@ type User struct {
 	IsAdmin       bool   `gorm:"default:false"`
 	Profile       Profile
 	Transaction   []models.Transaction
-	BankingInfo   []models.BankingInfo
+	BankingInfo   []bankModels.BankingInfo
 	SupportTicket []models.SupportTicket
 }
 
