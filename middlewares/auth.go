@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"qexchange/models"
+	userModels "qexchange/models/user"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -59,7 +60,7 @@ func AuthMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 			}
 
 			// Fetch user from database using claims
-			var user models.User
+			var user userModels.User
 			if err := db.First(&user, claims.ID).Preload("Profile").Error; err != nil {
 				if err == gorm.ErrRecordNotFound {
 					response := models.NewErrorResponse("access denied", "User not found")

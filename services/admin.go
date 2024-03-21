@@ -4,18 +4,21 @@ import (
 	"errors"
 	"net/http"
 	"os"
+
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 	"qexchange/models/trade"
+	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
 )
 
 type AdminService interface {
-	UpgradeToAdmin(user models.User, adminPasswordJSON string) error
+	UpgradeToAdmin(user userModels.User, adminPasswordJSON string) error
 	UpdateAuthenticationLevel(username string, newAuthLevel int) error
 	BlockUser(username string, temporary bool) (int, error)
 	UnblockUser(username string) (int, error)
-	GetUserInfo(username string) (models.UserInfo, int, error)
+	GetUserInfo(username string) (userModels.UserInfo, int, error)
 }
 
 type adminService struct {
@@ -39,7 +42,7 @@ func NewAdminService(db *gorm.DB) AdminService {
 	}
 }
 
-func (s *adminService) UpgradeToAdmin(user models.User, adminPasswordJSON string) error {
+func (s *adminService) UpgradeToAdmin(user userModels.User, adminPasswordJSON string) error {
 
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	if adminPasswordJSON != adminPassword {
@@ -55,7 +58,7 @@ func (s *adminService) UpdateAuthenticationLevel(username string, newAuthLevel i
 		return errors.New("newAuthLevel is invalid")
 	}
 
-	var user models.User
+	var user userModels.User
 	if err := s.db.Where("username = ?", username).First(&user).Error; err != nil {
 		return err
 	}
@@ -64,12 +67,12 @@ func (s *adminService) UpdateAuthenticationLevel(username string, newAuthLevel i
 		return errors.New("user is already admin")
 	}
 
-	err := s.db.Model(&models.Profile{}).Where("user_id = ?", user.ID).Update("authentication_level", newAuthLevel).Error
+	err := s.db.Model(&userModels.Profile{}).Where("user_id = ?", user.ID).Update("authentication_level", newAuthLevel).Error
 	return err
 }
 
 func (s *adminService) BlockUser(username string, temporary bool) (int, error) {
-	var user models.User
+	var user userModels.User
 	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
 		return http.StatusNotFound, errors.New("user not found")
 	}
@@ -102,7 +105,7 @@ func (s *adminService) BlockUser(username string, temporary bool) (int, error) {
 }
 
 func (s *adminService) UnblockUser(username string) (int, error) {
-	var user models.User
+	var user userModels.User
 	if err := s.db.Where("username = ?", username).Preload("Profile").First(&user).Error; err != nil {
 		return http.StatusNotFound, errors.New("user not found")
 	}
@@ -123,25 +126,25 @@ func (s *adminService) UnblockUser(username string) (int, error) {
 	return http.StatusOK, nil
 }
 
-func (s *adminService) GetUserInfo(username string) (models.UserInfo, int, error) {
-	var user models.User
+func (s *adminService) GetUserInfo(username string) (userModels.UserInfo, int, error) {
+	var user userModels.User
 	if err := s.db.Where("username = ?", username).Preload("Profile").Preload("BankingInfo").First(&user).Error; err != nil {
-		return models.UserInfo{}, http.StatusNotFound, errors.New("user not found")
+		return userModels.UserInfo{}, http.StatusNotFound, errors.New("user not found")
 	}
 
-	newUserInfo := models.NewUserInfo(user)
+	newUserInfo := userModels.NewUserInfo(user)
 
 	tradeService := NewTradeService(s.db)
 	openTrades, status, err := tradeService.GetAllOpenTrades(user)
 	if err != nil {
-		return models.UserInfo{}, status, err
+		return userModels.UserInfo{}, status, err
 	}
 	newUserInfo.OpenTrades = openTrades
 
 	var closedTrades []trade.ClosedTrade
 	closedTrades, status, err = tradeService.GetAllClosedTrades(user)
 	if err != nil {
-		return models.UserInfo{}, status, err
+		return userModels.UserInfo{}, status, err
 	}
 	newUserInfo.ClosedTrades = closedTrades
 
@@ -149,14 +152,14 @@ func (s *adminService) GetUserInfo(username string) (models.UserInfo, int, error
 	var allTransactions []models.Transaction
 	allTransactions, status, err = bankService.GetAllTransactions(user)
 	if err != nil {
-		return models.UserInfo{}, status, err
+		return userModels.UserInfo{}, status, err
 	}
 	newUserInfo.Transactions = allTransactions
 
-	var allPayments []models.PaymentInfo
+	var allPayments []bankModels.PaymentInfo
 	allPayments, status, err = bankService.GetAllPayments(user)
 	if err != nil {
-		return models.UserInfo{}, status, err
+		return userModels.UserInfo{}, status, err
 	}
 	newUserInfo.Payments = allPayments
 

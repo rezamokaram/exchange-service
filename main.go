@@ -4,20 +4,23 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"qexchange/database"
 	"qexchange/models"
+	bankModels "qexchange/models/bank"
 	"qexchange/models/cryptocurrency"
 	"qexchange/models/trade"
+	userModels "qexchange/models/user"
 	"qexchange/server"
 
 	"gorm.io/gorm"
 )
 
-//	@Title			QExchange-System
-//	@version		1.0
-//	@description	Quera Crypto Exchange server
+//	@Title			ExchangeService
+//	@version		1.1
+//	@description	Exchange Service
 
-//	@contact.name	Go-Zilla
+//	@contact.name	Reza Mokaram
 //	@contact.url	https://github.com/Quera-Go-Zilla
 
 // @host			localhost:8080
@@ -33,7 +36,7 @@ func main() {
 		log.Fatalf("migrations failed: %v\n", err.Error())
 	}
 
-	// start to dump test data into db if it hasn't been done already
+	// start to dump test data into db if it hasn't been done already TODO
 	if !hasTestData(db) {
 		// Read SQL file
 		sqlFile, err := os.ReadFile("./main-data.sql")
@@ -59,12 +62,12 @@ func main() {
 
 func migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&models.User{},
-		&models.Profile{},
+		&userModels.User{},
+		&userModels.Profile{},
 		&cryptocurrency.Crypto{},
-		&models.PaymentInfo{},
+		&bankModels.PaymentInfo{},
 		&models.Transaction{},
-		&models.BankingInfo{},
+		&bankModels.BankingInfo{},
 		&models.SupportTicket{},
 		&models.TicketMessage{},
 		&trade.OpenTrade{},
@@ -75,6 +78,6 @@ func migrate(db *gorm.DB) error {
 
 func hasTestData(db *gorm.DB) bool {
 	var count int64
-	db.Model(&models.User{}).Count(&count)
+	db.Model(&userModels.User{}).Count(&count)
 	return count > 0
 }

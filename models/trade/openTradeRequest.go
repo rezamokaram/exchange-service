@@ -2,10 +2,10 @@ package trade
 
 // OpenTradeRequest represents the request to open a trade
 type OpenTradeRequest struct {
-	CryptoID   uint    `json:"crypto_id"`
-	Amount     int	   `json:"amount"`
-	StopLoss   int     `json:"stop_loss"`
-	TakeProfit int     `json:"take_profit"`
+	CryptoID   uint `json:"crypto_id"`
+	Amount     int  `json:"amount"`
+	StopLoss   int  `json:"stop_loss"`
+	TakeProfit int  `json:"take_profit"`
 }
 
 func (req OpenTradeRequest) ToOpenTrade(
