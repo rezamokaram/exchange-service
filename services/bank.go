@@ -9,8 +9,11 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"qexchange/models"
 	"time"
+
+	"qexchange/models"
+	bankModels "qexchange/models/bank"
+	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
 )
@@ -23,14 +26,14 @@ const (
 )
 
 type BankService interface {
-	AddBankAccount(user models.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error)
-	ChargeAccount(amount int, user models.User) (string, int, error) // returns payment_url, status code, error
-	VerifyPayment(authority, status string) (int, error)             // returns status code, error
-	AddToUserBalance(user models.User, amount, service int, description string) (int, error)
-	SubtractFromUserBalance(user models.User, amount, service int, description string) (int, error)
-	WithdrawFromAccount(user models.User, amount int, BankID uint) (int, error)
-	GetAllTransactions(user models.User) ([]models.Transaction, int, error)
-	GetAllPayments(user models.User) ([]models.PaymentInfo, int, error)
+	AddBankAccount(user userModels.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error)
+	ChargeAccount(amount int, user userModels.User) (string, int, error) // returns payment_url, status code, error
+	VerifyPayment(authority, status string) (int, error)                 // returns status code, error
+	AddToUserBalance(user userModels.User, amount, service int, description string) (int, error)
+	SubtractFromUserBalance(user userModels.User, amount, service int, description string) (int, error)
+	WithdrawFromAccount(user userModels.User, amount int, BankID uint) (int, error)
+	GetAllTransactions(user userModels.User) ([]models.Transaction, int, error)
+	GetAllPayments(user userModels.User) ([]bankModels.PaymentInfo, int, error)
 }
 
 type bankService struct {
@@ -56,14 +59,14 @@ type ZarinpalResponse struct {
 	Errors []interface{} `json:"errors"`
 }
 
-func (s *bankService) AddBankAccount(user models.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error) {
+func (s *bankService) AddBankAccount(user userModels.User, bank_name, account_number, card_number, expire_date, cvv2 string) (int, error) {
 
 	if bank_name == "" || account_number == "" || card_number == "" || expire_date == "" || cvv2 == "" {
 		return http.StatusNotFound, errors.New("account data is not provided")
 	}
 
 	// Create a new BankingInfo instance
-	var bankInfo models.BankingInfo
+	var bankInfo bankModels.BankingInfo
 	bankInfo.UserID = user.ID
 	bankInfo.BankName = bank_name
 	bankInfo.AccountNumber = account_number
@@ -78,7 +81,7 @@ func (s *bankService) AddBankAccount(user models.User, bank_name, account_number
 	return http.StatusOK, nil
 }
 
-func (s *bankService) ChargeAccount(amount int, user models.User) (string, int, error) {
+func (s *bankService) ChargeAccount(amount int, user userModels.User) (string, int, error) {
 	bankRequestData := map[string]interface{}{
 		"merchant_id":  os.Getenv("MerchantID"),
 		"amount":       amount,
@@ -115,7 +118,7 @@ func (s *bankService) ChargeAccount(amount int, user models.User) (string, int, 
 	}
 
 	// add payment to database
-	newPayment := models.PaymentInfo{
+	newPayment := bankModels.PaymentInfo{
 		UserID:    user.ID,
 		Amount:    int64(amount),
 		Status:    "Wait",
@@ -134,7 +137,7 @@ func (s *bankService) ChargeAccount(amount int, user models.User) (string, int, 
 
 func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 	// find the payment
-	var payment models.PaymentInfo
+	var payment bankModels.PaymentInfo
 	dbResult := s.db.Where("authority = ?", authority).First(&payment)
 	if dbResult.Error != nil {
 		return http.StatusBadRequest, errors.New("no payment found")
@@ -210,7 +213,7 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 					}
 
 					// update user balance
-					var user models.User
+					var user userModels.User
 					result := s.db.Where("id = ?", payment.UserID).First(&user)
 					if result.Error != nil {
 						return http.StatusInternalServerError, errors.New("failed finding user")
@@ -265,8 +268,8 @@ func (s *bankService) VerifyPayment(authority, status string) (int, error) {
 	}
 }
 
-func (s *bankService) AddToUserBalance(user models.User, amount, service int, description string) (int, error) {
-	var profile models.Profile
+func (s *bankService) AddToUserBalance(user userModels.User, amount, service int, description string) (int, error) {
+	var profile userModels.Profile
 	result := s.db.Where("id = ?", user.ID).First(&profile)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no profile with this id")
@@ -287,8 +290,8 @@ func (s *bankService) AddToUserBalance(user models.User, amount, service int, de
 	return http.StatusAccepted, nil
 }
 
-func (s *bankService) SubtractFromUserBalance(user models.User, amount, service int, description string) (int, error) {
-	var profile models.Profile
+func (s *bankService) SubtractFromUserBalance(user userModels.User, amount, service int, description string) (int, error) {
+	var profile userModels.Profile
 	result := s.db.Where("id = ?", user.ID).First(&profile)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no profile with this id")
@@ -313,9 +316,9 @@ func (s *bankService) SubtractFromUserBalance(user models.User, amount, service 
 	return http.StatusAccepted, nil
 }
 
-func (s *bankService) WithdrawFromAccount(user models.User, amount int, BankID uint) (int, error) {
+func (s *bankService) WithdrawFromAccount(user userModels.User, amount int, BankID uint) (int, error) {
 	// get user with profile
-	var userWithProfile models.User
+	var userWithProfile userModels.User
 	if err := s.db.Where("username = ?", user.Username).Preload("Profile").First(&userWithProfile).Error; err != nil {
 		return http.StatusNotFound, errors.New("user not found")
 	}
@@ -324,7 +327,7 @@ func (s *bankService) WithdrawFromAccount(user models.User, amount int, BankID u
 		return http.StatusBadRequest, errors.New("not enough money in account")
 	}
 
-	var bankInfo models.BankingInfo
+	var bankInfo bankModels.BankingInfo
 	if err := s.db.Where("id = ?", BankID).First(&bankInfo).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return http.StatusNotFound, errors.New("banking info id is not valid")
@@ -348,7 +351,7 @@ func (s *bankService) WithdrawFromAccount(user models.User, amount int, BankID u
 	return http.StatusOK, nil
 }
 
-func (s *bankService) GetAllTransactions(user models.User) ([]models.Transaction, int, error) {
+func (s *bankService) GetAllTransactions(user userModels.User) ([]models.Transaction, int, error) {
 	var allTransactions []models.Transaction
 	result := s.db.Where("user_id = ?", user.ID).Find(&allTransactions)
 	if result.Error != nil {
@@ -357,11 +360,11 @@ func (s *bankService) GetAllTransactions(user models.User) ([]models.Transaction
 	return allTransactions, http.StatusOK, nil
 }
 
-func (s *bankService) GetAllPayments(user models.User) ([]models.PaymentInfo, int, error) {
-	var allPayments []models.PaymentInfo
+func (s *bankService) GetAllPayments(user userModels.User) ([]bankModels.PaymentInfo, int, error) {
+	var allPayments []bankModels.PaymentInfo
 	result := s.db.Where("user_id = ?", user.ID).Find(&allPayments)
 	if result.Error != nil {
-		return make([]models.PaymentInfo, 0), http.StatusInternalServerError, result.Error
+		return make([]bankModels.PaymentInfo, 0), http.StatusInternalServerError, result.Error
 	}
 	return allPayments, http.StatusOK, nil
 }

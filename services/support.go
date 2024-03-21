@@ -3,18 +3,20 @@ package services
 import (
 	"errors"
 	"net/http"
+	"time"
+
 	"qexchange/models"
 	"qexchange/models/trade"
-	"time"
+	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
 )
 
 type SupportService interface {
-	OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error)
-	SendMessage(user models.User, message string, ticketID uint) (int, error)
+	OpenTicket(user userModels.User, subject, ticketMsg string, tradeID *uint) (int, error)
+	SendMessage(user userModels.User, message string, ticketID uint) (int, error)
 	GetActiveTickets() ([]models.SupportTicket, int, error)
-	GetAllTickets(user models.User) ([]models.SupportTicket, int, error)
+	GetAllTickets(user userModels.User) ([]models.SupportTicket, int, error)
 	GetTicketMessages(ticketID uint) (models.SupportTicket, int, error)
 	CloseTicket(ticketID uint) (int, error)
 }
@@ -29,7 +31,7 @@ func NewSupportService(db *gorm.DB) SupportService {
 	}
 }
 
-func (s *supportService) OpenTicket(user models.User, subject, ticketMsg string, tradeID *uint) (int, error) {
+func (s *supportService) OpenTicket(user userModels.User, subject, ticketMsg string, tradeID *uint) (int, error) {
 	hasTradeID := false
 	if tradeID != nil {
 		hasTradeID = true // to know whether include the tradeId later or not
@@ -77,7 +79,7 @@ func (s *supportService) OpenTicket(user models.User, subject, ticketMsg string,
 	return http.StatusOK, nil
 }
 
-func (s *supportService) SendMessage(user models.User, message string, ticketID uint) (int, error) {
+func (s *supportService) SendMessage(user userModels.User, message string, ticketID uint) (int, error) {
 	var ticket models.SupportTicket
 	if s.db.Where("id = ?", ticketID).First(&ticket).Error != nil {
 		return http.StatusBadRequest, errors.New("wrong ticket_id")
@@ -105,7 +107,7 @@ func (s *supportService) GetActiveTickets() ([]models.SupportTicket, int, error)
 	return tickets, http.StatusOK, nil
 }
 
-func (s *supportService) GetAllTickets(user models.User) ([]models.SupportTicket, int, error) {
+func (s *supportService) GetAllTickets(user userModels.User) ([]models.SupportTicket, int, error) {
 	var tickets []models.SupportTicket
 
 	if s.db.Where("user_id = ?", user.ID).Omit("Messages").Find(&tickets).Error != nil {

@@ -2,33 +2,14 @@ package handlers
 
 import (
 	"net/http"
+
 	"qexchange/models"
+	adminModels "qexchange/models/admin"
+	userModels "qexchange/models/user"
 	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
 )
-
-// UpdateUserToAdminRequest represents the request body for upgrading a user to admin
-type UpdateUserToAdminRequest struct {
-	AdminPassword string `json:"admin_password" example:"secret"`
-}
-
-// UpdateAuthenticationLevelRequest represents the request for updating a user's authentication level
-type UpdateAuthenticationLevelRequest struct {
-	Username     string `json:"username" example:"user2"`
-	NewAuthLevel int    `json:"new_auth_level" example:"0"`
-}
-
-// BlockUserRequest represents the request for blocking a user
-type BlockUserRequest struct {
-	Username  string `json:"username" example:"user1"`
-	Temporary bool   `json:"temporary" example:"false"`
-}
-
-// UnblockUserRequest represents the request for unblocking a user
-type UnblockUserRequest struct {
-	Username string `json:"username" example:"user2"`
-}
 
 // UpgradeToAdmin upgrades a user to an admin role
 // @Summary Upgrade user to admin
@@ -44,13 +25,13 @@ type UnblockUserRequest struct {
 // @Router /admin/update-to-admin [put]
 func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		adminRequest := new(UpdateUserToAdminRequest)
+		adminRequest := new(adminModels.UpdateUserToAdminRequest)
 
 		if err := c.Bind(&adminRequest); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("Upgrade To Admin failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -80,7 +61,7 @@ func UpgradeToAdmin(service services.AdminService) echo.HandlerFunc {
 // @Router /admin/update-auth-level [put]
 func UpdateAuthenticationLevel(service services.AdminService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		request := new(UpdateAuthenticationLevelRequest)
+		request := new(adminModels.UpdateAuthenticationLevelRequest)
 		if err := c.Bind(request); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}
@@ -108,7 +89,7 @@ func UpdateAuthenticationLevel(service services.AdminService) echo.HandlerFunc {
 // @Router /admin/block-user [put]
 func BlockUser(service services.AdminService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		request := new(BlockUserRequest)
+		request := new(adminModels.BlockUserRequest)
 		if err := c.Bind(request); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}
@@ -136,7 +117,7 @@ func BlockUser(service services.AdminService) echo.HandlerFunc {
 // @Router /admin/unblock-user [put]
 func UnblockUser(service services.AdminService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		request := new(UnblockUserRequest)
+		request := new(adminModels.UnblockUserRequest)
 		if err := c.Bind(request); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("invalid request", err.Error()))
 		}

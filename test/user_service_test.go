@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"qexchange/handlers"
-	"qexchange/models"
-	"qexchange/server"
 	"testing"
+
+	"qexchange/models"
+	userModels "qexchange/models/user"
+	"qexchange/server"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -19,7 +20,7 @@ func TestUserRegister(t *testing.T) {
 	server.UserRoutes(e, testDB)
 
 	t.Run("create new user", func(t *testing.T) {
-		newUser := handlers.RegisterRequest{
+		newUser := userModels.RegisterRequest{
 			Username:       "testuser",
 			Email:          "test@example.com",
 			Password:       "Password123%",
@@ -40,7 +41,7 @@ func TestUserRegister(t *testing.T) {
 
 		if assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK") {
 			// Validate Database Entry
-			var user models.User
+			var user userModels.User
 			result := testDB.Where("email = ?", "test@example.com").First(&user)
 			if assert.NoError(t, result.Error) {
 				assert.Equal(t, "testuser", user.Username, "Expected username to match")
@@ -49,7 +50,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("passwords mismatch", func(t *testing.T) {
-		mismatchUser := handlers.RegisterRequest{
+		mismatchUser := userModels.RegisterRequest{
 			Username:       "mismatchuser",
 			Email:          "mismatch@example.com",
 			Password:       "Password123%",
@@ -76,7 +77,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("duplicate username", func(t *testing.T) {
-		duplicateUsername := handlers.RegisterRequest{
+		duplicateUsername := userModels.RegisterRequest{
 			Username:       "testuser", // assuming "testuser" was already created in previous test
 			Email:          "unique@example.com",
 			Password:       "Password123%",
@@ -102,7 +103,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("duplicate email", func(t *testing.T) {
-		duplicateEmail := handlers.RegisterRequest{
+		duplicateEmail := userModels.RegisterRequest{
 			Username:       "uniqueuser",
 			Email:          "test@example.com", // assuming "test@example.com" was used in the first test
 			Password:       "Password123%",
@@ -128,7 +129,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("email not provided", func(t *testing.T) {
-		user := handlers.RegisterRequest{
+		user := userModels.RegisterRequest{
 			Username:       "testuser5",
 			Email:          "", // Email not provided
 			Password:       "Password123%",
@@ -154,7 +155,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("invalid email format", func(t *testing.T) {
-		user := handlers.RegisterRequest{
+		user := userModels.RegisterRequest{
 			Username:       "testuser6",
 			Email:          "test@example", // Invalid email format
 			Password:       "password123",
@@ -180,7 +181,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("username not provided", func(t *testing.T) {
-		user := handlers.RegisterRequest{
+		user := userModels.RegisterRequest{
 			Username:       "", // username not provided
 			Email:          "test@example.com",
 			Password:       "Password123%",
@@ -206,7 +207,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("password not provided", func(t *testing.T) {
-		user := handlers.RegisterRequest{
+		user := userModels.RegisterRequest{
 			Username:       "testuser7",
 			Email:          "test@example.com",
 			Password:       "", // password not provided
@@ -232,7 +233,7 @@ func TestUserRegister(t *testing.T) {
 	})
 
 	t.Run("password not secure", func(t *testing.T) {
-		insecurePasswordUser := handlers.RegisterRequest{
+		insecurePasswordUser := userModels.RegisterRequest{
 			Username:       "securetestuser",
 			Email:          "securetest@example.com",
 			Password:       "123",

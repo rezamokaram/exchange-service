@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
+	userModels "qexchange/models/user"
 	"qexchange/services"
 
 	"github.com/labstack/echo/v4"
@@ -55,7 +56,7 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -93,7 +94,7 @@ func AddBankAccount(bankService services.BankService) echo.HandlerFunc {
 func ChargeAccount(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Parse the request body for amount
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -163,7 +164,7 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("bank action failed", err.Error()))
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -198,7 +199,7 @@ func WithdrawFromAccount(bankService services.BankService) echo.HandlerFunc {
 // @Router /bank/transaction/get-all [get]
 func GetAllTransactions(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -228,7 +229,7 @@ func GetAllTransactions(bankService services.BankService) echo.HandlerFunc {
 // @Router /bank/payment/get-all [get]
 func GetAllPayments(bankService services.BankService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("bank action failed", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)

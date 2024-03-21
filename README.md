@@ -35,6 +35,7 @@ First install the dependencies, then:
 ## Documentation
 To generate the docs run this in the root directory:
    ```bash
+   go install github.com/swaggo/swag/cmd/swag@latest
    swag init --parseDependency
    ```
 Then start the project using docker-compose and access the docs at this url:

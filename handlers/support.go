@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"qexchange/models"
+	userModels "qexchange/models/user"
 	"qexchange/services"
 	"strconv"
 
@@ -47,7 +48,7 @@ func OpenTicket(service services.SupportService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("failed to open ticket", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -132,7 +133,7 @@ func GetTicketMessages(service services.SupportService) echo.HandlerFunc {
 // @Router /support/get-all-tickets [get]
 func GetAllTickets(service services.SupportService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("failed to get tickets", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)
@@ -173,7 +174,7 @@ func SendMessage(service services.SupportService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, response)
 		}
 
-		user, bind := c.Get("user").(models.User)
+		user, bind := c.Get("user").(userModels.User)
 		if !bind {
 			response := models.NewErrorResponse("failed to send message", "bad user data")
 			return c.JSON(http.StatusBadRequest, response)

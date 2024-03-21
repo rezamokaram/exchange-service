@@ -1,5 +1,5 @@
 # Build Stage
-FROM golang:1.21.3 AS BuildStage
+FROM golang:1.22.1 AS BuildStage
 WORKDIR /
 COPY . .
 RUN go mod download
