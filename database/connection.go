@@ -4,20 +4,72 @@ import (
 	"fmt"
 	"os"
 
+	"qexchange/config"
+	"qexchange/models"
+	bankModels "qexchange/models/bank"
+	cryptoModels "qexchange/models/crypto"
+	tradeModels "qexchange/models/trade"
+	userModels "qexchange/models/user"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func NewConnection() (*gorm.DB, error) {
+func NewConnection(cfg *config.POSTGRES) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v TimeZone=%v",
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_SSLMODE"),
-		os.Getenv("POSTGRES_TIMEZONE"),
+		cfg.Host,
+		cfg.User,
+		cfg.Password,
+		cfg.DB,
+		cfg.Port,
+		cfg.SSLMode,
+		cfg.Timezone,
 	)
 
-	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := migrate(db); err != nil {
+		fmt.Printf("migrations failed: %v\n", err.Error())
+	}
+
+	if !hasTestData(db) {
+		sqlFile, err := os.ReadFile("./main-data.sql")
+		if err != nil {
+			fmt.Printf("reading sql dump file failed: %v\n", err.Error())
+		}
+
+		result := db.Exec(string(sqlFile))
+		if result.Error != nil {
+			fmt.Printf("executing sql dump file failed: %v\n", result.Error)
+		}
+
+		fmt.Println("Fake Data Inserted.")
+	}
+
+	return db, nil
+}
+
+func migrate(db *gorm.DB) error {
+	return db.AutoMigrate(
+		&userModels.User{},
+		&userModels.Profile{},
+		&cryptoModels.Crypto{},
+		&bankModels.PaymentInfo{},
+		&models.Transaction{},
+		&bankModels.BankingInfo{},
+		&models.SupportTicket{},
+		&models.TicketMessage{},
+		&tradeModels.OpenTrade{},
+		&tradeModels.ClosedTrade{},
+		&tradeModels.FutureOrder{},
+	)
+}
+
+func hasTestData(db *gorm.DB) bool {
+	var count int64
+	db.Model(&userModels.User{}).Count(&count)
+	return count > 0
 }

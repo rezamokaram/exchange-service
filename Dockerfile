@@ -10,5 +10,6 @@ FROM scratch
 WORKDIR /
 COPY --from=BuildStage /app /
 COPY --from=BuildStage /database/main-data.sql /
+COPY --from=BuildStage /config/config.json /
 EXPOSE 8080
 ENTRYPOINT ["./app"]

@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 
+	"qexchange/config"
 	_ "qexchange/docs"
 
 	"github.com/labstack/echo/v4"
@@ -14,7 +15,7 @@ func NewServer() *echo.Echo {
 	return echo.New()
 }
 
-func RunServer(e *echo.Echo, db *gorm.DB) {
+func RunServer(e *echo.Echo, db *gorm.DB, cfg *config.APP) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	UserRoutes(e, db)
 	PriceRoutes(e, db)
@@ -22,5 +23,5 @@ func RunServer(e *echo.Echo, db *gorm.DB) {
 	BankRoutes(e, db)
 	AdminRoutes(e, db)
 	SupportRoutes(e, db)
-	log.Fatal(e.Start(":8080"))
+	log.Fatal(e.Start(cfg.Host + ":" + cfg.Port))
 }

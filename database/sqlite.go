@@ -6,7 +6,7 @@ import (
 
 	"qexchange/models"
 	bankModels "qexchange/models/bank"
-	"qexchange/models/cryptocurrency"
+	cryptoModels "qexchange/models/crypto"
 	"qexchange/models/trade"
 	userModels "qexchange/models/user"
 
@@ -27,7 +27,7 @@ func CreateTestDatabase() (*gorm.DB, error) {
 	err = db.AutoMigrate(
 		&userModels.User{},
 		&userModels.Profile{},
-		&cryptocurrency.Crypto{},
+		&cryptoModels.Crypto{},
 		&bankModels.PaymentInfo{},
 		&models.Transaction{},
 		&bankModels.BankingInfo{},

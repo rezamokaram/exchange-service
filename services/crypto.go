@@ -3,7 +3,8 @@ package services
 import (
 	"errors"
 	"net/http"
-	"qexchange/models/cryptocurrency"
+
+	cryptoModels "qexchange/models/crypto"
 
 	"gorm.io/gorm"
 )
@@ -11,17 +12,17 @@ import (
 type CryptoService interface {
 	GetCrypto(
 		id int,
-	) (cryptocurrency.CryptoResponse, int, error) // returns answer, statusCode, error
+	) (cryptoModels.CryptoResponse, int, error) // returns answer, statusCode, error
 
 	SetCrypto(
-		crypto cryptocurrency.MakeCryptoRequest,
+		crypto cryptoModels.MakeCryptoRequest,
 	) (int, error) // returns statusCode, error
 
 	UpdateCrypto(
-		crypto cryptocurrency.UpdateCryptoRequest,
+		crypto cryptoModels.UpdateCryptoRequest,
 	) (int, error) // returns statusCode, error
 
-	GetAllCrypto() ([]cryptocurrency.CryptoResponse, int, error)
+	GetAllCrypto() ([]cryptoModels.CryptoResponse, int, error)
 }
 
 type cryptoService struct {
@@ -36,20 +37,20 @@ func NewCryptoService(db *gorm.DB) CryptoService {
 
 func (s *cryptoService) GetCrypto(
 	id int,
-) (cryptocurrency.CryptoResponse, int, error) {
-	var crypto cryptocurrency.Crypto
+) (cryptoModels.CryptoResponse, int, error) {
+	var crypto cryptoModels.Crypto
 	result := s.db.Where("id = ?", id).First(&crypto)
 	if result.Error != nil {
-		return cryptocurrency.CryptoResponse{}, http.StatusBadRequest, errors.New("there is no crypto with this id")
+		return cryptoModels.CryptoResponse{}, http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
 
-	return cryptocurrency.NewCryptoResponse(crypto), http.StatusOK, nil
+	return cryptoModels.NewCryptoResponse(crypto), http.StatusOK, nil
 }
 
 func (s *cryptoService) SetCrypto(
-	req cryptocurrency.MakeCryptoRequest,
+	req cryptoModels.MakeCryptoRequest,
 ) (int, error) {
-	if s.db.Where("name = ?", req.Name).First(&cryptocurrency.Crypto{}).Error == nil {
+	if s.db.Where("name = ?", req.Name).First(&cryptoModels.Crypto{}).Error == nil {
 		return http.StatusBadRequest, errors.New("the crypto already exist")
 	}
 
@@ -63,9 +64,9 @@ func (s *cryptoService) SetCrypto(
 }
 
 func (s *cryptoService) UpdateCrypto(
-	req cryptocurrency.UpdateCryptoRequest,
+	req cryptoModels.UpdateCryptoRequest,
 ) (int, error) {
-	var oldCrypto cryptocurrency.Crypto
+	var oldCrypto cryptoModels.Crypto
 	result := s.db.Where("id = ?", req.Id).First(&oldCrypto)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
@@ -94,16 +95,16 @@ func (s *cryptoService) UpdateCrypto(
 	return http.StatusOK, nil
 }
 
-func (s *cryptoService) GetAllCrypto() ([]cryptocurrency.CryptoResponse, int, error) {
-	var cryptoList []cryptocurrency.Crypto
+func (s *cryptoService) GetAllCrypto() ([]cryptoModels.CryptoResponse, int, error) {
+	var cryptoList []cryptoModels.Crypto
 	result := s.db.Find(&cryptoList)
 	if result.Error != nil {
-		return make([]cryptocurrency.CryptoResponse, 0), http.StatusBadRequest, errors.New("there is no crypto with this id")
+		return make([]cryptoModels.CryptoResponse, 0), http.StatusBadRequest, errors.New("there is no crypto with this id")
 	}
 
-	cryptoResponseList := make([]cryptocurrency.CryptoResponse, 0)
+	cryptoResponseList := make([]cryptoModels.CryptoResponse, 0)
 	for _, cr := range cryptoList {
-		cryptoResponseList = append(cryptoResponseList, cryptocurrency.NewCryptoResponse(cr))
+		cryptoResponseList = append(cryptoResponseList, cryptoModels.NewCryptoResponse(cr))
 	}
 	return cryptoResponseList, http.StatusOK, nil
 }

@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "exchange_service_monolith_app",
+    "version": "0.0.1",
+    "host": "0.0.0.0",
+    "port": "8080"
+  },
+
+  "postgres": {
+    "user": "developer",
+    "password": "123456",
+    "host": "postgres",
+    "port": "5432",
+    "db": "exchange_service_monolith_app",
+    "timezone": "UTC",
+    "ssl_mode": "disable"
+  }
+}

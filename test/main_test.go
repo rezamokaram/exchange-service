@@ -11,7 +11,7 @@ import (
 
 	"qexchange/database"
 	"qexchange/models"
-	"qexchange/models/cryptocurrency"
+	cryptoModels "qexchange/models/crypto"
 	userModels "qexchange/models/user"
 
 	"github.com/labstack/echo/v4"
@@ -76,7 +76,7 @@ func ClearDatabaseTables(db *gorm.DB) error {
 	tables := []interface{}{
 		&models.SupportTicket{},
 		&models.TicketMessage{},
-		&cryptocurrency.Crypto{},
+		&cryptoModels.Crypto{},
 	}
 
 	for _, model := range tables {

@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"qexchange/handlers"
 	"qexchange/models"
-	"qexchange/models/cryptocurrency"
+	cryptoModels "qexchange/models/crypto"
 	"qexchange/server"
 	"testing"
 
@@ -39,7 +39,7 @@ func TestGetCrypto(t *testing.T) {
 	})
 
 	t.Run("valid crypto request", func(t *testing.T) {
-		testCrypto := cryptocurrency.Crypto{
+		testCrypto := cryptoModels.Crypto{
 			Name:         "Bitcoin",
 			Symbol:       "BTC",
 			CurrentPrice: 500,
@@ -55,7 +55,7 @@ func TestGetCrypto(t *testing.T) {
 
 		e.ServeHTTP(rec, req)
 
-		var cryptoResponse cryptocurrency.CryptoResponse
+		var cryptoResponse cryptoModels.CryptoResponse
 		err := json.NewDecoder(rec.Body).Decode(&cryptoResponse)
 		if err != nil {
 			t.Fatalf("Failed to decode response: %v", err)
@@ -75,7 +75,7 @@ func TestSetCrypto(t *testing.T) {
 	token := LoginAndGetToken(e, t, mockAdminUser)
 
 	t.Run("crypto already exists", func(t *testing.T) {
-		existingCryptoRequest := cryptocurrency.MakeCryptoRequest{
+		existingCryptoRequest := cryptoModels.MakeCryptoRequest{
 			Name:         "Bitcoin",
 			Symbol:       "BTC",
 			CurrentPrice: 600,
@@ -100,7 +100,7 @@ func TestSetCrypto(t *testing.T) {
 	})
 
 	t.Run("invalid crypto data", func(t *testing.T) {
-		invalidCryptoRequest := cryptocurrency.MakeCryptoRequest{
+		invalidCryptoRequest := cryptoModels.MakeCryptoRequest{
 			Name: "", // Missing name
 		}
 
@@ -123,7 +123,7 @@ func TestSetCrypto(t *testing.T) {
 	})
 
 	t.Run("successfully add crypto", func(t *testing.T) {
-		newCryptoRequest := cryptocurrency.MakeCryptoRequest{
+		newCryptoRequest := cryptoModels.MakeCryptoRequest{
 			Name:         "NewCrypto",
 			Symbol:       "NCR",
 			CurrentPrice: 1000,
@@ -146,14 +146,14 @@ func TestSetCrypto(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
 		assert.Contains(t, successResp.Message, "the crypto successfully added", "Expected success message to contain 'the crypto successfully added'")
 
-		var addedCrypto cryptocurrency.Crypto
+		var addedCrypto cryptoModels.Crypto
 		err = testDB.Where("name = ?", newCryptoRequest.Name).First(&addedCrypto).Error
 		if err != nil {
 			t.Fatalf("Failed to find the newly added crypto in the database: %v", err)
 		}
 
-		expectedSellFee := cryptocurrency.CalculateSellFee(newCryptoRequest.CurrentPrice)
-		expectedBuyFee := cryptocurrency.CalculateBuyFee(newCryptoRequest.CurrentPrice)
+		expectedSellFee := cryptoModels.CalculateSellFee(newCryptoRequest.CurrentPrice)
+		expectedBuyFee := cryptoModels.CalculateBuyFee(newCryptoRequest.CurrentPrice)
 
 		assert.Equal(t, newCryptoRequest.Name, addedCrypto.Name, "Expected crypto name in the database to match the request")
 		assert.Equal(t, newCryptoRequest.Symbol, addedCrypto.Symbol, "Expected crypto symbol in the database to match the request")
@@ -170,7 +170,7 @@ func TestUpdateCrypto(t *testing.T) {
 	token := LoginAndGetToken(e, t, mockAdminUser)
 
 	t.Run("crypto not found for update", func(t *testing.T) {
-		updateRequest := cryptocurrency.UpdateCryptoRequest{
+		updateRequest := cryptoModels.UpdateCryptoRequest{
 			Id:           999, // Non-existent ID
 			Name:         "NonExistentCrypto",
 			Symbol:       "NEX",
@@ -196,7 +196,7 @@ func TestUpdateCrypto(t *testing.T) {
 	})
 
 	t.Run("successfully update crypto", func(t *testing.T) {
-		updatedCryptoRequest := cryptocurrency.UpdateCryptoRequest{
+		updatedCryptoRequest := cryptoModels.UpdateCryptoRequest{
 			Id:           1, // Assuming 'Bitcoin' has ID 1
 			Name:         "BitcoinUpdated",
 			Symbol:       "BTCU",
@@ -221,7 +221,7 @@ func TestUpdateCrypto(t *testing.T) {
 		assert.Contains(t, successResp.Message, "the crypto successfully updated", "Expected success message to contain 'the crypto successfully updated'")
 
 		// Verifying the updated entry in the database
-		var updatedCrypto cryptocurrency.Crypto
+		var updatedCrypto cryptoModels.Crypto
 		err = testDB.Where("id = ?", updatedCryptoRequest.Id).First(&updatedCrypto).Error
 		if err != nil {
 			t.Fatalf("Failed to find the updated crypto in the database: %v", err)
@@ -231,8 +231,8 @@ func TestUpdateCrypto(t *testing.T) {
 		assert.Equal(t, updatedCryptoRequest.Symbol, updatedCrypto.Symbol, "Expected crypto symbol in the database to match the updated symbol")
 		assert.Equal(t, updatedCryptoRequest.CurrentPrice, updatedCrypto.CurrentPrice, "Expected crypto current price in the database to match the updated price")
 
-		expectedSellFee := cryptocurrency.CalculateSellFee(updatedCrypto.CurrentPrice)
-		expectedBuyFee := cryptocurrency.CalculateBuyFee(updatedCrypto.CurrentPrice)
+		expectedSellFee := cryptoModels.CalculateSellFee(updatedCrypto.CurrentPrice)
+		expectedBuyFee := cryptoModels.CalculateBuyFee(updatedCrypto.CurrentPrice)
 
 		assert.Equal(t, updatedCrypto.BuyFee, expectedBuyFee, "Expected crypto buy fee in the database to match the expected:", expectedBuyFee)
 		assert.Equal(t, updatedCrypto.SellFee, expectedSellFee, "Expected crypto sell fee in the database to match the expected:", expectedSellFee)
@@ -249,7 +249,7 @@ func TestGetAllCrypto(t *testing.T) {
 
 		e.ServeHTTP(rec, req)
 
-		var cryptoList []cryptocurrency.CryptoResponse
+		var cryptoList []cryptoModels.CryptoResponse
 		err := json.NewDecoder(rec.Body).Decode(&cryptoList)
 		if err != nil {
 			t.Fatalf("Failed to decode response: %v", err)

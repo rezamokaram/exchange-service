@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"qexchange/models/cryptocurrency"
-	"qexchange/models/trade"
+	cryptoModels "qexchange/models/crypto"
+	tradeModels "qexchange/models/trade"
 	userModels "qexchange/models/user"
 
 	"gorm.io/gorm"
@@ -17,61 +17,61 @@ import (
 
 type TradeService interface {
 	OpenTrade(
-		request trade.OpenTradeRequest,
+		request tradeModels.OpenTradeRequest,
 		user userModels.User,
 	) (int, error)
 
 	CloseTrade(
-		request trade.ClosedTradeRequest,
+		request tradeModels.ClosedTradeRequest,
 		user userModels.User,
 	) (int, error)
 
 	CloseTradeWithTrade(
-		openTrade trade.OpenTrade,
+		openTrade tradeModels.OpenTrade,
 		user userModels.User,
-		crypto cryptocurrency.Crypto,
+		crypto cryptoModels.Crypto,
 		amount int,
 	) (int, error)
 
 	GetAllClosedTrades(
 		user userModels.User,
-	) ([]trade.ClosedTrade, int, error)
+	) ([]tradeModels.ClosedTrade, int, error)
 
 	GetAllOpenTrades(
 		user userModels.User,
-	) ([]trade.OpenTrade, int, error)
+	) ([]tradeModels.OpenTrade, int, error)
 
 	CheckStopLoss(
-		crypto cryptocurrency.Crypto,
+		crypto cryptoModels.Crypto,
 	)
 
 	CheckTakeProfit(
-		crypto cryptocurrency.Crypto,
+		crypto cryptoModels.Crypto,
 	)
 
 	SetFutureOrder(
-		req trade.FutureOrderRequest,
+		req tradeModels.FutureOrderRequest,
 		user userModels.User,
 	) (int, error)
 
 	DeleteFutureOrder(
-		req trade.DeleteFutureOrderRequest,
+		req tradeModels.DeleteFutureOrderRequest,
 		user userModels.User,
 	) (int, error)
 
 	CheckFutureOrder(
-		oldCrypto cryptocurrency.Crypto,
-		newCrypto cryptocurrency.Crypto,
+		oldCrypto cryptoModels.Crypto,
+		newCrypto cryptoModels.Crypto,
 	)
 
 	GetAllFutureOrders(
 		user userModels.User,
-	) ([]trade.FutureOrder, int, error)
+	) ([]tradeModels.FutureOrder, int, error)
 
 	FilterClosedTrades(
 		user userModels.User,
-		req trade.FilterTradesRequest,
-	) (trade.FilterTradesResponse, int, error)
+		req tradeModels.FilterTradesRequest,
+	) (tradeModels.FilterTradesResponse, int, error)
 }
 
 type tradeService struct {
@@ -85,10 +85,10 @@ func NewTradeService(db *gorm.DB) TradeService {
 }
 
 func (s *tradeService) OpenTrade(
-	request trade.OpenTradeRequest,
+	request tradeModels.OpenTradeRequest,
 	user userModels.User,
 ) (int, error) {
-	var crypto cryptocurrency.Crypto
+	var crypto cryptoModels.Crypto
 	result := s.db.Where("id = ?", request.CryptoID).First(&crypto)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no crypto with this id")
@@ -122,10 +122,10 @@ func (s *tradeService) OpenTrade(
 }
 
 func (s *tradeService) CloseTrade(
-	request trade.ClosedTradeRequest,
+	request tradeModels.ClosedTradeRequest,
 	user userModels.User,
 ) (int, error) {
-	var openTrade trade.OpenTrade
+	var openTrade tradeModels.OpenTrade
 	result := s.db.Where("id = ?", request.OpenTradeID).First(&openTrade)
 	if result.Error != nil {
 		return http.StatusBadRequest, errors.New("there is no trade with this id")
@@ -135,7 +135,7 @@ func (s *tradeService) CloseTrade(
 		return http.StatusBadRequest, errors.New("this trade belong to another user")
 	}
 
-	var crypto cryptocurrency.Crypto
+	var crypto cryptoModels.Crypto
 	result = s.db.Where("id = ?", openTrade.CryptoID).First(&crypto)
 	if result.Error != nil {
 		return http.StatusInternalServerError, errors.New("database error")
@@ -145,9 +145,9 @@ func (s *tradeService) CloseTrade(
 }
 
 func (s *tradeService) CloseTradeWithTrade(
-	openTrade trade.OpenTrade,
+	openTrade tradeModels.OpenTrade,
 	user userModels.User,
-	crypto cryptocurrency.Crypto,
+	crypto cryptoModels.Crypto,
 	amount int,
 ) (int, error) {
 
@@ -186,32 +186,32 @@ func (s *tradeService) CloseTradeWithTrade(
 
 func (s *tradeService) GetAllClosedTrades(
 	user userModels.User,
-) ([]trade.ClosedTrade, int, error) {
-	var allClosedTrades []trade.ClosedTrade
+) ([]tradeModels.ClosedTrade, int, error) {
+	var allClosedTrades []tradeModels.ClosedTrade
 	result := s.db.Where("user_id = ?", user.ID).Find(&allClosedTrades)
 	if result.Error != nil {
-		return make([]trade.ClosedTrade, 0), http.StatusInternalServerError, result.Error //errors.New("data base error")
+		return make([]tradeModels.ClosedTrade, 0), http.StatusInternalServerError, result.Error //errors.New("data base error")
 	}
 	return allClosedTrades, http.StatusOK, nil
 }
 
 func (s *tradeService) GetAllOpenTrades(
 	user userModels.User,
-) ([]trade.OpenTrade, int, error) {
-	var allOpenTrades []trade.OpenTrade
+) ([]tradeModels.OpenTrade, int, error) {
+	var allOpenTrades []tradeModels.OpenTrade
 	result := s.db.Where("user_id = ?", user.ID).Find(&allOpenTrades)
 	if result.Error != nil {
-		return make([]trade.OpenTrade, 0), http.StatusInternalServerError, result.Error //errors.New("data base error")
+		return make([]tradeModels.OpenTrade, 0), http.StatusInternalServerError, result.Error //errors.New("data base error")
 	}
 
 	return allOpenTrades, http.StatusOK, nil
 }
 
 func (s *tradeService) CheckStopLoss(
-	crypto cryptocurrency.Crypto,
+	crypto cryptoModels.Crypto,
 ) {
 	fmt.Println("Stop Loss Processing ...")
-	var allTriggeredTrades []trade.OpenTrade
+	var allTriggeredTrades []tradeModels.OpenTrade
 	result := s.db.Where("stop_loss >= ?", crypto.SellFee).Find(&allTriggeredTrades)
 	if result.Error != nil {
 		return
@@ -221,7 +221,7 @@ func (s *tradeService) CheckStopLoss(
 	var wg sync.WaitGroup
 	for _, triggeredTrade := range allTriggeredTrades {
 		wg.Add(1)
-		go func(s *tradeService, toCloseTrade trade.OpenTrade) {
+		go func(s *tradeService, toCloseTrade tradeModels.OpenTrade) {
 			defer wg.Done()
 			var user userModels.User
 			res := s.db.Where("id = ?", toCloseTrade.UserID).First(&user)
@@ -235,10 +235,10 @@ func (s *tradeService) CheckStopLoss(
 }
 
 func (s *tradeService) CheckTakeProfit(
-	crypto cryptocurrency.Crypto,
+	crypto cryptoModels.Crypto,
 ) {
 	fmt.Println("Take Profit Processing ...")
-	var allTriggeredTrades []trade.OpenTrade
+	var allTriggeredTrades []tradeModels.OpenTrade
 	result := s.db.Where("take_profit <= ? and take_profit > 0", crypto.SellFee).Find(&allTriggeredTrades)
 	if result.Error != nil {
 		return
@@ -248,7 +248,7 @@ func (s *tradeService) CheckTakeProfit(
 	var wg sync.WaitGroup
 	for _, triggeredTrade := range allTriggeredTrades {
 		wg.Add(1)
-		go func(s *tradeService, toCloseTrade trade.OpenTrade) {
+		go func(s *tradeService, toCloseTrade tradeModels.OpenTrade) {
 			defer wg.Done()
 			var user userModels.User
 			res := s.db.Where("id = ?", toCloseTrade.UserID).First(&user)
@@ -262,7 +262,7 @@ func (s *tradeService) CheckTakeProfit(
 }
 
 func (s *tradeService) SetFutureOrder(
-	req trade.FutureOrderRequest,
+	req tradeModels.FutureOrderRequest,
 	user userModels.User,
 ) (int, error) {
 	futureOrder := req.ToFutureOrder(user.ID)
@@ -275,10 +275,10 @@ func (s *tradeService) SetFutureOrder(
 }
 
 func (s *tradeService) DeleteFutureOrder(
-	req trade.DeleteFutureOrderRequest,
+	req tradeModels.DeleteFutureOrderRequest,
 	user userModels.User,
 ) (int, error) {
-	var futureOrder trade.FutureOrder
+	var futureOrder tradeModels.FutureOrder
 	result := s.db.Where("id = ?", req.OrderID).First(&futureOrder)
 	if result.Error != nil {
 		return http.StatusInternalServerError, result.Error
@@ -297,15 +297,15 @@ func (s *tradeService) DeleteFutureOrder(
 }
 
 func (s *tradeService) CheckFutureOrder(
-	oldCrypto cryptocurrency.Crypto,
-	newCrypto cryptocurrency.Crypto,
+	oldCrypto cryptoModels.Crypto,
+	newCrypto cryptoModels.Crypto,
 ) {
 	fmt.Printf("checking for future orders...\n")
 	if newCrypto.CurrentPrice == oldCrypto.CurrentPrice {
 		fmt.Printf("there is nothing to do!")
 		return
 	}
-	allTriggeredFutureOrders := make([]trade.FutureOrder, 0)
+	allTriggeredFutureOrders := make([]tradeModels.FutureOrder, 0)
 	if newCrypto.CurrentPrice > oldCrypto.CurrentPrice {
 		res := s.db.Where("target_price >= ? and target_price <= ?", oldCrypto.BuyFee, newCrypto.BuyFee).Find(&allTriggeredFutureOrders)
 		if res.Error != nil {
@@ -321,7 +321,7 @@ func (s *tradeService) CheckFutureOrder(
 	var wg sync.WaitGroup
 	for _, toOpenFutureOrder := range allTriggeredFutureOrders {
 		wg.Add(1)
-		go func(s *tradeService, userID uint, fo trade.FutureOrder) {
+		go func(s *tradeService, userID uint, fo tradeModels.FutureOrder) {
 			defer wg.Done()
 			toOpenTradeRequest := fo.ToOpenTradeRequest()
 			var user userModels.User
@@ -351,11 +351,11 @@ func (s *tradeService) CheckFutureOrder(
 
 func (s *tradeService) GetAllFutureOrders(
 	user userModels.User,
-) ([]trade.FutureOrder, int, error) {
-	var allFutureOrders []trade.FutureOrder
+) ([]tradeModels.FutureOrder, int, error) {
+	var allFutureOrders []tradeModels.FutureOrder
 	result := s.db.Where("user_id = ?", user.ID).Find(&allFutureOrders)
 	if result.Error != nil {
-		return make([]trade.FutureOrder, 0), http.StatusInternalServerError, result.Error
+		return make([]tradeModels.FutureOrder, 0), http.StatusInternalServerError, result.Error
 	}
 
 	return allFutureOrders, http.StatusOK, nil
@@ -363,14 +363,14 @@ func (s *tradeService) GetAllFutureOrders(
 
 func (s *tradeService) FilterClosedTrades(
 	user userModels.User,
-	req trade.FilterTradesRequest,
-) (trade.FilterTradesResponse, int, error) {
+	req tradeModels.FilterTradesRequest,
+) (tradeModels.FilterTradesResponse, int, error) {
 	if req.End.IsZero() {
 		req.End = time.Now().Add(time.Hour)
 	}
 
-	var filterResponse trade.FilterTradesResponse
-	var trades []trade.ClosedTrade
+	var filterResponse tradeModels.FilterTradesResponse
+	var trades []tradeModels.ClosedTrade
 	var result *gorm.DB
 	if len(req.CryptoList) == 0 {
 		result = s.db.Where("created_at >= ? AND created_at <= ?", req.Start, req.End).Find(&trades)

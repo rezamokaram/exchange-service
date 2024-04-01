@@ -17,9 +17,9 @@ type UserService interface {
 		password,
 		passwordAgain,
 		email string,
-	) (int, error) // returns statusCode, error
+	) (int, error)
 
-	Login(username, password string) (int, string, error) // returns  statusCode, token ,error
+	Login(username, password string) (int, string, error)
 }
 
 type userService struct {
@@ -83,30 +83,22 @@ func (s *userService) Register(
 func (s *userService) Login(username, password string) (int, string, error) {
 	var user userModels.User
 
-	// check for the existence of the user with the given username
 	if err := s.db.Where("username = ?", username).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			// user not found
 			return http.StatusUnauthorized, "", errors.New("invalid username or password")
 		}
-		// other possible errors
 		return http.StatusInternalServerError, "", err
 	}
 
-	// user found, now compare the given password with the hashed password in the database
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		// incorrect password
 		return http.StatusUnauthorized, "", errors.New("invalid username or password")
 	}
 
-	// password is correct, now generate JWT token
 	token, err := utils.GenerateJWTToken(user)
 	if err != nil {
-		// error generating JWT token
 		return http.StatusInternalServerError, "", err
 	}
 
-	// return the token and a status of OK
 	return http.StatusOK, token, nil
 }
