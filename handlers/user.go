@@ -5,7 +5,6 @@ import (
 	"qexchange/models"
 	userModels "qexchange/models/user"
 	"qexchange/services"
-	"qexchange/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,44 +15,28 @@ import (
 // @Tags User
 // @Accept  json
 // @Produce json
-// @Param   body  body      RegisterRequest  true  "User Registration"
+// @Param   body  body      userModels.RegisterRequest  true  "User Registration"
 // @Success 200   {object}  models.Response
 // @Failure 400   {object}  models.Response
 // @Failure 500   {object}  models.Response
 // @Router /user/register [post]
 func UserRegister(service services.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// parse body
 		request := new(userModels.RegisterRequest)
 		if err := c.Bind(request); err != nil {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", err.Error()))
 		}
 
-		if request.Email == "" {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "email not provided"))
+		if err := request.IsValid(); err != nil {
+			return c.JSON(
+				http.StatusBadRequest,
+				models.NewErrorResponse(
+					"registration failed",
+					err.Error(),
+				),
+			)
 		}
 
-		if !utils.ValidateEmail(request.Email) {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "email is not valid"))
-		}
-
-		if request.Username == "" {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "username not provided"))
-		}
-
-		if request.Password == "" || request.PasswordRepeat == "" {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "password not provided"))
-		}
-
-		if request.Password != request.PasswordRepeat {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "passwords do not match"))
-		}
-
-		if !utils.IsPasswordSecure(request.Password) {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("registration failed", "password is not secure"))
-		}
-
-		// call the register service
 		statusCode, err := service.Register(request.Username, request.Password, request.PasswordRepeat, request.Email)
 		if err != nil {
 			return c.JSON(statusCode, models.NewErrorResponse("registration failed", err.Error()))
@@ -69,8 +52,8 @@ func UserRegister(service services.UserService) echo.HandlerFunc {
 // @Tags User
 // @Accept  json
 // @Produce json
-// @Param   body  body      LoginRequest     true  "User Login"
-// @Success 200   {object}  TokenResponse
+// @Param   body  body      userModels.LoginRequest     true  "User Login"
+// @Success 200   {object}  userModels.LoginResponse
 // @Failure 400   {object}  models.Response
 // @Failure 500   {object}  models.Response
 // @Router /user/login [post]
@@ -82,8 +65,14 @@ func UserLogin(service services.UserService) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("login failed", err.Error()))
 		}
 
-		if request.Password == "" || request.Username == "" {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("login failed", "username or password not provided"))
+		if err := request.IsValid(); err != nil {
+			return c.JSON(
+				http.StatusBadRequest,
+				models.NewErrorResponse(
+					"login failed",
+					err.Error(),
+				),
+			)
 		}
 
 		status, token, err := service.Login(request.Username, request.Password)

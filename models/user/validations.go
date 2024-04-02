@@ -1,4 +1,4 @@
-package utils
+package user
 
 import (
 	"regexp"
@@ -6,12 +6,12 @@ import (
 )
 
 // returns true if email is valid
-func ValidateEmail(email string) bool {
+func isEmailValid(email string) bool {
 	var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return emailRegex.MatchString(email)
 }
 
-func IsPasswordSecure(password string) bool {
+func isPasswordSecure(password string) bool {
 	var (
 		hasMinLength   = false
 		hasUpper       = false
