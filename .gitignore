@@ -1,6 +1,10 @@
+// local files
 .idea
 .vscode
 .DS_Store
 
+// builds
 main
 main.exe
+qexchange
+qexchange.exe

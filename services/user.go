@@ -3,10 +3,12 @@ package services
 import (
 	"errors"
 	"net/http"
+	"os"
+	"time"
 
 	userModels "qexchange/models/user"
-	"qexchange/utils"
 
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -38,7 +40,6 @@ func (s *userService) Register(
 	passwordRepeat,
 	email string,
 ) (int, error) {
-	// check for duplicate username or email
 	var existingUser userModels.User
 	result := s.db.Where("username = ? OR email = ?", username, email).First(&existingUser)
 	if result.Error == nil {
@@ -50,30 +51,27 @@ func (s *userService) Register(
 		}
 	}
 
-	// create user
 	var newUser userModels.User
 	newUser.Username = username
 	newUser.Email = email
 
-	//hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	newUser.Password = string(hash)
 
-	//insert user into database
-	if err := s.db.Create(&newUser).Error; err != nil { // Use newUser directly
+	if err := s.db.Create(&newUser).Error; err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	// Create a Profile for the new user
+	// todo: bad code!!! where is transaction !!!!!
 	profile := userModels.Profile{UserID: newUser.ID}
 	if err := s.db.Create(&profile).Error; err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	// commit changes
+	// todo
 	s.db.Save(&profile)
 	s.db.Save(&newUser)
 
@@ -95,10 +93,22 @@ func (s *userService) Login(username, password string) (int, string, error) {
 		return http.StatusUnauthorized, "", errors.New("invalid username or password")
 	}
 
-	token, err := utils.GenerateJWTToken(user)
+	token, err := generateJWTToken(user)
 	if err != nil {
 		return http.StatusInternalServerError, "", err
 	}
 
 	return http.StatusOK, token, nil
+}
+
+func generateJWTToken(user userModels.User) (string, error) {
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":  user.ID,
+		"exp": time.Now().Add(time.Hour * 72).Unix(),
+		"adm": user.IsAdmin,
+	})
+
+	token, err := t.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+	return token, err
 }
