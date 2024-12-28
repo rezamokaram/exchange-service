@@ -9,7 +9,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/RezaMokaram/ExchangeService/database"
+	gormDB "github.com/RezaMokaram/ExchangeService/pkg/gorm_database"
 	"github.com/RezaMokaram/ExchangeService/models"
 	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
 	userModels "github.com/RezaMokaram/ExchangeService/models/user"
@@ -35,7 +35,7 @@ var (
 
 func TestMain(m *testing.M) {
 	var err error
-	testDB, err = database.CreateTestDatabase()
+	testDB, err = gormDB.CreateTestDatabase()
 	if err != nil {
 		log.Fatalf("Failed to create test database: %v", err)
 	}
@@ -44,7 +44,7 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 
 	// Cleanup
-	_ = database.CloseTestDatabase(testDB)
+	_ = gormDB.CloseTestDatabase(testDB)
 	err = os.Remove("./test.db") // Replace with the actual path to test.db
 	if err != nil {
 		log.Fatalf("Failed to delete test database file: %v", err)

@@ -6,8 +6,8 @@ import (
 	"log"
 
 	"github.com/RezaMokaram/ExchangeService/config"
-	"github.com/RezaMokaram/ExchangeService/database"
-	"github.com/RezaMokaram/ExchangeService/server"
+	gorm "github.com/RezaMokaram/ExchangeService/pkg/gorm_database"
+	"github.com/RezaMokaram/ExchangeService/api/server"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("load config failed: %v\n", err.Error())
 	}
 
-	db, err := database.NewConnection(&cfg.Postgres)
+	db, err := gorm.NewGormDatabase(&cfg.Postgres)
 	if err != nil {
 		log.Fatalf("db connection failed: %v\n", err.Error())
 	}

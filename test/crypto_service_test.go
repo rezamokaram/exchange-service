@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"github.com/RezaMokaram/ExchangeService/handlers"
+	"github.com/RezaMokaram/ExchangeService/api/handlers"
 	"github.com/RezaMokaram/ExchangeService/models"
 	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	"github.com/RezaMokaram/ExchangeService/server"
+	"github.com/RezaMokaram/ExchangeService/api/server"
 	"testing"
 
 	"github.com/labstack/echo/v4"
