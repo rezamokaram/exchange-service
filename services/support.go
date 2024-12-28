@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"qexchange/models"
-	"qexchange/models/trade"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/models"
+	"github.com/RezaMokaram/ExchangeService/models/trade"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/gorm"
 )

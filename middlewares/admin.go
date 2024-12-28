@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 	"os"
-	"qexchange/models"
+	"github.com/RezaMokaram/ExchangeService/models"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"

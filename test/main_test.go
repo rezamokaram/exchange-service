@@ -9,10 +9,10 @@ import (
 	"os"
 	"testing"
 
-	"qexchange/database"
-	"qexchange/models"
-	cryptoModels "qexchange/models/crypto"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/database"
+	"github.com/RezaMokaram/ExchangeService/models"
+	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

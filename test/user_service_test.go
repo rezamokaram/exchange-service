@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"qexchange/models"
-	userModels "qexchange/models/user"
-	"qexchange/server"
+	"github.com/RezaMokaram/ExchangeService/models"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/RezaMokaram/ExchangeService/server"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

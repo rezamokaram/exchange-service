@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	"qexchange/models"
-	bankModels "qexchange/models/bank"
-	cryptoModels "qexchange/models/crypto"
-	"qexchange/models/trade"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/models"
+	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
+	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
+	"github.com/RezaMokaram/ExchangeService/models/trade"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

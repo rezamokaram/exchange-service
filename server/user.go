@@ -1,8 +1,8 @@
 package server
 
 import (
-	"qexchange/handlers"
-	"qexchange/services"
+	"github.com/RezaMokaram/ExchangeService/handlers"
+	"github.com/RezaMokaram/ExchangeService/services"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"

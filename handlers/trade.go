@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"qexchange/models"
-	"qexchange/models/trade"
-	userModels "qexchange/models/user"
-	"qexchange/services"
+	"github.com/RezaMokaram/ExchangeService/models"
+	"github.com/RezaMokaram/ExchangeService/models/trade"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/RezaMokaram/ExchangeService/services"
 
 	"github.com/labstack/echo/v4"
 )

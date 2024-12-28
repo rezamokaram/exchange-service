@@ -1,25 +1,21 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
-	"qexchange/config"
-	"qexchange/database"
-	"qexchange/server"
+	"github.com/RezaMokaram/ExchangeService/config"
+	"github.com/RezaMokaram/ExchangeService/database"
+	"github.com/RezaMokaram/ExchangeService/server"
 )
 
-//	@Title			ExchangeService
-//	@version		2.1
-//	@description	Exchange Service
-
-//	@contact.name	Reza Mokaram
-//	@contact.url	https://github.com/RezaMokaram
-
-// @host			0.0.0.0:8080
-// @BasePath		/
 func main() {
-	cfg, err := config.LoadConfig()
+	var path string
+	flag.StringVar(&path, "cleanenv", "./config/config.json", "path to clean env config file")
+	flag.Parse()
+
+	cfg, err := config.LoadConfig(path)
 	if err != nil {
 		log.Fatalf("load config failed: %v\n", err.Error())
 	}

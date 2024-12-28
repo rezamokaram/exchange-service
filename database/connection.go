@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"qexchange/config"
-	"qexchange/models"
-	bankModels "qexchange/models/bank"
-	cryptoModels "qexchange/models/crypto"
-	tradeModels "qexchange/models/trade"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/config"
+	"github.com/RezaMokaram/ExchangeService/models"
+	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
+	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
+	tradeModels "github.com/RezaMokaram/ExchangeService/models/trade"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

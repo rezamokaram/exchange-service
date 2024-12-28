@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	userModels "qexchange/models/user"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"

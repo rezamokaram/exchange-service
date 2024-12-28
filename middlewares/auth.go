@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"qexchange/models"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/models"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 	"time"
 
 	"github.com/golang-jwt/jwt"

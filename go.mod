@@ -1,4 +1,4 @@
-module qexchange
+module github.com/RezaMokaram/ExchangeService
 
 go 1.22.1
 

@@ -9,9 +9,9 @@
   "postgres": {
     "user": "developer",
     "password": "123456",
-    "host": "postgres",
+    "host": "127.0.0.1",
     "port": "5432",
-    "db": "exchange_service_monolith_app",
+    "db": "qexchange",
     "timezone": "UTC",
     "ssl_mode": "disable"
   }

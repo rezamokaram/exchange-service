@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"qexchange/models"
-	bankModels "qexchange/models/bank"
-	"qexchange/models/trade"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/models"
+	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
+	"github.com/RezaMokaram/ExchangeService/models/trade"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/gorm"
 )

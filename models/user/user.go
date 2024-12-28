@@ -1,8 +1,8 @@
 package user
 
 import (
-	"qexchange/models"
-	bankModels "qexchange/models/bank"
+	"github.com/RezaMokaram/ExchangeService/models"
+	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
 
 	"gorm.io/gorm"
 )

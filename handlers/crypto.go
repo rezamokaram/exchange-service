@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"qexchange/models"
-	cryptoModels "qexchange/models/crypto"
-	"qexchange/services"
+	"github.com/RezaMokaram/ExchangeService/models"
+	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
+	"github.com/RezaMokaram/ExchangeService/services"
 
 	"github.com/labstack/echo/v4"
 )

@@ -30,7 +30,10 @@ services:
       retries: 5
 
   app:
-    build: ./
+    build:
+      context: .
+      dockerfile: ./build/docker/Dockerfile.exchange-dev
+    pull_policy: never
     image: exchange_service_monolith_app
     container_name: exchange_service_monolith_app
     hostname: exchange_service_monolith_app
@@ -47,7 +50,7 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_SSLMODE=${POSTGRES_SSLMODE}
       - POSTGRES_TIMEZONE=${POSTGRES_TIMEZONE}
-      - JWTSECRET=${JWTSECRET}
+      - JWT_SECRET=${JWT_SECRET}
       - MerchantID=${MerchantID}
       - ADMIN_PASSWORD =${ADMIN_PASSWORD}
     ports:

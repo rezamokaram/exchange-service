@@ -3,8 +3,8 @@ package server
 import (
 	"log"
 
-	"qexchange/config"
-	_ "qexchange/docs"
+	"github.com/RezaMokaram/ExchangeService/config"
+	_ "github.com/RezaMokaram/ExchangeService/docs"
 
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"

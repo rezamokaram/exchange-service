@@ -28,9 +28,9 @@ type (
 	}
 )
 
-func LoadConfig() (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 	config := new(Config)
-	err := cleanenv.ReadConfig("./config.json", config)
+	err := cleanenv.ReadConfig(path, config)
 	if err != nil {
 		return nil, err
 	}

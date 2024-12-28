@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	cryptoModels "qexchange/models/crypto"
+	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
 
 	"gorm.io/gorm"
 )

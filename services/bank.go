@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	"qexchange/models"
-	bankModels "qexchange/models/bank"
-	userModels "qexchange/models/user"
+	"github.com/RezaMokaram/ExchangeService/models"
+	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
+	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/gorm"
 )
