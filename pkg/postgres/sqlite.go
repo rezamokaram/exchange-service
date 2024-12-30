@@ -1,4 +1,4 @@
-package gorm_database
+package postgres
 
 import (
 	"log"

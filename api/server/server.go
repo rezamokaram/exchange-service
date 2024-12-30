@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/RezaMokaram/ExchangeService/config"
@@ -17,11 +18,11 @@ func NewServer() *echo.Echo {
 
 func RunServer(e *echo.Echo, db *gorm.DB, cfg *config.APP) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	UserRoutes(e, db)
+	// UserRoutes(e, db)
 	PriceRoutes(e, db)
 	TradeRoutes(e, db)
 	BankRoutes(e, db)
 	AdminRoutes(e, db)
 	SupportRoutes(e, db)
-	log.Fatal(e.Start(cfg.Host + ":" + cfg.Port))
+	log.Fatal(e.Start(fmt.Sprintf("%s:%v", cfg.Host, cfg.Port)))
 }

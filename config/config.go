@@ -14,7 +14,7 @@ type (
 		Name    string `env-required:"true" json:"name" env:"INSPECTION_APP_NAME"`
 		Version string `env-required:"true" json:"version" env:"INSPECTION_APP_VERSION"`
 		Host    string `env-required:"true" json:"host" env:"INSPECTION_APP_HOST"`
-		Port    string `env-required:"true" json:"port" env:"INSPECTION_APP_PORT"`
+		Port    uint `env-required:"true" json:"port" env:"INSPECTION_APP_PORT"`
 	}
 
 	POSTGRES struct {
@@ -22,7 +22,7 @@ type (
 		User     string `env-required:"true" json:"user" env:"POSTGRES_USER"`
 		Password string `env-required:"true" json:"password" env:"POSTGRES_PASSWORD"`
 		Host     string `env-required:"true" json:"host" env:"POSTGRES_HOST"`
-		Port     string `env-required:"true" json:"port" env:"POSTGRES_PORT"`
+		Port     uint `env-required:"true" json:"port" env:"POSTGRES_PORT"`
 		SSLMode  string `env-required:"true" json:"ssl_mode" env:"POSTGRES_SSLMODE"`
 		Timezone string `env-required:"true" json:"timezone" env:"POSTGRES_TIMEZONE"`
 	}

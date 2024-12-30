@@ -6,8 +6,11 @@ import (
 	"log"
 
 	"github.com/RezaMokaram/ExchangeService/config"
-	gorm "github.com/RezaMokaram/ExchangeService/pkg/gorm_database"
+	gorm "github.com/RezaMokaram/ExchangeService/pkg/postgres"
 	"github.com/RezaMokaram/ExchangeService/api/server"
+
+	"github.com/RezaMokaram/ExchangeService/api/handlers/http"
+	"github.com/RezaMokaram/ExchangeService/app"
 )
 
 func main() {
@@ -26,6 +29,15 @@ func main() {
 	}
 
 	fmt.Println("Database operations done.")
+
+	go func ()  {
+		c := config.MustReadConfig(path)
+		// c := config.AConfig{}
+
+		appContainer := app.NewMustApp(c)
+
+		log.Fatal(http.Run(appContainer, c.Server))
+	}()
 
 	e := server.NewServer()
 	server.RunServer(e, db, &cfg.App)

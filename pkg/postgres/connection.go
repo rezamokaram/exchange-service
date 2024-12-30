@@ -1,4 +1,4 @@
-package gorm_database
+package postgres
 
 import (
 	"fmt"
@@ -12,6 +12,7 @@ import (
 	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm"
 )
 
@@ -50,6 +51,26 @@ func NewGormDatabase(cfg *config.POSTGRES) (*gorm.DB, error) {
 	}
 
 	return db, nil
+}
+
+type DBConnOptions struct {
+	User   string
+	Pass   string
+	Host   string
+	Port   uint
+	DBName string
+	Schema string
+}
+
+func (o DBConnOptions) PostgresDSN() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s search_path=%s sslmode=disable",
+		o.Host, o.Port, o.User, o.Pass, o.DBName, o.Schema)
+}
+
+func NewPsqlGormConnection(opt DBConnOptions)  (*gorm.DB, error) {
+	return gorm.Open(postgres.Open(opt.PostgresDSN()), &gorm.Config{
+		Logger: logger.Discard,
+	})
 }
 
 func migrate(db *gorm.DB) error {
