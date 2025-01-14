@@ -2,10 +2,10 @@ package middlewares
 
 import (
 	"fmt"
-	"net/http"
-	"os"
 	"github.com/RezaMokaram/ExchangeService/models"
 	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"

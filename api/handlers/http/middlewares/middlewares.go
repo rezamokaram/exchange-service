@@ -1,6 +1,7 @@
-package http
+package middlewares
 
 import (
+	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
 	"github.com/RezaMokaram/ExchangeService/pkg/jwt"
 	"github.com/RezaMokaram/ExchangeService/pkg/logger"
 
@@ -11,13 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func newAuthMiddleware(secret []byte) fiber.Handler {
+func NewAuthMiddleware(secret []byte) fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:  jwtware.SigningKey{Key: secret},
 		Claims:      &jwt.UserClaims{},
 		TokenLookup: "header:Authorization",
 		SuccessHandler: func(ctx *fiber.Ctx) error {
-			userClaims := userClaims(ctx)
+			userClaims := common.UserClaims(ctx)
 			if userClaims == nil {
 				return fiber.ErrUnauthorized
 			}
@@ -34,12 +35,12 @@ func newAuthMiddleware(secret []byte) fiber.Handler {
 	})
 }
 
-func setUserContext(c *fiber.Ctx) error {
+func SetUserContext(c *fiber.Ctx) error {
 	c.SetUserContext(context.NewAppContext(c.UserContext(), context.WithLogger(logger.NewLogger())))
 	return c.Next()
 }
 
-func setTransaction(db *gorm.DB) fiber.Handler {
+func SetTransaction(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		tx := db.Begin()
 

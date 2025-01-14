@@ -19,7 +19,7 @@ func NewServer() *echo.Echo {
 func RunServer(e *echo.Echo, db *gorm.DB, cfg *config.APP) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// UserRoutes(e, db)
-	PriceRoutes(e, db)
+	// PriceRoutes(e, db)
 	TradeRoutes(e, db)
 	BankRoutes(e, db)
 	AdminRoutes(e, db)

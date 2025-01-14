@@ -1,4 +1,4 @@
-package http
+package user
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
 	"github.com/RezaMokaram/ExchangeService/api/pb"
 	"github.com/RezaMokaram/ExchangeService/api/service"
 	"github.com/RezaMokaram/ExchangeService/pkg/context"
@@ -13,7 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SendSignInOTP(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
+func SendSignInOTP(svcGetter common.ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		svc := svcGetter(c.UserContext())
 		phone := strings.TrimSpace(c.Query("phone"))
@@ -26,7 +27,7 @@ func SendSignInOTP(svcGetter ServiceGetter[*service.UserService]) fiber.Handler 
 	}
 }
 
-func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
+func SignUp(svcGetter common.ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		svc := svcGetter(c.UserContext())
 		var req pb.UserSignUpRequest
@@ -50,7 +51,7 @@ func SignUp(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
 	}
 }
 
-func SignIn(svcGetter ServiceGetter[*service.UserService]) fiber.Handler {
+func SignIn(svcGetter common.ServiceGetter[*service.UserService]) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		svc := svcGetter(c.UserContext())
 		var req pb.UserSignInRequest

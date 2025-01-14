@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"net/http"
+	"github.com/RezaMokaram/ExchangeService/internal"
 	"github.com/RezaMokaram/ExchangeService/models"
 	"github.com/RezaMokaram/ExchangeService/models/trade"
 	userModels "github.com/RezaMokaram/ExchangeService/models/user"
-	"github.com/RezaMokaram/ExchangeService/internal"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )

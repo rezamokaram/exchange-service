@@ -1,4 +1,4 @@
-package http
+package common
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	jwt2 "github.com/golang-jwt/jwt/v5"
 )
 
-func userClaims(ctx *fiber.Ctx) *jwt.UserClaims {
+func UserClaims(ctx *fiber.Ctx) *jwt.UserClaims {
 	if u := ctx.Locals("user"); u != nil {
 		userClaims, ok := u.(*jwt2.Token).Claims.(*jwt.UserClaims)
 		if ok {

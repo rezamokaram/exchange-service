@@ -12,8 +12,8 @@ import (
 	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 
 	"gorm.io/driver/postgres"
-	"gorm.io/gorm/logger"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func NewGormDatabase(cfg *config.POSTGRES) (*gorm.DB, error) {
@@ -67,7 +67,7 @@ func (o DBConnOptions) PostgresDSN() string {
 		o.Host, o.Port, o.User, o.Pass, o.DBName, o.Schema)
 }
 
-func NewPsqlGormConnection(opt DBConnOptions)  (*gorm.DB, error) {
+func NewPsqlGormConnection(opt DBConnOptions) (*gorm.DB, error) {
 	return gorm.Open(postgres.Open(opt.PostgresDSN()), &gorm.Config{
 		Logger: logger.Discard,
 	})

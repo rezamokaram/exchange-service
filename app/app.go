@@ -25,8 +25,8 @@ import (
 )
 
 type app struct {
-	db                  *gorm.DB
-	cfg                 config.AConfig
+	db  *gorm.DB
+	cfg config.AConfig
 	// orderService        orderPort.Service
 	userService         userPort.Service
 	notificationService notifPort.Service

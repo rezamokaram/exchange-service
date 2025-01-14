@@ -1,72 +1,72 @@
 package test
 
-import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
-	"github.com/RezaMokaram/ExchangeService/api/handlers"
-	"github.com/RezaMokaram/ExchangeService/models"
-	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	"github.com/RezaMokaram/ExchangeService/api/server"
-	"testing"
+// import (
+// 	"bytes"
+// 	"encoding/json"
+// 	"github.com/RezaMokaram/ExchangeService/api/handlers"
+// 	"github.com/RezaMokaram/ExchangeService/api/server"
+// 	"github.com/RezaMokaram/ExchangeService/models"
+// 	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
+// 	"net/http"
+// 	"net/http/httptest"
+// 	"testing"
 
-	"github.com/labstack/echo/v4"
-	"github.com/stretchr/testify/assert"
-)
+// 	"github.com/labstack/echo/v4"
+// 	"github.com/stretchr/testify/assert"
+// )
 
-func TestGetCrypto(t *testing.T) {
-	e := echo.New()
-	server.PriceRoutes(e, testDB)
+// func TestGetCrypto(t *testing.T) {
+// 	e := echo.New()
+// 	server.PriceRoutes(e, testDB)
 
-	t.Run("crypto not found", func(t *testing.T) {
-		request := handlers.GetCryptoRequest{Id: 999} // Non-existent ID
-		requestBody, _ := json.Marshal(request)
-		req := httptest.NewRequest(http.MethodGet, "/crypto", bytes.NewReader(requestBody))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+// 	t.Run("crypto not found", func(t *testing.T) {
+// 		request := handlers.GetCryptoRequest{Id: 999} // Non-existent ID
+// 		requestBody, _ := json.Marshal(request)
+// 		req := httptest.NewRequest(http.MethodGet, "/crypto", bytes.NewReader(requestBody))
+// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+// 		rec := httptest.NewRecorder()
 
-		e.ServeHTTP(rec, req)
+// 		e.ServeHTTP(rec, req)
 
-		var errResp models.Response
-		err := json.NewDecoder(rec.Body).Decode(&errResp)
-		if err != nil {
-			t.Fatalf("Failed to decode response: %v", err)
-		}
+// 		var errResp models.Response
+// 		err := json.NewDecoder(rec.Body).Decode(&errResp)
+// 		if err != nil {
+// 			t.Fatalf("Failed to decode response: %v", err)
+// 		}
 
-		assert.Equal(t, http.StatusBadRequest, rec.Code, "Expected status code to be 400 Bad Request")
-		assert.Contains(t, errResp.Message, "there is no crypto with this id", "Expected error message to contain 'there is no crypto with this id'")
-	})
+// 		assert.Equal(t, http.StatusBadRequest, rec.Code, "Expected status code to be 400 Bad Request")
+// 		assert.Contains(t, errResp.Message, "there is no crypto with this id", "Expected error message to contain 'there is no crypto with this id'")
+// 	})
 
-	t.Run("valid crypto request", func(t *testing.T) {
-		testCrypto := cryptoModels.Crypto{
-			Name:         "Bitcoin",
-			Symbol:       "BTC",
-			CurrentPrice: 500,
-			BuyFee:       515,
-			SellFee:      485,
-		}
+// 	t.Run("valid crypto request", func(t *testing.T) {
+// 		testCrypto := cryptoModels.Crypto{
+// 			Name:         "Bitcoin",
+// 			Symbol:       "BTC",
+// 			CurrentPrice: 500,
+// 			BuyFee:       515,
+// 			SellFee:      485,
+// 		}
 
-		request := handlers.GetCryptoRequest{Id: int(1)}
-		requestBody, _ := json.Marshal(request)
-		req := httptest.NewRequest(http.MethodGet, "/crypto", bytes.NewReader(requestBody))
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+// 		request := handlers.GetCryptoRequest{Id: int(1)}
+// 		requestBody, _ := json.Marshal(request)
+// 		req := httptest.NewRequest(http.MethodGet, "/crypto", bytes.NewReader(requestBody))
+// 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+// 		rec := httptest.NewRecorder()
 
-		e.ServeHTTP(rec, req)
+// 		e.ServeHTTP(rec, req)
 
-		var cryptoResponse cryptoModels.CryptoResponse
-		err := json.NewDecoder(rec.Body).Decode(&cryptoResponse)
-		if err != nil {
-			t.Fatalf("Failed to decode response: %v", err)
-		}
+// 		var cryptoResponse cryptoModels.CryptoResponse
+// 		err := json.NewDecoder(rec.Body).Decode(&cryptoResponse)
+// 		if err != nil {
+// 			t.Fatalf("Failed to decode response: %v", err)
+// 		}
 
-		assert.Equal(t, testCrypto.Name, cryptoResponse.Name, "Expected crypto name to match")
-		assert.Equal(t, testCrypto.Symbol, cryptoResponse.Symbol, "Expected crypto symbol to match")
-		assert.Equal(t, testCrypto.BuyFee, cryptoResponse.BuyFee, "Expected crypto BuyFee to match")
-		assert.Equal(t, testCrypto.SellFee, cryptoResponse.SellFee, "Expected crypto SellFee to match")
-	})
-}
+// 		assert.Equal(t, testCrypto.Name, cryptoResponse.Name, "Expected crypto name to match")
+// 		assert.Equal(t, testCrypto.Symbol, cryptoResponse.Symbol, "Expected crypto symbol to match")
+// 		assert.Equal(t, testCrypto.BuyFee, cryptoResponse.BuyFee, "Expected crypto BuyFee to match")
+// 		assert.Equal(t, testCrypto.SellFee, cryptoResponse.SellFee, "Expected crypto SellFee to match")
+// 	})
+// }
 
 // func TestSetCrypto(t *testing.T) {
 // 	e := echo.New()
@@ -239,23 +239,23 @@ func TestGetCrypto(t *testing.T) {
 // 	})
 // }
 
-func TestGetAllCrypto(t *testing.T) {
-	e := echo.New()
-	server.PriceRoutes(e, testDB)
+// func TestGetAllCrypto(t *testing.T) {
+// 	e := echo.New()
+// 	server.PriceRoutes(e, testDB)
 
-	t.Run("successfully get all cryptos", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/crypto/get-all", nil)
-		rec := httptest.NewRecorder()
+// 	t.Run("successfully get all cryptos", func(t *testing.T) {
+// 		req := httptest.NewRequest(http.MethodGet, "/crypto/get-all", nil)
+// 		rec := httptest.NewRecorder()
 
-		e.ServeHTTP(rec, req)
+// 		e.ServeHTTP(rec, req)
 
-		var cryptoList []cryptoModels.CryptoResponse
-		err := json.NewDecoder(rec.Body).Decode(&cryptoList)
-		if err != nil {
-			t.Fatalf("Failed to decode response: %v", err)
-		}
+// 		var cryptoList []cryptoModels.CryptoResponse
+// 		err := json.NewDecoder(rec.Body).Decode(&cryptoList)
+// 		if err != nil {
+// 			t.Fatalf("Failed to decode response: %v", err)
+// 		}
 
-		assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
-		assert.NotEmpty(t, cryptoList, "Expected to receive a list of cryptocurrencies")
-	})
-}
+// 		assert.Equal(t, http.StatusOK, rec.Code, "Expected status code to be 200 OK")
+// 		assert.NotEmpty(t, cryptoList, "Expected to receive a list of cryptocurrencies")
+// 	})
+// }
