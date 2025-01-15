@@ -14,9 +14,9 @@ type Crypto struct {
 	DeletedAt    time.Time
 	Name         string
 	Symbol       string
-	CurrentPrice int
-	BuyFee       int
-	SellFee      int
+	CurrentPrice uint64
+	BuyFee       uint64
+	SellFee      uint64
 }
 
 type CryptoFilter struct {

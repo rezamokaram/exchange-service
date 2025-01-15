@@ -9,7 +9,7 @@ import (
 	"github.com/RezaMokaram/ExchangeService/config"
 	gorm "github.com/RezaMokaram/ExchangeService/pkg/postgres"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/user"
+	"github.com/RezaMokaram/ExchangeService/api/handlers/http"
 	"github.com/RezaMokaram/ExchangeService/app"
 )
 
@@ -36,7 +36,7 @@ func main() {
 
 		appContainer := app.NewMustApp(c)
 
-		log.Fatal(user.Run(appContainer, c.Server))
+		log.Fatal(http.Run(appContainer, c.Server))
 	}()
 
 	e := server.NewServer()

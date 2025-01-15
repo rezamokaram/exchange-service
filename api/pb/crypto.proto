@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/RezaMokaram/ExchangeService/api/pb";
+
+message Crypto {
+    uint64 id = 1;
+    string name = 2;
+    string symbol = 3;
+    uint64 currentPrice = 4;
+    uint64 buyFee = 5;
+    uint64 sellFee = 6;
+}
+
+message CreateCryptoRequest {
+    string name = 1 [json_name = "name"];
+    string symbol = 2 [json_name = "symbol"];
+    uint64 currentPrice = 3 [json_name = "currentPrice"];
+}
+
+message CreateCryptoResponse {
+    uint64 id = 1;
+}

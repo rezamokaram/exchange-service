@@ -18,7 +18,7 @@ type service struct {
 	repo port.Repo
 }
 
-func NewCryptoService(r port.Repo) port.Service {
+func NewService(r port.Repo) port.Service {
 	return &service{
 		repo: r,
 	}

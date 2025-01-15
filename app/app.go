@@ -6,10 +6,10 @@ import (
 
 	"github.com/RezaMokaram/ExchangeService/config"
 	"github.com/RezaMokaram/ExchangeService/internal/common"
+	"github.com/RezaMokaram/ExchangeService/internal/crypto"
+	cryptoPort "github.com/RezaMokaram/ExchangeService/internal/crypto/port"
 	"github.com/RezaMokaram/ExchangeService/internal/notification"
 	notifPort "github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	// "github.com/RezaMokaram/ExchangeService/internal/order"
-	// orderPort "github.com/RezaMokaram/ExchangeService/internal/order/port"
 	"github.com/RezaMokaram/ExchangeService/internal/user"
 	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
 	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage"
@@ -25,9 +25,9 @@ import (
 )
 
 type app struct {
-	db  *gorm.DB
-	cfg config.AConfig
-	// orderService        orderPort.Service
+	db                  *gorm.DB
+	cfg                 config.AConfig
+	cryptoService       cryptoPort.Service
 	userService         userPort.Service
 	notificationService notifPort.Service
 	redisProvider       cache.Provider
@@ -37,21 +37,21 @@ func (a *app) DB() *gorm.DB {
 	return a.db
 }
 
-// func (a *app) OrderService(ctx context.Context) orderPort.Service {
-// 	db := appCtx.GetDB(ctx)
-// 	if db == nil {
-// 		if a.orderService == nil {
-// 			a.orderService = a.orderServiceWithDB(a.db)
-// 		}
-// 		return a.orderService
-// 	}
+func (a *app) CryptoService(ctx context.Context) cryptoPort.Service {
+	db := appCtx.GetDB(ctx)
+	if db == nil {
+		if a.cryptoService == nil {
+			a.cryptoService = a.cryptoServiceWithDB(a.db)
+		}
+		return a.cryptoService
+	}
 
-// 	return a.orderServiceWithDB(db)
-// }
+	return a.cryptoServiceWithDB(db)
+}
 
-// func (a *app) orderServiceWithDB(db *gorm.DB) orderPort.Service {
-// 	return order.NewService(a.userServiceWithDB(db), storage.NewOrderRepo(db))
-// }
+func (a *app) cryptoServiceWithDB(db *gorm.DB) cryptoPort.Service {
+	return crypto.NewService(storage.NewCryptoRepo(db, true, a.redisProvider))
+}
 
 func (a *app) UserService(ctx context.Context) userPort.Service {
 	db := appCtx.GetDB(ctx)

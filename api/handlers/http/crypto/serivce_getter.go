@@ -1,17 +1,18 @@
 package crypto
 
 import (
-// "context"
+	"context"
 
-// "github.com/RezaMokaram/ExchangeService/api/service"
-// "github.com/RezaMokaram/ExchangeService/app"
-// "github.com/RezaMokaram/ExchangeService/config"
+	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
+	"github.com/RezaMokaram/ExchangeService/api/service"
+	"github.com/RezaMokaram/ExchangeService/app"
+	"github.com/RezaMokaram/ExchangeService/config"
 )
 
-// // user service transient instance handler
-// func cryptoServiceGetter(appContainer app.App, cfg config.ServerConfig) ServiceGetter[*service.UserService] {
-// 	return func(ctx context.Context) *service.UserService {
-// 		return service.NewUserService(appContainer.UserService(ctx),
-// 			cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute, appContainer.NotificationService(ctx))
-// 	}
-// }
+// user service transient instance handler
+func cryptoServiceGetter(appContainer app.App, cfg config.ServerConfig) common.ServiceGetter[*service.CryptoService] {
+	return func(ctx context.Context) *service.CryptoService {
+		return service.NewCryptoService(appContainer.CryptoService(ctx),
+			cfg.Secret, cfg.AuthExpMinute, cfg.AuthRefreshMinute, appContainer.NotificationService(ctx))
+	}
+}
