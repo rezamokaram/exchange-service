@@ -16,12 +16,12 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func NewGormDatabase(cfg *config.POSTGRES) (*gorm.DB, error) {
+func NewGormDatabase(cfg *config.DBConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=%v TimeZone=%v",
 		cfg.Host,
 		cfg.User,
 		cfg.Password,
-		cfg.DB,
+		cfg.Database,
 		cfg.Port,
 		cfg.SSLMode,
 		cfg.Timezone,

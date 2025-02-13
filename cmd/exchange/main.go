@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/RezaMokaram/ExchangeService/config"
@@ -12,13 +13,12 @@ import (
 
 func main() {
 	var path string
-	flag.StringVar(&path, "cleanenv", "./config/config.json", "path to clean env config file")
+	flag.StringVar(&path, "config_path", "./cmd/exchange/config.yaml", "path to clean env config file")
 	flag.Parse()
 
-	c := config.MustReadConfig(path)
-	// c := config.AConfig{}
+	cfg := config.MustReadConfig[config.ExchangeConfig](path)
+	fmt.Println("cfg: ", cfg)
+	appContainer := app.NewMustApp(cfg)
 
-	appContainer := app.NewMustApp(c)
-
-	log.Fatal(http.Run(appContainer, c.Server))
+	log.Fatal(http.Run(appContainer, cfg.Server))
 }
