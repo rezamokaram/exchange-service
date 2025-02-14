@@ -8,10 +8,14 @@ volumes:
   app_data:
     name: app_data
     driver: local
+  
+  redis-data:
+    name: redis-data
+    driver: local
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.2-alpine3.21
     container_name: exchange_service_monolith_postgres
     hostname: exchange_service_monolith_postgres
     restart: always
@@ -28,6 +32,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis: 
+    image: redis:7.4.1-alpine3.20 
+    container_name: exchange_service_monolith_redis
+    hostname: exchange_service_monolith_redis
+    ports: 
+      - "6379:6379" 
+    volumes: 
+      - redis-data:/data
 
   app:
     build:

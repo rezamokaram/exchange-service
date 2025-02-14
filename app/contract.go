@@ -17,5 +17,5 @@ type App interface {
 	CryptoService(ctx context.Context) cryptoPort.Service
 	NotificationService(ctx context.Context) notifPort.Service
 	DB() *gorm.DB
-	Config() config.AConfig
+	Config() config.ExchangeConfig
 }
