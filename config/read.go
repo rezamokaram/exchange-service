@@ -1,24 +1,26 @@
 package config
 
 import (
-	"encoding/json"
-	"os"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
-func ReadConfig(configPath string) (AConfig, error) {
-	var c AConfig
-	all, err := os.ReadFile(configPath)
-	if err != nil {
-		return c, err
-	}
-
-	return c, json.Unmarshal(all, &c)
+type Config interface {
+	configSignature()
+	Print()
 }
 
-func MustReadConfig(configPath string) AConfig {
-	c, err := ReadConfig(configPath)
+func MustReadConfig[T Config](path string) T {
+	var cfg T
+	err := cleanenv.ReadConfig(path, &cfg)
 	if err != nil {
 		panic(err)
 	}
-	return c
+
+	err = cleanenv.ReadEnv(&cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	cfg.Print()
+	return cfg
 }

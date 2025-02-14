@@ -13,6 +13,7 @@ import (
 	"github.com/RezaMokaram/ExchangeService/internal/user"
 	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
 	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage"
+	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/migrator"
 	"github.com/RezaMokaram/ExchangeService/pkg/cache"
 	"github.com/RezaMokaram/ExchangeService/pkg/postgres"
 	"github.com/go-co-op/gocron/v2"
@@ -26,7 +27,7 @@ import (
 
 type app struct {
 	db                  *gorm.DB
-	cfg                 config.AConfig
+	cfg                 config.ExchangeConfig
 	cryptoService       cryptoPort.Service
 	userService         userPort.Service
 	notificationService notifPort.Service
@@ -86,7 +87,7 @@ func (a *app) NotificationService(ctx context.Context) notifPort.Service {
 	return a.notifServiceWithDB(db)
 }
 
-func (a *app) Config() config.AConfig {
+func (a *app) Config() config.ExchangeConfig {
 	return a.cfg
 }
 
@@ -104,6 +105,10 @@ func (a *app) setDB() error {
 		return err
 	}
 
+	if err := migrator.Migrate(db); err != nil {
+		return err
+	}
+
 	a.db = db
 	return nil
 }
@@ -112,7 +117,7 @@ func (a *app) setRedis() {
 	a.redisProvider = redisAdapter.NewRedisProvider(fmt.Sprintf("%s:%d", a.cfg.Redis.Host, a.cfg.Redis.Port))
 }
 
-func NewApp(cfg config.AConfig) (App, error) {
+func NewApp(cfg config.ExchangeConfig) (App, error) {
 	a := &app{
 		cfg: cfg,
 	}
@@ -126,7 +131,7 @@ func NewApp(cfg config.AConfig) (App, error) {
 	return a, a.registerOutboxHandlers()
 }
 
-func NewMustApp(cfg config.AConfig) App {
+func NewMustApp(cfg config.ExchangeConfig) App {
 	app, err := NewApp(cfg)
 	if err != nil {
 		panic(err)

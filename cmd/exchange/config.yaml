@@ -1,0 +1,22 @@
+app:
+  name: exchange_service_monolith_app
+  version: 0.0.1
+  http_host: 0.0.0.0
+  http_port: 8088
+  secret: super_secret
+  auth_exp_min: 5
+  auth_exp_refresh_min: 5
+
+db: 
+  user: developer
+  password: 123456
+  host: 127.0.0.1
+  port: 5432
+  database: qexchange
+  timezone: UTC
+  ssl_mode: disable
+  schema: public
+
+redis:
+  host: 127.0.0.1
+  port: 6379
