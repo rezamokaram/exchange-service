@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 
 	"github.com/RezaMokaram/ExchangeService/config"
@@ -17,7 +16,6 @@ func main() {
 	flag.Parse()
 
 	cfg := config.MustReadConfig[config.ExchangeConfig](path)
-	fmt.Println("cfg: ", cfg)
 	appContainer := app.NewMustApp(cfg)
 
 	log.Fatal(http.Run(appContainer, cfg.Server))

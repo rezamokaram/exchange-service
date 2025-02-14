@@ -8,15 +8,17 @@ type DBConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
 	Timezone string `json:"timezone"`
-	SSLMode string `json:"ssl_mode"`
+	SSLMode  string `json:"ssl_mode"`
 }
 
 type ServerConfig struct {
-	HttpPort          uint   `json:"http_port"`
-	HttpHost          uint   `json:"http_host"`
-	Secret            string `json:"secret"`
-	AuthExpMinute     uint   `json:"auth_exp_min"`
-	AuthRefreshMinute uint   `json:"auth_exp_refresh_min"`
+	HttpPort          uint   `json:"http_port" yaml:"http_port"`
+	HttpHost          string `json:"http_host" yaml:"http_host"`
+	Secret            string `json:"secret" yaml:"secret"`
+	AuthExpMinute     uint   `json:"auth_exp_min" yaml:"auth_exp_min"`
+	AuthRefreshMinute uint   `json:"auth_exp_refresh_min" yaml:"auth_exp_refresh_min"`
+	Name              string `json:"name" yaml:"name"`
+	Version           string `json:"version" yaml:"version"`
 }
 
 type RedisConfig struct {

@@ -15,6 +15,7 @@ import (
 func Run(appContainer app.App, cfg config.ServerConfig) error {
 	router := fiber.New()
 
+	router.Use(middlewares.RequestLogger())
 	api := router.Group("/api/v1", middlewares.SetUserContext)
 
 	user.RegisterAuthAPI(appContainer, cfg, api)

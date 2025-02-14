@@ -15,7 +15,7 @@ volumes:
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.2-alpine3.21
     container_name: exchange_service_monolith_postgres
     hostname: exchange_service_monolith_postgres
     restart: always

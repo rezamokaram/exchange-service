@@ -6,6 +6,7 @@ import (
 
 type Config interface {
 	configSignature()
+	Print()
 }
 
 func MustReadConfig[T Config](path string) T {
@@ -20,5 +21,6 @@ func MustReadConfig[T Config](path string) T {
 		panic(err)
 	}
 
+	cfg.Print()
 	return cfg
 }
