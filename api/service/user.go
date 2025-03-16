@@ -97,14 +97,15 @@ func (s *UserService) SignIn(ctx context.Context, req *pb.UserSignInRequest) (*p
 		return nil, ErrUserNotFound
 	}
 
-	ok, err := s.notifSvc.CheckUserNotifValue(ctx, user.ID, req.GetOtp())
-	if err != nil {
-		return nil, err
-	}
+	// there is no otp yet
+	//ok, err := s.notifSvc.CheckUserNotifValue(ctx, user.ID, req.GetOtp())
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	if !ok {
-		return nil, ErrWrongOTP
-	}
+	//if !ok {
+	//	return nil, ErrWrongOTP
+	//}
 
 	if !user.PasswordIsCorrect(req.GetPassword()) {
 		return nil, ErrInvalidUserPassword

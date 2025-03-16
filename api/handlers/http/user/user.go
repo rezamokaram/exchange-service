@@ -35,7 +35,7 @@ func SignUp(svcGetter common.ServiceGetter[*service.UserService]) fiber.Handler 
 			return fiber.ErrBadRequest
 		}
 
-		_, err := svc.SignUp(c.UserContext(), &req)
+		resp, err := svc.SignUp(c.UserContext(), &req)
 		if err != nil {
 			if errors.Is(err, service.ErrUserCreationValidation) {
 				return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -45,8 +45,8 @@ func SignUp(svcGetter common.ServiceGetter[*service.UserService]) fiber.Handler 
 		}
 
 		// return c.JSON(resp)
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "internal error",
+		return c.Status(http.StatusOK).JSON(fiber.Map{
+			"data": resp,
 		})
 	}
 }

@@ -45,7 +45,7 @@ func TestUserSignUpAndSignIn(t *testing.T) {
 	signUpResp, err := client.Do(req)
 	require.NoError(t, err, "Expected no error")
 	defer signUpResp.Body.Close()
-	assert.Equal(t, http.StatusOK, signUpResp.Status, "Expected http status ok")
+	assert.Equal(t, "200 OK", signUpResp.Status, "Expected http status ok")
 
 	signInPayload := pb.UserSignInRequest{
 		Phone:    signUpPayload.Phone,
@@ -60,7 +60,7 @@ func TestUserSignUpAndSignIn(t *testing.T) {
 	signInResp, err := client.Do(req)
 	require.NoError(t, err, "Expected no error")
 	defer signInResp.Body.Close()
-	assert.Equal(t, http.StatusOK, signInResp.Status, "Expected http status ok")
+	assert.Equal(t, "200 OK", signInResp.Status, "Expected http status ok")
 
 	cancel()
 	t.Log("E2E TestUserSignUpAndSignIn passed successfully")

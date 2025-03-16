@@ -8,11 +8,11 @@ app:
   auth_exp_refresh_min: 5
 
 db: 
-  user: test
-  password: test
+  user: developer
+  password: 123456
   host: localhost
   port: 5432
-  database: test
+  database: qexchange
   timezone: UTC
   ssl_mode: disable
   schema: public
