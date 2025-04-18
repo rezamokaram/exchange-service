@@ -7,17 +7,18 @@ import (
 	// "math/rand/v2"
 	// "time"
 
-	// "github.com/RezaMokaram/ExchangeService/api/pb"
-	// notifDomain "github.com/RezaMokaram/ExchangeService/internal/notification/domain"
+	// "github.com/rezamokaram/exchange-service/api/pb"
+	// notifDomain "github.com/rezamokaram/exchange-service/internal/notification/domain"
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/api/pb"
-	notifPort "github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	// "github.com/RezaMokaram/ExchangeService/internal/user"
-	"github.com/RezaMokaram/ExchangeService/internal/crypto/domain"
-	cryptoPort "github.com/RezaMokaram/ExchangeService/internal/crypto/port"
-	// "github.com/RezaMokaram/ExchangeService/pkg/jwt"
-	// timeutils "github.com/RezaMokaram/ExchangeService/pkg/time"
+	"github.com/rezamokaram/exchange-service/api/pb"
+	notifPort "github.com/rezamokaram/exchange-service/internal/notification/port"
+
+	// "github.com/rezamokaram/exchange-service/internal/user"
+	"github.com/rezamokaram/exchange-service/internal/crypto/domain"
+	cryptoPort "github.com/rezamokaram/exchange-service/internal/crypto/port"
+	// "github.com/rezamokaram/exchange-service/pkg/jwt"
+	// timeutils "github.com/rezamokaram/exchange-service/pkg/time"
 	// jwt2 "github.com/golang-jwt/jwt/v5"
 )
 

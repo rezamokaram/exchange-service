@@ -4,12 +4,12 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
-	"github.com/RezaMokaram/ExchangeService/pkg/context"
-	"github.com/RezaMokaram/ExchangeService/pkg/jwt"
-	"github.com/RezaMokaram/ExchangeService/pkg/logger"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rezamokaram/exchange-service/api/handlers/http/common"
+	"github.com/rezamokaram/exchange-service/pkg/context"
+	"github.com/rezamokaram/exchange-service/pkg/jwt"
+	"github.com/rezamokaram/exchange-service/pkg/logger"
 	"gorm.io/gorm"
 )
 

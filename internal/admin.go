@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/RezaMokaram/ExchangeService/models"
-	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
-	"github.com/RezaMokaram/ExchangeService/models/trade"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/rezamokaram/exchange-service/models"
+	bankModels "github.com/rezamokaram/exchange-service/models/bank"
+	"github.com/rezamokaram/exchange-service/models/trade"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/gorm"
 )

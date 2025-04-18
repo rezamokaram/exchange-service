@@ -4,8 +4,8 @@ package server
 // 	"fmt"
 // 	"log"
 
-// 	"github.com/RezaMokaram/ExchangeService/config"
-// 	_ "github.com/RezaMokaram/ExchangeService/docs"
+// 	"github.com/rezamokaram/exchange-service/config"
+// 	_ "github.com/rezamokaram/exchange-service/docs"
 
 // 	"github.com/labstack/echo/v4"
 // 	echoSwagger "github.com/swaggo/echo-swagger"

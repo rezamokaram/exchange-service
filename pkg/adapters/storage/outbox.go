@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/common"
 	"gorm.io/gorm"
 )
 

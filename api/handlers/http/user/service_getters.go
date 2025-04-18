@@ -3,10 +3,10 @@ package user
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
-	"github.com/RezaMokaram/ExchangeService/api/service"
-	"github.com/RezaMokaram/ExchangeService/app"
-	"github.com/RezaMokaram/ExchangeService/config"
+	"github.com/rezamokaram/exchange-service/api/handlers/http/common"
+	"github.com/rezamokaram/exchange-service/api/service"
+	"github.com/rezamokaram/exchange-service/app"
+	"github.com/rezamokaram/exchange-service/config"
 )
 
 // user service transient instance handler

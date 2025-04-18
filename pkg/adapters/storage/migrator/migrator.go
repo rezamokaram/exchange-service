@@ -1,7 +1,7 @@
 package migrator
 
 import (
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/types"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/types"
 	"gorm.io/gorm"
 )
 

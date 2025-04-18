@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/models"
-	"github.com/RezaMokaram/ExchangeService/models/trade"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/rezamokaram/exchange-service/models"
+	"github.com/rezamokaram/exchange-service/models/trade"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/gorm"
 )

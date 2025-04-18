@@ -5,9 +5,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
-	"github.com/RezaMokaram/ExchangeService/pkg/cache"
+	"github.com/rezamokaram/exchange-service/internal/user/domain"
+	userPort "github.com/rezamokaram/exchange-service/internal/user/port"
+	"github.com/rezamokaram/exchange-service/pkg/cache"
 )
 
 type userCachedRepo struct {

@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/domain"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	userDomain "github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/mapper"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/types"
-	"github.com/RezaMokaram/ExchangeService/pkg/cache"
-	"github.com/RezaMokaram/ExchangeService/pkg/conv"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/notification/domain"
+	"github.com/rezamokaram/exchange-service/internal/notification/port"
+	userDomain "github.com/rezamokaram/exchange-service/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/mapper"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/types"
+	"github.com/rezamokaram/exchange-service/pkg/cache"
+	"github.com/rezamokaram/exchange-service/pkg/conv"
 	"gorm.io/gorm"
 )
 

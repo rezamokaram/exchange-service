@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	tradeModels "github.com/RezaMokaram/ExchangeService/models/trade"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	cryptoModels "github.com/rezamokaram/exchange-service/models/crypto"
+	tradeModels "github.com/rezamokaram/exchange-service/models/trade"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/gorm"
 )

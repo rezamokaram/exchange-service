@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/RezaMokaram/ExchangeService/models"
-	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
-	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	"github.com/RezaMokaram/ExchangeService/models/trade"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/rezamokaram/exchange-service/models"
+	bankModels "github.com/rezamokaram/exchange-service/models/bank"
+	cryptoModels "github.com/rezamokaram/exchange-service/models/crypto"
+	"github.com/rezamokaram/exchange-service/models/trade"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

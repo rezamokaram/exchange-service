@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
-	"github.com/RezaMokaram/ExchangeService/api/pb"
-	"github.com/RezaMokaram/ExchangeService/api/service"
-	"github.com/RezaMokaram/ExchangeService/pkg/context"
+	"github.com/rezamokaram/exchange-service/api/handlers/http/common"
+	"github.com/rezamokaram/exchange-service/api/pb"
+	"github.com/rezamokaram/exchange-service/api/service"
+	"github.com/rezamokaram/exchange-service/pkg/context"
 
 	"github.com/gofiber/fiber/v2"
 )

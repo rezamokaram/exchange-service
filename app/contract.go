@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/config"
-	cryptoPort "github.com/RezaMokaram/ExchangeService/internal/crypto/port"
-	notifPort "github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
+	"github.com/rezamokaram/exchange-service/config"
+	cryptoPort "github.com/rezamokaram/exchange-service/internal/crypto/port"
+	notifPort "github.com/rezamokaram/exchange-service/internal/notification/port"
+	userPort "github.com/rezamokaram/exchange-service/internal/user/port"
 
 	"gorm.io/gorm"
 )

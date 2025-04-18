@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"github.com/RezaMokaram/ExchangeService/models"
 	"net/http"
 	"os"
+
+	"github.com/rezamokaram/exchange-service/models"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
