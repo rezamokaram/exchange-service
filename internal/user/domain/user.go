@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/pkg/conv"
+	"github.com/rezamokaram/exchange-service/pkg/conv"
 )
 
 type (

@@ -9,10 +9,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/RezaMokaram/ExchangeService/models"
-	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
-	gormDB "github.com/RezaMokaram/ExchangeService/pkg/postgres"
+	"github.com/rezamokaram/exchange-service/models"
+	cryptoModels "github.com/rezamokaram/exchange-service/models/crypto"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
+	gormDB "github.com/rezamokaram/exchange-service/pkg/postgres"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

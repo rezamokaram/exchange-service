@@ -2,11 +2,12 @@ package middlewares
 
 import (
 	"fmt"
-	"github.com/RezaMokaram/ExchangeService/models"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/rezamokaram/exchange-service/models"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"

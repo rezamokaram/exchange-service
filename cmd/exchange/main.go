@@ -4,10 +4,10 @@ import (
 	"flag"
 	"log"
 
-	"github.com/RezaMokaram/ExchangeService/config"
+	"github.com/rezamokaram/exchange-service/config"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http"
-	"github.com/RezaMokaram/ExchangeService/app"
+	"github.com/rezamokaram/exchange-service/api/handlers/http"
+	"github.com/rezamokaram/exchange-service/app"
 )
 
 func main() {

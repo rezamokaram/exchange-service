@@ -3,9 +3,9 @@ package mapper
 import (
 	"encoding/json"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/domain"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/types"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/notification/domain"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/types"
 )
 
 func NotifOutbox2Storage(no *domain.NotificationOutbox) (*types.Outbox, error) {

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/common"
-	"github.com/RezaMokaram/ExchangeService/api/pb"
-	"github.com/RezaMokaram/ExchangeService/api/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rezamokaram/exchange-service/api/handlers/http/common"
+	"github.com/rezamokaram/exchange-service/api/pb"
+	"github.com/rezamokaram/exchange-service/api/service"
 )
 
 func CreateCrypto(svcGetter common.ServiceGetter[*service.CryptoService]) fiber.Handler {

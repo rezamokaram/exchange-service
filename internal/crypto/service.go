@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/RezaMokaram/ExchangeService/internal/crypto/domain"
-	"github.com/RezaMokaram/ExchangeService/internal/crypto/port"
+	"github.com/rezamokaram/exchange-service/internal/crypto/domain"
+	"github.com/rezamokaram/exchange-service/internal/crypto/port"
 )
 
 var (

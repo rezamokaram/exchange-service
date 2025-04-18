@@ -1,8 +1,8 @@
 package mapper
 
 import (
-	"github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/types"
+	"github.com/rezamokaram/exchange-service/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/types"
 
 	"gorm.io/gorm"
 )

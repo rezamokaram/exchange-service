@@ -7,14 +7,14 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/api/pb"
-	notifDomain "github.com/RezaMokaram/ExchangeService/internal/notification/domain"
-	notifPort "github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	"github.com/RezaMokaram/ExchangeService/internal/user"
-	"github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
-	"github.com/RezaMokaram/ExchangeService/pkg/jwt"
-	timeutils "github.com/RezaMokaram/ExchangeService/pkg/time"
+	"github.com/rezamokaram/exchange-service/api/pb"
+	notifDomain "github.com/rezamokaram/exchange-service/internal/notification/domain"
+	notifPort "github.com/rezamokaram/exchange-service/internal/notification/port"
+	"github.com/rezamokaram/exchange-service/internal/user"
+	"github.com/rezamokaram/exchange-service/internal/user/domain"
+	userPort "github.com/rezamokaram/exchange-service/internal/user/port"
+	"github.com/rezamokaram/exchange-service/pkg/jwt"
+	timeutils "github.com/rezamokaram/exchange-service/pkg/time"
 
 	jwt2 "github.com/golang-jwt/jwt/v5"
 )

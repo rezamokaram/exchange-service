@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/RezaMokaram/ExchangeService/config"
-	"github.com/RezaMokaram/ExchangeService/models"
-	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
-	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-	tradeModels "github.com/RezaMokaram/ExchangeService/models/trade"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/rezamokaram/exchange-service/config"
+	"github.com/rezamokaram/exchange-service/models"
+	bankModels "github.com/rezamokaram/exchange-service/models/bank"
+	cryptoModels "github.com/rezamokaram/exchange-service/models/crypto"
+	tradeModels "github.com/rezamokaram/exchange-service/models/trade"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

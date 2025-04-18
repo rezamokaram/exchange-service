@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	userDomain "github.com/RezaMokaram/ExchangeService/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	userDomain "github.com/rezamokaram/exchange-service/internal/user/domain"
 )
 
 type (

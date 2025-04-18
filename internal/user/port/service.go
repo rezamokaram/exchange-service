@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/internal/user/domain"
 )
 
 type Service interface {

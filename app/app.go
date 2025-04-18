@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/RezaMokaram/ExchangeService/config"
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	"github.com/RezaMokaram/ExchangeService/internal/crypto"
-	cryptoPort "github.com/RezaMokaram/ExchangeService/internal/crypto/port"
-	"github.com/RezaMokaram/ExchangeService/internal/notification"
-	notifPort "github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	"github.com/RezaMokaram/ExchangeService/internal/user"
-	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/migrator"
-	"github.com/RezaMokaram/ExchangeService/pkg/cache"
-	"github.com/RezaMokaram/ExchangeService/pkg/postgres"
 	"github.com/go-co-op/gocron/v2"
+	"github.com/rezamokaram/exchange-service/config"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/crypto"
+	cryptoPort "github.com/rezamokaram/exchange-service/internal/crypto/port"
+	"github.com/rezamokaram/exchange-service/internal/notification"
+	notifPort "github.com/rezamokaram/exchange-service/internal/notification/port"
+	"github.com/rezamokaram/exchange-service/internal/user"
+	userPort "github.com/rezamokaram/exchange-service/internal/user/port"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/migrator"
+	"github.com/rezamokaram/exchange-service/pkg/cache"
+	"github.com/rezamokaram/exchange-service/pkg/postgres"
 
-	redisAdapter "github.com/RezaMokaram/ExchangeService/pkg/adapters/cache"
+	redisAdapter "github.com/rezamokaram/exchange-service/pkg/adapters/cache"
 
 	"gorm.io/gorm"
 
-	appCtx "github.com/RezaMokaram/ExchangeService/pkg/context"
+	appCtx "github.com/rezamokaram/exchange-service/pkg/context"
 )
 
 type app struct {

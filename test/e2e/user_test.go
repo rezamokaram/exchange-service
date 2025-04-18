@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	httpServer "github.com/RezaMokaram/ExchangeService/api/handlers/http"
-	"github.com/RezaMokaram/ExchangeService/api/pb"
-	"github.com/RezaMokaram/ExchangeService/app"
-	"github.com/RezaMokaram/ExchangeService/config"
+	httpServer "github.com/rezamokaram/exchange-service/api/handlers/http"
+	"github.com/rezamokaram/exchange-service/api/pb"
+	"github.com/rezamokaram/exchange-service/app"
+	"github.com/rezamokaram/exchange-service/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

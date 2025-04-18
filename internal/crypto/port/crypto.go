@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/internal/crypto/domain"
+	"github.com/rezamokaram/exchange-service/internal/crypto/domain"
 )
 
 type Repo interface {

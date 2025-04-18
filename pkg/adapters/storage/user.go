@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	"github.com/RezaMokaram/ExchangeService/internal/user/port"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/mapper"
-	"github.com/RezaMokaram/ExchangeService/pkg/adapters/storage/types"
-	"github.com/RezaMokaram/ExchangeService/pkg/cache"
+	"github.com/rezamokaram/exchange-service/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/internal/user/port"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/mapper"
+	"github.com/rezamokaram/exchange-service/pkg/adapters/storage/types"
+	"github.com/rezamokaram/exchange-service/pkg/cache"
 
 	"gorm.io/gorm"
 )

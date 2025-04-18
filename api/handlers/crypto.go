@@ -2,9 +2,9 @@ package handlers
 
 // import (
 // 	"net/http"
-// 	"github.com/RezaMokaram/ExchangeService/models"
-// 	cryptoModels "github.com/RezaMokaram/ExchangeService/models/crypto"
-// 	"github.com/RezaMokaram/ExchangeService/internal"
+// 	"github.com/rezamokaram/exchange-service/models"
+// 	cryptoModels "github.com/rezamokaram/exchange-service/models/crypto"
+// 	"github.com/rezamokaram/exchange-service/internal"
 
 // 	"github.com/labstack/echo/v4"
 // )

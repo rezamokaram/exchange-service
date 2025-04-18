@@ -1,9 +1,9 @@
 package crypto
 
 import (
-	"github.com/RezaMokaram/ExchangeService/api/handlers/http/middlewares"
-	"github.com/RezaMokaram/ExchangeService/app"
-	"github.com/RezaMokaram/ExchangeService/config"
+	"github.com/rezamokaram/exchange-service/api/handlers/http/middlewares"
+	"github.com/rezamokaram/exchange-service/app"
+	"github.com/rezamokaram/exchange-service/config"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/models"
-	bankModels "github.com/RezaMokaram/ExchangeService/models/bank"
-	userModels "github.com/RezaMokaram/ExchangeService/models/user"
+	"github.com/rezamokaram/exchange-service/models"
+	bankModels "github.com/rezamokaram/exchange-service/models/bank"
+	userModels "github.com/rezamokaram/exchange-service/models/user"
 
 	"gorm.io/gorm"
 )

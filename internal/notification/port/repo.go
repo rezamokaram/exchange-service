@@ -3,9 +3,9 @@ package port
 import (
 	"context"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/domain"
-	userDomain "github.com/RezaMokaram/ExchangeService/internal/user/domain"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/notification/domain"
+	userDomain "github.com/rezamokaram/exchange-service/internal/user/domain"
 )
 
 type Repo interface {

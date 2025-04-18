@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/RezaMokaram/ExchangeService/api/handlers"
-	"github.com/RezaMokaram/ExchangeService/api/middlewares"
-	"github.com/RezaMokaram/ExchangeService/internal"
+	"github.com/rezamokaram/exchange-service/api/handlers"
+	"github.com/rezamokaram/exchange-service/api/middlewares"
+	"github.com/rezamokaram/exchange-service/internal"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"

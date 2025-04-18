@@ -1,4 +1,4 @@
-module github.com/RezaMokaram/ExchangeService
+module github.com/rezamokaram/exchange-service
 
 go 1.24.0
 

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/RezaMokaram/ExchangeService/internal/common"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/domain"
-	"github.com/RezaMokaram/ExchangeService/internal/notification/port"
-	userDomain "github.com/RezaMokaram/ExchangeService/internal/user/domain"
-	userPort "github.com/RezaMokaram/ExchangeService/internal/user/port"
-	"github.com/RezaMokaram/ExchangeService/pkg/fp"
+	"github.com/rezamokaram/exchange-service/internal/common"
+	"github.com/rezamokaram/exchange-service/internal/notification/domain"
+	"github.com/rezamokaram/exchange-service/internal/notification/port"
+	userDomain "github.com/rezamokaram/exchange-service/internal/user/domain"
+	userPort "github.com/rezamokaram/exchange-service/internal/user/port"
+	"github.com/rezamokaram/exchange-service/pkg/fp"
 )
 
 type service struct {
